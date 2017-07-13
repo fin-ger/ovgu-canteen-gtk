@@ -1,0 +1,13 @@
+[package]
+name = "gnome-ovgu-canteen"
+version = "0.1.0"
+authors = ["Fin Christensen <christensen.fin@gmail.com>"]
+
+[dependencies]
+gtk = "^0"
+gdk = "^0"
+gio = "^0"
+
+[features]
+default = ["gtk_3_12"]
+gtk_3_12 = ["gtk/v3_12"]
