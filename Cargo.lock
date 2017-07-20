@@ -2,6 +2,7 @@
 name = "gnome-ovgu-canteen"
 version = "0.1.0"
 dependencies = [
+ "ansi_term 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gdk 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "gio 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "gio-sys 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -10,6 +11,11 @@ dependencies = [
  "gtk 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.26 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "ansi_term"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "atk-sys"
@@ -259,6 +265,7 @@ version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
+"checksum ansi_term 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "23ac7c30002a5accbf7e8987d0632fa6de155b7c3d39d0067317a391e00a2ef6"
 "checksum atk-sys 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)" = "d7a9635b2b56a4925bf9c9b14cb7cad91eb2c3ca1eb04671a525b9e729b5c0a2"
 "checksum bitflags 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "4f67931368edf3a9a51d29886d245f1c3db2f1ef0dcc9e35ff70341b78c10d23"
 "checksum bitflags 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)" = "1370e9fc2a6ae53aea8b7a5110edbd08836ed87c88736dfabccade1c2b44bff4"
