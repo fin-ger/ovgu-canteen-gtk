@@ -11,21 +11,13 @@ async fn build(app: &gtk::Application) -> Result<(), &'static str> {
     let builder = Builder::new_from_string(GLADE);
 
     let window = WindowComponent {
-        window: builder.get_object("window").ok_or(
-            "Cannot find window!",
-        )?,
-        lower_hall_days_box: builder.get_object("lower-hall-days-box").ok_or(
-            "Cannot find lower-hall-days-box!",
-        )?,
-        upper_hall_days_box: builder.get_object("upper-hall-days-box").ok_or(
-            "Cannot find upper-hall-days-box!",
-        )?,
+        window: builder.get_object("window").unwrap(),
+        lower_hall_days_box: builder.get_object("lower-hall-days-box").unwrap(),
+        upper_hall_days_box: builder.get_object("upper-hall-days-box").unwrap(),
     };
     // TODO: add about button and show about widget
     let about = AboutComponent {
-        dialog: builder.get_object("about").ok_or(
-            "Cannot find about-dialog!",
-        )?,
+        dialog: builder.get_object("about").unwrap(),
     };
 
     let lower_hall = Canteen::new(CanteenDescription::Downstairs).await
@@ -59,8 +51,8 @@ impl Application {
 
         let css_provider = CssProvider::new();
         css_provider
-            .load_from_path("data/gnome-ovgu-canteen.css")
-            .map_err(|_| "Failed to load stylesheets!")?;
+            .load_from_data(std::include_str!("../data/gnome-ovgu-canteen.css").as_bytes())
+            .unwrap();
 
         let screen = Screen::get_default().ok_or(
             "Cannot find default screen!",
