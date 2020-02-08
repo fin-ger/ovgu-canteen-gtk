@@ -1,25 +1,17 @@
-.badge
-{
+.badge {
     border-radius: 2em;
-    padding: 0.25em 0;
+    padding: 0.25em 1em;
     opacity: 0.75;
     font-size: 0.9em;
     background-color: alpha(@theme_fg_color, 0.2);
     opacity: 0.75;
 }
 
-.badge-lite
-{
+.badge-lite {
     margin: 0.25em 0;
+    padding: 0 0.5em;
     border-radius: 2em;
     border: 1px solid alpha(@theme_fg_color, 0.5);
     font-size: 0.75em;
     opacity: 0.75;
-}
-
-.meal-image
-{
-    min-width: 100px;
-    min-height: 100px;
-    background-color: @theme_bg_color;
 }

@@ -1,99 +1,100 @@
-use ::std;
-use ::gtk;
-use ::gdk;
-use ::gio;
-
-use std::sync::Arc;
-use widgets::{MainWidget, AppMenuWidget};
+use gtk::{Builder, CssProvider};
 use gtk::prelude::*;
+use gio::prelude::*;
+use gdk::{Screen};
+use ovgu_canteen::{Canteen, CanteenDescription};
+use tokio::runtime::Runtime;
 
-pub struct Widgets
-{
-    pub window: gtk::ApplicationWindow,
-    pub main_widget: MainWidget,
-    pub app_menu_widget: AppMenuWidget,
+use crate::components::{GLADE, WindowComponent, AboutComponent, DayComponent};
+
+async fn build(app: &gtk::Application) -> Result<(), &'static str> {
+    let builder = Builder::new_from_string(GLADE);
+
+    let window = WindowComponent {
+        window: builder.get_object("window").ok_or(
+            "Cannot find window!",
+        )?,
+        lower_hall_days_box: builder.get_object("lower-hall-days-box").ok_or(
+            "Cannot find lower-hall-days-box!",
+        )?,
+        upper_hall_days_box: builder.get_object("upper-hall-days-box").ok_or(
+            "Cannot find upper-hall-days-box!",
+        )?,
+    };
+    // TODO: add about button and show about widget
+    let about = AboutComponent {
+        dialog: builder.get_object("about").ok_or(
+            "Cannot find about-dialog!",
+        )?,
+    };
+
+    let lower_hall = Canteen::new(CanteenDescription::Downstairs).await
+        .map_err(|_| "Failed to fetch lower hall menu!")?;
+    let upper_hall = Canteen::new(CanteenDescription::Upstairs).await
+        .map_err(|_| "Failed to fetch upper hall menu!")?;
+
+    for day in lower_hall.days.iter() {
+        let day_comp = DayComponent::new(&day);
+        window.lower_hall_days_box.pack_end(&day_comp.frame, false, true, 0);
+    }
+
+    for day in upper_hall.days.iter() {
+        let day_comp = DayComponent::new(&day);
+        window.upper_hall_days_box.pack_end(&day_comp.frame, false, true, 0);
+    }
+
+    window.window.set_application(Some(app));
+    window.window.show_all();
+
+    Ok(())
 }
 
-pub struct Application
-{
+pub struct Application {
     pub g_app: gtk::Application,
-    pub builder: gtk::Builder,
-    pub widgets: Widgets,
 }
 
-impl Application
-{
-    pub fn new() -> Result<Application, &'static str>
-    {
+impl Application {
+    pub fn new() -> Result<Application, &'static str> {
         gtk::init().map_err(|_| "Failed to initialize GTK!")?;
 
-        let css_provider = gtk::CssProvider::new();
-        css_provider.load_from_path("data/gnome-ovgu-canteen.css").map_err(|_| "Failed to load stylesheets!")?;
+        let css_provider = CssProvider::new();
+        css_provider
+            .load_from_path("data/gnome-ovgu-canteen.css")
+            .map_err(|_| "Failed to load stylesheets!")?;
 
+        let screen = Screen::get_default().ok_or(
+            "Cannot find default screen!",
+        )?;
         gtk::StyleContext::add_provider_for_screen(
-            &gdk::Screen::get_default().ok_or("Cannot find default screen!")?,
+            &screen,
             &css_provider,
-            gtk::STYLE_PROVIDER_PRIORITY_USER
+            gtk::STYLE_PROVIDER_PRIORITY_USER,
         );
 
-        let builder = gtk::Builder::new_from_file("data/gnome-ovgu-canteen.glade");
+        let g_app =
+            gtk::Application::new(Some("org.gnome.ovgu-canteen"), Default::default())
+                .map_err(|_| "Failed to create application!")?;
 
-        Ok(Application
-        {
-            g_app: gtk::Application::new(Some("org.gnome.ovgu-canteen"), gio::APPLICATION_FLAGS_NONE)
-                .map_err(|_| "Failed to create application!")?,
-            widgets: Widgets
-            {
-                window: builder.get_object("window")
-                    .ok_or("Cannot find window!")?,
-                main_widget: MainWidget
-                {
-                    horizontal_navigation_stack: builder.get_object("horizontal-navigation-stack")
-                        .ok_or("Cannot find horizontal navigation stack!")?,
-                    back_button: builder.get_object("back_button")
-                        .ok_or("Cannot find back button!")?,
-                    canteen_list_box: builder.get_object("canteen-list-box")
-                        .ok_or("Cannot find canteen list box!")?,
+        g_app.connect_activate(|app| {
+            let mut rt = Runtime::new().unwrap();
+
+            // TODO: load canteens in background and show spinner until data is available
+            //       pass loaded canteens to build()
+            match rt.block_on(build(app)) {
+                Ok(()) => {},
+                Err(err) => {
+                    eprintln!("error: {}", err);
+                    app.quit();
                 },
-                app_menu_widget: AppMenuWidget{},
-            },
-            builder: builder,
+            }
+        });
+
+        Ok(Application {
+            g_app,
         })
     }
 
-    pub fn startup(&self)
-    {
-        self.g_app.add_window(&self.widgets.window);
-        self.widgets.app_menu_widget.startup(&self);
-    }
-
-    pub fn activate(&self)
-    {
-        self.widgets.window.show_all();
-    }
-
-    pub fn run(self)
-    {
-        let args1: Vec<String> = std::env::args().collect();
-        let args2: Vec<&str> = args1.iter().map(AsRef::as_ref).collect();
-        let argv: &[&str] = &args2;
-        let app = Arc::new(self);
-
-        {
-            let binding = app.clone();
-            app.g_app.connect_activate(move |_| {
-                binding.activate();
-            });
-        }
-
-        {
-            let binding = app.clone();
-            app.g_app.connect_startup(move |_| {
-                binding.startup();
-            });
-        }
-
-        app.widgets.main_widget.connect_signals(&app);
-        std::process::exit(app.g_app.run(argv.len() as i32, argv));
+    pub fn run(self, args: Vec<String>) -> i32 {
+        self.g_app.run(&args)
     }
 }
