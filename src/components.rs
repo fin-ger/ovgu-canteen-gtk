@@ -1,6 +1,5 @@
 use gtk::{
     Builder,
-    AboutDialog,
     Frame,
     Label,
     ListBox,
@@ -11,7 +10,7 @@ use gtk::{
 };
 use gtk::prelude::*;
 use ovgu_canteen::{Day, Meal};
-use chrono::Datelike;
+use chrono::{Datelike, Weekday, Utc, TimeZone};
 
 pub const GLADE: &str = std::include_str!("../data/gnome-ovgu-canteen.glade");
 
@@ -44,27 +43,47 @@ pub struct WindowComponent {
     pub upper_hall_days_box: Box,
 }
 
-pub struct AboutComponent {
-    pub dialog: AboutDialog,
-}
-
 impl DayComponent {
     pub fn new(day: &Day) -> DayComponent {
         let builder = Builder::new_from_string(GLADE);
         let frame: Frame = builder.get_object("day-frame").unwrap();
         let label: Label = builder.get_object("day-label").unwrap();
         let meals_list_box: ListBox = builder.get_object("day-meals-list-box").unwrap();
+        let side_dish_badges: FlowBox = builder.get_object("side-dish-badges").unwrap();
 
-        // TODO: display Heute, Morgen, <Wochentage>
-        //       implement this in rust-ovgu-canteen::Day
-        label.set_text(&day.date.weekday().to_string());
+        let mut day_name = match day.date.weekday() {
+            Weekday::Mon => "Montag",
+            Weekday::Tue => "Dienstag",
+            Weekday::Wed => "Mittwoch",
+            Weekday::Thu => "Donnerstag",
+            Weekday::Fri => "Freitag",
+            Weekday::Sat => "Samstag",
+            Weekday::Sun => "Sonntag",
+        };
+        let today = Utc::today();
+        let date = chrono_tz::Europe::Berlin.ymd(
+            day.date.year(),
+            day.date.month(),
+            day.date.day(),
+        );
+        if date == today {
+            day_name = "Heute";
+        }
+        if date == today.succ() {
+            day_name = "Morgen";
+        }
+
+        label.set_text(day_name);
 
         for (idx, meal) in day.meals.iter().enumerate() {
             let meal_component = MealComponent::new(meal);
             meals_list_box.insert(&meal_component.meal, idx as i32);
         }
 
-        // TODO: add side-dishes
+        for side_dish in day.side_dishes.iter() {
+            let badge = BadgeComponent::new(side_dish);
+            side_dish_badges.insert(&badge.label, 0);
+        }
 
         DayComponent {
             frame,
@@ -90,23 +109,17 @@ impl MealComponent {
         price_guest.set_text(format!("{:.2} €", meal.price.guest).as_str());
 
         for additive in meal.additives.iter() {
-            // TODO: convert additives to strings
-            //       do this in rust-ovgu-canteen::Additive
-            let badge = LiteBadgeComponent::new(format!("{:?}", additive));
+            let badge = LiteBadgeComponent::new(additive.to_german_str());
             badges.insert(&badge.label, 0);
         }
 
         for allergenic in meal.allergenics.iter() {
-            // TODO: convert allergenics to strings
-            //       do this in rust-ovgu-canteen::Allergenic
-            let badge = LiteBadgeComponent::new(format!("{:?}", allergenic));
+            let badge = LiteBadgeComponent::new(allergenic.to_german_str());
             badges.insert(&badge.label, 0);
         }
 
         for symbol in meal.symbols.iter() {
-            // TODO: convert symbols to strings
-            //       do this in rust-ovgu-canteen::Symbol
-            let badge = BadgeComponent::new(format!("{:?}", symbol));
+            let badge = BadgeComponent::new(symbol.to_german_str());
             badges.insert(&badge.label, 0);
         }
 
@@ -122,11 +135,11 @@ impl MealComponent {
 }
 
 impl BadgeComponent {
-    pub fn new(text: String) -> BadgeComponent {
+    pub fn new(text: &str) -> BadgeComponent {
         let builder = Builder::new_from_string(GLADE);
         let label: Label = builder.get_object("badge").unwrap();
 
-        label.set_text(&text);
+        label.set_text(text);
 
         BadgeComponent {
             label
@@ -135,11 +148,11 @@ impl BadgeComponent {
 }
 
 impl LiteBadgeComponent {
-    pub fn new(text: String) -> LiteBadgeComponent {
+    pub fn new(text: &str) -> LiteBadgeComponent {
         let builder = Builder::new_from_string(GLADE);
         let label: Label = builder.get_object("lite-badge").unwrap();
 
-        label.set_text(&text);
+        label.set_text(text);
 
         LiteBadgeComponent {
             label

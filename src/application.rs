@@ -1,11 +1,11 @@
-use gtk::{Builder, CssProvider};
+use gtk::{Builder, CssProvider, Button, AboutDialog};
 use gtk::prelude::*;
 use gio::prelude::*;
 use gdk::{Screen};
 use ovgu_canteen::{Canteen, CanteenDescription};
 use tokio::runtime::Runtime;
 
-use crate::components::{GLADE, WindowComponent, AboutComponent, DayComponent};
+use crate::components::{GLADE, WindowComponent, DayComponent};
 
 async fn build(app: &gtk::Application) -> Result<(), &'static str> {
     let builder = Builder::new_from_string(GLADE);
@@ -15,10 +15,13 @@ async fn build(app: &gtk::Application) -> Result<(), &'static str> {
         lower_hall_days_box: builder.get_object("lower-hall-days-box").unwrap(),
         upper_hall_days_box: builder.get_object("upper-hall-days-box").unwrap(),
     };
-    // TODO: add about button and show about widget
-    let about = AboutComponent {
-        dialog: builder.get_object("about").unwrap(),
-    };
+    let about_dialog: AboutDialog = builder.get_object("about").unwrap();
+    let about_button: Button = builder.get_object("about-btn").unwrap();
+
+    about_button.connect_clicked(move |_btn| {
+        about_dialog.run();
+        about_dialog.hide();
+    });
 
     let lower_hall = Canteen::new(CanteenDescription::Downstairs).await
         .map_err(|_| "Failed to fetch lower hall menu!")?;
@@ -27,12 +30,12 @@ async fn build(app: &gtk::Application) -> Result<(), &'static str> {
 
     for day in lower_hall.days.iter() {
         let day_comp = DayComponent::new(&day);
-        window.lower_hall_days_box.pack_end(&day_comp.frame, false, true, 0);
+        window.lower_hall_days_box.pack_start(&day_comp.frame, false, true, 0);
     }
 
     for day in upper_hall.days.iter() {
         let day_comp = DayComponent::new(&day);
-        window.upper_hall_days_box.pack_end(&day_comp.frame, false, true, 0);
+        window.upper_hall_days_box.pack_start(&day_comp.frame, false, true, 0);
     }
 
     window.window.set_application(Some(app));
