@@ -23,3 +23,13 @@ list row {
 list row separator {
     margin-top: 2px;
 }
+
+headerbar button.popup.toggle {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+menuitem {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}

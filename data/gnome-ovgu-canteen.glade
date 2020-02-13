@@ -34,6 +34,70 @@ Author: Fin Christensen
     <property name="can_focus">False</property>
     <property name="icon_name">dialog-information-symbolic</property>
   </object>
+  <object class="GtkLabel" id="badge">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="label" translatable="yes">MensaVital</property>
+    <property name="selectable">True</property>
+    <style>
+      <class name="badge"/>
+    </style>
+  </object>
+  <object class="GtkMenu" id="canteen-menu">
+    <property name="width_request">180</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="take_focus">False</property>
+    <property name="reserve_toggle_size">False</property>
+    <property name="rect_anchor_dy">-44</property>
+    <property name="menu_type_hint">combo</property>
+    <child>
+      <object class="GtkMenuItem" id="ovgu-lower-hall">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">UniCampus Unten</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="ovgu-upper-hall">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">UniCampus Oben</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="kellercafe">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Kellercafé</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="herrenkrug">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Herrenkrug</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="wernigerode">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Wernigerode</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="domcafete-halberstadt">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">DomCafete Halberstadt</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+  </object>
   <object class="GtkApplicationWindow" id="window">
     <property name="can_focus">False</property>
     <property name="default_width">600</property>
@@ -53,10 +117,72 @@ Author: Fin Christensen
           </object>
         </child>
         <child type="title">
-          <object class="GtkStackSwitcher">
+          <object class="GtkMenuButton">
+            <property name="width_request">180</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="stack">horizontal-navigation-stack</property>
+            <property name="can_focus">True</property>
+            <property name="focus_on_click">False</property>
+            <property name="receives_default">True</property>
+            <property name="relief">none</property>
+            <property name="popup">canteen-menu</property>
+            <property name="use_popover">False</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">4</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">&lt;b&gt;OvGU Canteen&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="canteen-label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">&lt;small&gt;UniCampus Unten&lt;/small&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">pan-down-symbolic</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -177,14 +303,40 @@ Author: Fin Christensen
       </object>
     </child>
   </object>
-  <object class="GtkLabel" id="badge">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="label" translatable="yes">MensaVital</property>
-    <property name="selectable">True</property>
-    <style>
-      <class name="badge"/>
-    </style>
+  <object class="GtkListStore" id="canteens">
+    <columns>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name id -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">&lt;b&gt;OvGU Canteen&lt;/b&gt;
+&lt;small&gt;UniCampus Unten&lt;/small&gt;</col>
+        <col id="1" translatable="yes">UniCampusLowerHall</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">UniCampus Oben</col>
+        <col id="1" translatable="yes">UniCampusUpperHall</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Kellercafé</col>
+        <col id="1" translatable="yes">Kellercafe</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Herrenkrug</col>
+        <col id="1" translatable="yes">Herrenkrug</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Wernigerode</col>
+        <col id="1" translatable="yes">Wernigerode</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">DomCafete Halberstadt</col>
+        <col id="1" translatable="yes">DomCafeteHalberstadt</col>
+      </row>
+    </data>
   </object>
   <object class="GtkFrame" id="day-frame">
     <property name="visible">True</property>
