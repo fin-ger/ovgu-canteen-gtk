@@ -15,3 +15,11 @@
     font-size: 0.75em;
     opacity: 0.75;
 }
+
+list row {
+    padding-bottom: 0;
+}
+
+list row separator {
+    margin-top: 2px;
+}
