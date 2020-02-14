@@ -1,30 +1,13 @@
-use gtk::{Builder, CssProvider, Button, Stack, Label, AboutDialog};
+use gtk::{Builder, CssProvider, Button, AboutDialog};
 use gtk::prelude::*;
 use gio::prelude::*;
 use gdk::{Screen};
 use ovgu_canteen::{Canteen, CanteenDescription};
-use tokio::runtime::Runtime;
+use tokio::runtime::{Builder as RuntimeBuilder, Runtime, Handle};
+use tokio::sync::oneshot::channel;
 
-use std::rc::Rc;
-use std::cell::RefCell;
-
-use crate::components::{GLADE, WindowComponent, DayComponent};
-
-// TODO: persist canteen menus on disk for faster loading of app and update menus
-//       when loaded
-
-// TODO: add settings window with hamburger menu to access the settings
-
-// TODO: add reload button for reloading canteen menus on network failure
-
-// TODO: add dark theme to settings
-
-// TODO: move about button to hamburger menu
-
-// TODO: load each canteen independently and show result when done to enable
-//       showing menus while others are still loading
-
-// TODO: set default canteen in settings
+use crate::glib_yield;
+use crate::components::{GLADE, WindowComponentBuilder, DayComponent};
 
 // TODO: handle error when canteen menu failed to load by displaying error message
 
@@ -33,28 +16,39 @@ use crate::components::{GLADE, WindowComponent, DayComponent};
 //          canteens stack page
 //        - animate the reload button
 
+// TODO: persist canteen menus on disk for faster loading of app and update menus
+//       when loaded
+
+// TODO: add settings window with hamburger menu to access the settings
+
+// TODO: add dark theme to settings
+
+// TODO: set default canteen in settings
+
+// TODO: move about button to hamburger menu
+
+// TODO: add reload button for reloading canteen menus on network failure
+
 // TODO: set offset of canteen popup-menu so that the current item is on the
 //       mouse position
 
-// TODO: write readme
+// TODO: show authors from Cargo.toml in about dialog
 
 // TODO: create flatpak package
+
+// TODO: write readme
 
 // TODO: try porting to windows metro app
 
 // TODO: try porting to macos app
 
-async fn build(app: &gtk::Application) -> Result<(), &'static str> {
+fn build(rt: &Handle, app: &gtk::Application) -> Result<(), &'static str> {
     let builder = Builder::new_from_string(GLADE);
 
-    let canteen_stack: Rc<RefCell<Stack>> = Rc::new(RefCell::new(
-        builder.get_object("canteen-stack").unwrap()
-    ));
-    let canteen_label: Rc<RefCell<Label>> = Rc::new(RefCell::new(
-        builder.get_object("canteen-label").unwrap()
-    ));
-    let window = WindowComponent {
+    let window = WindowComponentBuilder {
         window: builder.get_object("window").unwrap(),
+        canteen_stack: builder.get_object("canteen-stack").unwrap(),
+        canteen_label: builder.get_object("canteen-label").unwrap(),
         lower_hall_days_box: builder.get_object("lower-hall-days-box").unwrap(),
         upper_hall_days_box: builder.get_object("upper-hall-days-box").unwrap(),
         kellercafe_days_box: builder.get_object("kellercafe-days-box").unwrap(),
@@ -69,7 +63,7 @@ async fn build(app: &gtk::Application) -> Result<(), &'static str> {
         stendal_item: builder.get_object("stendal").unwrap(),
         wernigerode_item: builder.get_object("wernigerode").unwrap(),
         dom_cafete_item: builder.get_object("dom-cafete").unwrap(),
-    };
+    }.build();
     let about_dialog: AboutDialog = builder.get_object("about").unwrap();
     let about_button: Button = builder.get_object("about-btn").unwrap();
 
@@ -79,123 +73,103 @@ async fn build(app: &gtk::Application) -> Result<(), &'static str> {
         about_dialog.hide();
     });
 
-    let lower_hall_stack_handle = canteen_stack.clone();
-    let lower_hall_label_handle = canteen_label.clone();
-    window.lower_hall_item.connect_activate(move |item| {
+    let lower_hall_stack_handle = window.canteen_stack.clone();
+    let lower_hall_label_handle = window.canteen_label.clone();
+    window.lower_hall_item.borrow_mut().connect_activate(move |item| {
         lower_hall_stack_handle.borrow()
             .set_visible_child_name("ovgu-lower-hall");
         lower_hall_label_handle.borrow().set_text(&item.get_label().unwrap());
     });
 
-    let upper_hall_stack_handle = canteen_stack.clone();
-    let upper_hall_label_handle = canteen_label.clone();
-    window.upper_hall_item.connect_activate(move |item| {
+    let upper_hall_stack_handle = window.canteen_stack.clone();
+    let upper_hall_label_handle = window.canteen_label.clone();
+    window.upper_hall_item.borrow_mut().connect_activate(move |item| {
         upper_hall_stack_handle.borrow()
             .set_visible_child_name("ovgu-upper-hall");
         upper_hall_label_handle.borrow().set_text(&item.get_label().unwrap());
     });
 
-    let kellercafe_stack_handle = canteen_stack.clone();
-    let kellercafe_label_handle = canteen_label.clone();
-    window.kellercafe_item.connect_activate(move |item| {
+    let kellercafe_stack_handle = window.canteen_stack.clone();
+    let kellercafe_label_handle = window.canteen_label.clone();
+    window.kellercafe_item.borrow_mut().connect_activate(move |item| {
         kellercafe_stack_handle.borrow()
             .set_visible_child_name("kellercafe");
         kellercafe_label_handle.borrow().set_text(&item.get_label().unwrap());
     });
 
-    let herrenkrug_stack_handle = canteen_stack.clone();
-    let herrenkrug_label_handle = canteen_label.clone();
-    window.herrenkrug_item.connect_activate(move |item| {
+    let herrenkrug_stack_handle = window.canteen_stack.clone();
+    let herrenkrug_label_handle = window.canteen_label.clone();
+    window.herrenkrug_item.borrow_mut().connect_activate(move |item| {
         herrenkrug_stack_handle.borrow()
             .set_visible_child_name("herrenkrug");
         herrenkrug_label_handle.borrow().set_text(&item.get_label().unwrap());
     });
 
-    let stendal_stack_handle = canteen_stack.clone();
-    let stendal_label_handle = canteen_label.clone();
-    window.stendal_item.connect_activate(move |item| {
+    let stendal_stack_handle = window.canteen_stack.clone();
+    let stendal_label_handle = window.canteen_label.clone();
+    window.stendal_item.borrow_mut().connect_activate(move |item| {
         stendal_stack_handle.borrow()
             .set_visible_child_name("stendal");
         stendal_label_handle.borrow().set_text(&item.get_label().unwrap());
     });
 
-    let wernigerode_stack_handle = canteen_stack.clone();
-    let wernigerode_label_handle = canteen_label.clone();
-    window.wernigerode_item.connect_activate(move |item| {
+    let wernigerode_stack_handle = window.canteen_stack.clone();
+    let wernigerode_label_handle = window.canteen_label.clone();
+    window.wernigerode_item.borrow_mut().connect_activate(move |item| {
         wernigerode_stack_handle.borrow()
             .set_visible_child_name("wernigerode");
         wernigerode_label_handle.borrow().set_text(&item.get_label().unwrap());
     });
 
-    let dom_cafete_stack_handle = canteen_stack.clone();
-    let dom_cafete_label_handle = canteen_label.clone();
-    window.dom_cafete_item.connect_activate(move |item| {
+    let dom_cafete_stack_handle = window.canteen_stack.clone();
+    let dom_cafete_label_handle = window.canteen_label.clone();
+    window.dom_cafete_item.borrow_mut().connect_activate(move |item| {
         dom_cafete_stack_handle.borrow()
             .set_visible_child_name("dom-cafete");
         dom_cafete_label_handle.borrow().set_text(&item.get_label().unwrap());
     });
 
-    let (
-        uni_campus_lower_hall,
-        uni_campus_upper_hall,
-        kellercafe,
-        herrenkrug,
-        stendal,
-        wernigerode,
-        dom_cafete,
-    ) = tokio::try_join!(
-        Canteen::new(CanteenDescription::UniCampusLowerHall),
-        Canteen::new(CanteenDescription::UniCampusUpperHall),
-        Canteen::new(CanteenDescription::Kellercafe),
-        Canteen::new(CanteenDescription::Herrenkrug),
-        Canteen::new(CanteenDescription::Stendal),
-        Canteen::new(CanteenDescription::Wernigerode),
-        Canteen::new(CanteenDescription::DomCafeteHalberstadt),
-    ).map_err(|_| "Failed to fetch canteen menus!")?;
+    let mut canteens = vec![
+        (CanteenDescription::UniCampusLowerHall, window.lower_hall_days_box.clone()),
+        (CanteenDescription::UniCampusUpperHall, window.upper_hall_days_box.clone()),
+        (CanteenDescription::Kellercafe, window.kellercafe_days_box.clone()),
+        (CanteenDescription::Herrenkrug, window.herrenkrug_days_box.clone()),
+        (CanteenDescription::Stendal, window.stendal_days_box.clone()),
+        (CanteenDescription::Wernigerode, window.wernigerode_days_box.clone()),
+        (CanteenDescription::DomCafeteHalberstadt, window.dom_cafete_days_box.clone()),
+    ];
 
-    for day in uni_campus_lower_hall.days.iter() {
-        let day_comp = DayComponent::new(&day);
-        window.lower_hall_days_box.pack_start(&day_comp.frame, false, true, 0);
+
+    for (desc, days_box) in canteens.drain(..) {
+        let (tx, rx) = channel();
+
+        rt.spawn(async move {
+            tx.send(Canteen::new(desc).await).unwrap();
+        });
+
+        let c = glib::MainContext::default();
+        c.spawn_local(async move {
+            if let Ok(mut canteen) = rx.await.unwrap() {
+                for day in canteen.days.drain(..) {
+                    let day_comp = DayComponent::new(&day).await;
+                    days_box.borrow_mut().pack_start(&day_comp.frame, false, true, 0);
+                    glib_yield!();
+                }
+            } else {
+                // TODO: add error handling
+            }
+        });
     }
 
-    for day in uni_campus_upper_hall.days.iter() {
-        let day_comp = DayComponent::new(&day);
-        window.upper_hall_days_box.pack_start(&day_comp.frame, false, true, 0);
-    }
-
-    for day in kellercafe.days.iter() {
-        let day_comp = DayComponent::new(&day);
-        window.kellercafe_days_box.pack_start(&day_comp.frame, false, true, 0);
-    }
-
-    for day in herrenkrug.days.iter() {
-        let day_comp = DayComponent::new(&day);
-        window.herrenkrug_days_box.pack_start(&day_comp.frame, false, true, 0);
-    }
-
-    for day in stendal.days.iter() {
-        let day_comp = DayComponent::new(&day);
-        window.stendal_days_box.pack_start(&day_comp.frame, false, true, 0);
-    }
-
-    for day in wernigerode.days.iter() {
-        let day_comp = DayComponent::new(&day);
-        window.wernigerode_days_box.pack_start(&day_comp.frame, false, true, 0);
-    }
-
-    for day in dom_cafete.days.iter() {
-        let day_comp = DayComponent::new(&day);
-        window.dom_cafete_days_box.pack_start(&day_comp.frame, false, true, 0);
-    }
-
-    window.window.set_application(Some(app));
-    window.window.show_all();
+    window.window.borrow_mut().set_application(Some(app));
+    window.window.borrow_mut().show_all();
 
     Ok(())
 }
 
 pub struct Application {
     pub g_app: gtk::Application,
+    pub runtime: Runtime,
 }
 
 impl Application {
@@ -216,14 +190,20 @@ impl Application {
             gtk::STYLE_PROVIDER_PRIORITY_USER,
         );
 
+        let runtime = RuntimeBuilder::new()
+            .enable_all()
+            .threaded_scheduler()
+            .thread_name("gnome-ovgu-canteen-tokio")
+            .build()
+            .unwrap();
+
         let g_app =
             gtk::Application::new(Some("org.gnome.ovgu-canteen"), Default::default())
                 .map_err(|_| "Failed to create application!")?;
 
-        g_app.connect_activate(|app| {
-            let mut rt = Runtime::new().unwrap();
-
-            match rt.block_on(build(app)) {
+        let build_rt = runtime.handle().clone();
+        g_app.connect_activate(move |app| {
+            match build(&build_rt, app) {
                 Ok(()) => {},
                 Err(err) => {
                     eprintln!("error: {}", err);
@@ -234,6 +214,7 @@ impl Application {
 
         Ok(Application {
             g_app,
+            runtime,
         })
     }
 

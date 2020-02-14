@@ -1,4 +1,6 @@
 mod application;
+
+#[macro_use]
 mod components;
 
 fn main() {

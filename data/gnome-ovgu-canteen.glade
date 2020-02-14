@@ -44,13 +44,12 @@ Author: Fin Christensen
     </style>
   </object>
   <object class="GtkMenu" id="canteen-menu">
-    <property name="width_request">180</property>
+    <property name="width_request">200</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="take_focus">False</property>
     <property name="reserve_toggle_size">False</property>
     <property name="rect_anchor_dy">-44</property>
-    <property name="menu_type_hint">combo</property>
     <child>
       <object class="GtkMenuItem" id="ovgu-lower-hall">
         <property name="visible">True</property>
@@ -126,7 +125,7 @@ Author: Fin Christensen
         </child>
         <child type="title">
           <object class="GtkMenuButton" id="canteen-menu-button">
-            <property name="width_request">180</property>
+            <property name="width_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="focus_on_click">False</property>

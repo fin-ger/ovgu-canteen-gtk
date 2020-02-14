@@ -512,6 +512,7 @@ dependencies = [
  "chrono-tz 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "gdk 0.12.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "gio 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glib 0.9.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "gtk 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "ovgu-canteen 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
