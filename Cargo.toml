@@ -8,7 +8,7 @@ edition = "2018"
 gtk = { version = "0.8.1", features = ["v3_16"] }
 gdk = { version = "0.12.1", features = ["v3_16"] }
 gio = { version = "0.8.1", features = ["v2_44"] }
-ovgu-canteen = "0.2.0"
+ovgu-canteen = "0.3.0"
 chrono = "0.4.10"
 tokio = { version = "0.2.11", features = ["full"] }
 chrono-tz = "0.5.1"

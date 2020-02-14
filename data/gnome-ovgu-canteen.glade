@@ -29,7 +29,7 @@ Author: Fin Christensen
   <!-- interface-description Menu information for the OvGU canteen. -->
   <!-- interface-copyright Fin Christensen -->
   <!-- interface-authors Fin Christensen -->
-  <object class="GtkImage" id="abou">
+  <object class="GtkImage" id="about-icon">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">dialog-information-symbolic</property>
@@ -82,6 +82,14 @@ Author: Fin Christensen
       </object>
     </child>
     <child>
+      <object class="GtkMenuItem" id="stendal">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Stendal</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkMenuItem" id="wernigerode">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -90,7 +98,7 @@ Author: Fin Christensen
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="domcafete-halberstadt">
+      <object class="GtkMenuItem" id="dom-cafete">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">DomCafete Halberstadt</property>
@@ -113,11 +121,11 @@ Author: Fin Christensen
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="image">abou</property>
+            <property name="image">about-icon</property>
           </object>
         </child>
         <child type="title">
-          <object class="GtkMenuButton">
+          <object class="GtkMenuButton" id="canteen-menu-button">
             <property name="width_request">180</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -153,8 +161,11 @@ Author: Fin Christensen
                       <object class="GtkLabel" id="canteen-label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;small&gt;UniCampus Unten&lt;/small&gt;</property>
-                        <property name="use_markup">True</property>
+                        <property name="opacity">0.75</property>
+                        <property name="label" translatable="yes">UniCampus Unten</property>
+                        <attributes>
+                          <attribute name="scale" value="0.80000000000000004"/>
+                        </attributes>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -188,10 +199,11 @@ Author: Fin Christensen
       </object>
     </child>
     <child>
-      <object class="GtkStack" id="horizontal-navigation-stack">
+      <object class="GtkStack" id="canteen-stack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="transition_type">slide-left-right</property>
+        <property name="transition_duration">100</property>
+        <property name="transition_type">slide-up-down</property>
         <child>
           <object class="GtkScrolledWindow">
             <property name="visible">True</property>
@@ -221,8 +233,7 @@ Author: Fin Christensen
             </child>
           </object>
           <packing>
-            <property name="name">lower-menu</property>
-            <property name="title" translatable="yes">Unterer Speisesaal</property>
+            <property name="name">ovgu-lower-hall</property>
           </packing>
         </child>
         <child>
@@ -254,9 +265,173 @@ Author: Fin Christensen
             </child>
           </object>
           <packing>
-            <property name="name">upper-menu</property>
-            <property name="title" translatable="yes">Oberer Speisesaal</property>
+            <property name="name">ovgu-upper-hall</property>
             <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkBox" id="kellercafe-days-box">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">42</property>
+                    <property name="margin_right">42</property>
+                    <property name="margin_top">42</property>
+                    <property name="margin_bottom">42</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">42</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">kellercafe</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkBox" id="herrenkrug-days-box">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">42</property>
+                    <property name="margin_right">42</property>
+                    <property name="margin_top">42</property>
+                    <property name="margin_bottom">42</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">42</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">herrenkrug</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkBox" id="stendal-days-box">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">42</property>
+                    <property name="margin_right">42</property>
+                    <property name="margin_top">42</property>
+                    <property name="margin_bottom">42</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">42</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">stendal</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkBox" id="wernigerode-days-box">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">42</property>
+                    <property name="margin_right">42</property>
+                    <property name="margin_top">42</property>
+                    <property name="margin_bottom">42</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">42</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">wernigerode</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkBox" id="dom-cafete-days-box">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">42</property>
+                    <property name="margin_right">42</property>
+                    <property name="margin_top">42</property>
+                    <property name="margin_bottom">42</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">42</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">dom-cafete</property>
+            <property name="position">6</property>
           </packing>
         </child>
       </object>

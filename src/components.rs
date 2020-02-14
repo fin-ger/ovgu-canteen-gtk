@@ -6,6 +6,7 @@ use gtk::{
     ListBoxRow,
     FlowBox,
     Box,
+    MenuItem,
     ApplicationWindow,
 };
 use gtk::prelude::*;
@@ -41,6 +42,18 @@ pub struct WindowComponent {
     pub window: ApplicationWindow,
     pub lower_hall_days_box: Box,
     pub upper_hall_days_box: Box,
+    pub kellercafe_days_box: Box,
+    pub herrenkrug_days_box: Box,
+    pub stendal_days_box: Box,
+    pub wernigerode_days_box: Box,
+    pub dom_cafete_days_box: Box,
+    pub lower_hall_item: MenuItem,
+    pub upper_hall_item: MenuItem,
+    pub kellercafe_item: MenuItem,
+    pub herrenkrug_item: MenuItem,
+    pub stendal_item: MenuItem,
+    pub wernigerode_item: MenuItem,
+    pub dom_cafete_item: MenuItem,
 }
 
 impl DayComponent {
@@ -82,6 +95,11 @@ impl DayComponent {
 
         for side_dish in day.side_dishes.iter() {
             let badge = BadgeComponent::new(side_dish);
+            side_dish_badges.insert(&badge.label, 0);
+        }
+
+        if day.side_dishes.len() == 0 {
+            let badge = LiteBadgeComponent::new("nicht vorhanden");
             side_dish_badges.insert(&badge.label, 0);
         }
 
