@@ -226,6 +226,18 @@ Author: Fin Christensen
                     <child>
                       <placeholder/>
                     </child>
+                    <child type="center">
+                      <object class="GtkSpinner" id="lower-hall-spinner">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="active">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -257,6 +269,18 @@ Author: Fin Christensen
                     <property name="spacing">42</property>
                     <child>
                       <placeholder/>
+                    </child>
+                    <child type="center">
+                      <object class="GtkSpinner" id="upper-hall-spinner">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="active">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
                 </child>
@@ -291,6 +315,18 @@ Author: Fin Christensen
                     <child>
                       <placeholder/>
                     </child>
+                    <child type="center">
+                      <object class="GtkSpinner" id="kellercafe-spinner">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="active">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -323,6 +359,18 @@ Author: Fin Christensen
                     <property name="spacing">42</property>
                     <child>
                       <placeholder/>
+                    </child>
+                    <child type="center">
+                      <object class="GtkSpinner" id="herrenkrug-spinner">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="active">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
                 </child>
@@ -357,6 +405,18 @@ Author: Fin Christensen
                     <child>
                       <placeholder/>
                     </child>
+                    <child type="center">
+                      <object class="GtkSpinner" id="stendal-spinner">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="active">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -390,6 +450,18 @@ Author: Fin Christensen
                     <child>
                       <placeholder/>
                     </child>
+                    <child type="center">
+                      <object class="GtkSpinner" id="wernigerode-spinner">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="active">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -422,6 +494,18 @@ Author: Fin Christensen
                     <property name="spacing">42</property>
                     <child>
                       <placeholder/>
+                    </child>
+                    <child type="center">
+                      <object class="GtkSpinner" id="dom-cafete-spinner">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="active">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
                 </child>
@@ -788,6 +872,28 @@ Author: Fin Christensen
           </packing>
         </child>
       </object>
+    </child>
+  </object>
+  <object class="GtkFrame" id="no-menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="label_xalign">0</property>
+    <property name="shadow_type">none</property>
+    <child>
+      <object class="GtkAlignment">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Menü der Mensa konnte nicht geladen werden 😢</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child type="label_item">
+      <placeholder/>
     </child>
   </object>
 </interface>

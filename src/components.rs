@@ -1,21 +1,13 @@
-use gtk::{
-    Builder,
-    Frame,
-    Label,
-    ListBox,
-    ListBoxRow,
-    FlowBox,
-    Box,
-    Stack,
-    MenuItem,
-    ApplicationWindow,
-};
+use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
+use gtk::{
+    ApplicationWindow, Box, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, MenuItem, Spinner,
+    Stack,
+};
 use ovgu_canteen::{Day, Meal};
-use chrono::{Datelike, Weekday, Utc, TimeZone};
 
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 pub const GLADE: &str = std::include_str!("../data/gnome-ovgu-canteen.glade");
 
@@ -23,7 +15,7 @@ pub const GLADE: &str = std::include_str!("../data/gnome-ovgu-canteen.glade");
 macro_rules! glib_yield {
     () => {
         glib::timeout_future_with_priority(glib::PRIORITY_DEFAULT_IDLE, 0).await
-    }
+    };
 }
 
 #[derive(Debug)]
@@ -55,12 +47,19 @@ pub struct WindowComponent {
     pub canteen_stack: Rc<RefCell<Stack>>,
     pub canteen_label: Rc<RefCell<Label>>,
     pub lower_hall_days_box: Rc<RefCell<Box>>,
+    pub lower_hall_spinner: Rc<RefCell<Spinner>>,
     pub upper_hall_days_box: Rc<RefCell<Box>>,
+    pub upper_hall_spinner: Rc<RefCell<Spinner>>,
     pub kellercafe_days_box: Rc<RefCell<Box>>,
+    pub kellercafe_spinner: Rc<RefCell<Spinner>>,
     pub herrenkrug_days_box: Rc<RefCell<Box>>,
+    pub herrenkrug_spinner: Rc<RefCell<Spinner>>,
     pub stendal_days_box: Rc<RefCell<Box>>,
+    pub stendal_spinner: Rc<RefCell<Spinner>>,
     pub wernigerode_days_box: Rc<RefCell<Box>>,
+    pub wernigerode_spinner: Rc<RefCell<Spinner>>,
     pub dom_cafete_days_box: Rc<RefCell<Box>>,
+    pub dom_cafete_spinner: Rc<RefCell<Spinner>>,
     pub lower_hall_item: Rc<RefCell<MenuItem>>,
     pub upper_hall_item: Rc<RefCell<MenuItem>>,
     pub kellercafe_item: Rc<RefCell<MenuItem>>,
@@ -75,12 +74,19 @@ pub struct WindowComponentBuilder {
     pub canteen_stack: Stack,
     pub canteen_label: Label,
     pub lower_hall_days_box: Box,
+    pub lower_hall_spinner: Spinner,
     pub upper_hall_days_box: Box,
+    pub upper_hall_spinner: Spinner,
     pub kellercafe_days_box: Box,
+    pub kellercafe_spinner: Spinner,
     pub herrenkrug_days_box: Box,
+    pub herrenkrug_spinner: Spinner,
     pub stendal_days_box: Box,
+    pub stendal_spinner: Spinner,
     pub wernigerode_days_box: Box,
+    pub wernigerode_spinner: Spinner,
     pub dom_cafete_days_box: Box,
+    pub dom_cafete_spinner: Spinner,
     pub lower_hall_item: MenuItem,
     pub upper_hall_item: MenuItem,
     pub kellercafe_item: MenuItem,
@@ -97,12 +103,19 @@ impl WindowComponentBuilder {
             canteen_stack: Rc::new(RefCell::new(self.canteen_stack)),
             canteen_label: Rc::new(RefCell::new(self.canteen_label)),
             lower_hall_days_box: Rc::new(RefCell::new(self.lower_hall_days_box)),
+            lower_hall_spinner: Rc::new(RefCell::new(self.lower_hall_spinner)),
             upper_hall_days_box: Rc::new(RefCell::new(self.upper_hall_days_box)),
+            upper_hall_spinner: Rc::new(RefCell::new(self.upper_hall_spinner)),
             kellercafe_days_box: Rc::new(RefCell::new(self.kellercafe_days_box)),
+            kellercafe_spinner: Rc::new(RefCell::new(self.kellercafe_spinner)),
             herrenkrug_days_box: Rc::new(RefCell::new(self.herrenkrug_days_box)),
+            herrenkrug_spinner: Rc::new(RefCell::new(self.herrenkrug_spinner)),
             stendal_days_box: Rc::new(RefCell::new(self.stendal_days_box)),
+            stendal_spinner: Rc::new(RefCell::new(self.stendal_spinner)),
             wernigerode_days_box: Rc::new(RefCell::new(self.wernigerode_days_box)),
+            wernigerode_spinner: Rc::new(RefCell::new(self.wernigerode_spinner)),
             dom_cafete_days_box: Rc::new(RefCell::new(self.dom_cafete_days_box)),
+            dom_cafete_spinner: Rc::new(RefCell::new(self.dom_cafete_spinner)),
             lower_hall_item: Rc::new(RefCell::new(self.lower_hall_item)),
             upper_hall_item: Rc::new(RefCell::new(self.upper_hall_item)),
             kellercafe_item: Rc::new(RefCell::new(self.kellercafe_item)),
@@ -132,11 +145,7 @@ impl DayComponent {
             Weekday::Sun => "Sonntag",
         };
         let today = Utc::today();
-        let date = chrono_tz::Europe::Berlin.ymd(
-            day.date.year(),
-            day.date.month(),
-            day.date.day(),
-        );
+        let date = chrono_tz::Europe::Berlin.ymd(day.date.year(), day.date.month(), day.date.day());
         if date == today {
             day_name = "Heute";
         }
@@ -223,9 +232,7 @@ impl BadgeComponent {
 
         label.set_text(text);
 
-        BadgeComponent {
-            label
-        }
+        BadgeComponent { label }
     }
 }
 
@@ -236,8 +243,6 @@ impl LiteBadgeComponent {
 
         label.set_text(text);
 
-        LiteBadgeComponent {
-            label
-        }
+        LiteBadgeComponent { label }
     }
 }
