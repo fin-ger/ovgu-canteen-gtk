@@ -1,7 +1,12 @@
 [package]
 name = "gnome-ovgu-canteen"
 version = "0.1.0"
+description = "View the OvGU Mensa menu in a gnome app"
 authors = ["Fin Christensen <christensen.fin@gmail.com>"]
+license = "GPL-3.0-or-later"
+repository = "https://github.com/fin-ger/gnome-ovgu-canteen"
+readme = "README.md"
+keywords = ["mensa", "canteen", "ovgu"]
 edition = "2018"
 
 [dependencies]
