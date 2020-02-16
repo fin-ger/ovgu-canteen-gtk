@@ -1,3 +1,4 @@
+use anyhow::{Context, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
 use gtk::{
@@ -60,11 +61,17 @@ pub struct WindowComponent {
 }
 
 impl CanteenComponent {
-    pub fn new(description: CanteenDescription, window: &WindowComponent) -> Self {
+    pub fn new(description: CanteenDescription, window: &WindowComponent) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let canteen_stack: Stack = builder.get_object("canteen-stack").unwrap();
-        let canteen_spinner: Spinner = builder.get_object("canteen-spinner").unwrap();
-        let days_box: Box = builder.get_object("days-box").unwrap();
+        let canteen_stack: Stack = builder
+            .get_object("canteen-stack")
+            .context("'canteen-stack' not available in glade file")?;
+        let canteen_spinner: Spinner = builder
+            .get_object("canteen-spinner")
+            .context("'canteen-spinner' not available in glade file")?;
+        let days_box: Box = builder
+            .get_object("days-box")
+            .context("'days-box' not avaiable in glade file")?;
         let canteen_name = format!("{:?}", description);
 
         let menu_item = MenuItem::new_with_label(&canteen_name);
@@ -84,24 +91,36 @@ impl CanteenComponent {
             canteen_label_handle.borrow().set_text(&canteen_name);
         });
 
-        Self {
+        Ok(Self {
             canteen_stack,
             canteen_spinner,
             days_box,
             description,
-        }
+        })
     }
 
     pub async fn loaded(&self, load_result: Result<Canteen, CanteenError>) {
-        if let Ok(mut canteen) = load_result {
-            for day in canteen.days.drain(..) {
-                let day_comp = DayComponent::new(&day).await;
-                self.days_box.pack_start(&day_comp.frame, false, true, 0);
-                glib_yield!();
+        match load_result {
+            Ok(mut canteen) => {
+                for day in canteen.days.drain(..) {
+                    match DayComponent::new(&day).await {
+                        Ok(day_comp) => {
+                            self.days_box.pack_start(&day_comp.frame, false, true, 0);
+                        }
+                        Err(e) => {
+                            eprintln!("error: {}", e);
+                            // TODO: add error handling for failed daycomponent
+                        }
+                    }
+
+                    glib_yield!();
+                }
             }
-        } else {
-            self.canteen_stack.set_visible_child_name("canteen-error");
-            // TODO: display error message
+            Err(e) => {
+                eprintln!("error: {}", e);
+                self.canteen_stack.set_visible_child_name("canteen-error");
+                // TODO: display error message
+            }
         }
 
         self.canteen_spinner.stop();
@@ -110,12 +129,20 @@ impl CanteenComponent {
 }
 
 impl DayComponent {
-    pub async fn new(day: &Day) -> Self {
+    pub async fn new(day: &Day) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let frame: Frame = builder.get_object("day-frame").unwrap();
-        let label: Label = builder.get_object("day-label").unwrap();
-        let meals_list_box: ListBox = builder.get_object("day-meals-list-box").unwrap();
-        let side_dish_badges: FlowBox = builder.get_object("side-dish-badges").unwrap();
+        let frame: Frame = builder
+            .get_object("day-frame")
+            .context("'day-frame' not available in glade file")?;
+        let label: Label = builder
+            .get_object("day-label")
+            .context("'day-label' not available in glade file")?;
+        let meals_list_box: ListBox = builder
+            .get_object("day-meals-list-box")
+            .context("'day-meals-list-box' not available in glade file")?;
+        let side_dish_badges: FlowBox = builder
+            .get_object("side-dish-badges")
+            .context("'side-dish-badges' not available in glade file")?;
 
         let mut day_name = match day.date.weekday() {
             Weekday::Mon => "Montag",
@@ -138,40 +165,64 @@ impl DayComponent {
         label.set_text(day_name);
 
         for (idx, meal) in day.meals.iter().enumerate() {
-            let meal_component = MealComponent::new(meal).await;
-            meals_list_box.insert(&meal_component.meal, idx as i32);
+            match MealComponent::new(meal).await {
+                Ok(meal_component) => {
+                    meals_list_box.insert(&meal_component.meal, idx as i32);
+                }
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                    // TODO: handle meal creation failure
+                }
+            }
+
             glib_yield!();
         }
 
         for side_dish in &day.side_dishes {
-            let badge = BadgeComponent::new(side_dish).await;
+            let badge = BadgeComponent::new(side_dish)
+                .await
+                .context("side dishes could not be created")?;
             side_dish_badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
         if day.side_dishes.is_empty() {
-            let badge = LiteBadgeComponent::new("nicht vorhanden").await;
+            let badge = LiteBadgeComponent::new("nicht vorhanden")
+                .await
+                .context("empty side dishes note could not be created")?;
             side_dish_badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
-        Self {
+        Ok(Self {
             frame,
             label,
             meals_list_box,
-        }
+        })
     }
 }
 
 impl MealComponent {
-    pub async fn new(meal: &Meal) -> Self {
+    pub async fn new(meal: &Meal) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let meal_box: ListBoxRow = builder.get_object("meal").unwrap();
-        let name: Label = builder.get_object("meal-name").unwrap();
-        let badges: FlowBox = builder.get_object("badges").unwrap();
-        let price_student: Label = builder.get_object("meal-price-student").unwrap();
-        let price_staff: Label = builder.get_object("meal-price-staff").unwrap();
-        let price_guest: Label = builder.get_object("meal-price-guest").unwrap();
+        let meal_box: ListBoxRow = builder
+            .get_object("meal")
+            .context("'meal' not available in glade file")?;
+        let name: Label = builder
+            .get_object("meal-name")
+            .context("'meal-name' not available in glade file")?;
+        let badges: FlowBox = builder
+            .get_object("badges")
+            .context("'badges' not available in glade file")?;
+        let price_student: Label = builder
+            .get_object("meal-price-student")
+            .context("'meal-price-student' not available in glade file")?;
+        let price_staff: Label = builder
+            .get_object("meal-price-staff")
+            .context("'meal-price-staff' not available in glade file")?;
+        let price_guest: Label = builder
+            .get_object("meal-price-guest")
+            .context("'meal-price-guest' not available in glade file")?;
 
         name.set_text(&meal.name);
         price_student.set_text(format!("{:.2} €", meal.price.student).as_str());
@@ -179,52 +230,56 @@ impl MealComponent {
         price_guest.set_text(format!("{:.2} €", meal.price.guest).as_str());
 
         for additive in &meal.additives {
-            let badge = LiteBadgeComponent::new(additive.to_german_str()).await;
+            let badge = LiteBadgeComponent::new(additive.to_german_str()).await?;
             badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
         for allergenic in &meal.allergenics {
-            let badge = LiteBadgeComponent::new(allergenic.to_german_str()).await;
+            let badge = LiteBadgeComponent::new(allergenic.to_german_str()).await?;
             badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
         for symbol in &meal.symbols {
-            let badge = BadgeComponent::new(symbol.to_german_str()).await;
+            let badge = BadgeComponent::new(symbol.to_german_str()).await?;
             badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
-        Self {
+        Ok(Self {
             meal: meal_box,
             name,
             badges,
             price_student,
             price_staff,
             price_guest,
-        }
+        })
     }
 }
 
 impl BadgeComponent {
-    pub async fn new(text: &str) -> Self {
+    pub async fn new(text: &str) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let label: Label = builder.get_object("badge").unwrap();
+        let label: Label = builder
+            .get_object("badge")
+            .context("'badge' not available in glade file")?;
 
         label.set_text(text);
 
-        Self { label }
+        Ok(Self { label })
     }
 }
 
 impl LiteBadgeComponent {
-    pub async fn new(text: &str) -> Self {
+    pub async fn new(text: &str) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let label: Label = builder.get_object("lite-badge").unwrap();
+        let label: Label = builder
+            .get_object("lite-badge")
+            .context("'lite-badge' not available in glade file")?;
 
         label.set_text(text);
 
-        Self { label }
+        Ok(Self { label })
     }
 }

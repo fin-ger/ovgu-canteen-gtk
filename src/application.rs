@@ -1,3 +1,4 @@
+use anyhow::{Context, Result};
 use gdk::Screen;
 use gio::prelude::*;
 use gio::ApplicationFlags;
@@ -46,17 +47,33 @@ use crate::components::{CanteenComponent, WindowComponent, GLADE};
 
 // TODO: try porting to macos app
 
-fn build(rt: &Handle, app: &gtk::Application) -> Result<(), &'static str> {
+fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
     let builder = Builder::new_from_string(GLADE);
 
     let window = WindowComponent {
-        window: builder.get_object("window").unwrap(),
-        canteens_stack: Rc::new(RefCell::new(builder.get_object("canteens-stack").unwrap())),
-        canteen_label: Rc::new(RefCell::new(builder.get_object("canteen-label").unwrap())),
-        canteens_menu: builder.get_object("canteens-menu").unwrap(),
+        window: builder
+            .get_object("window")
+            .context("'window' not available in glade file")?,
+        canteens_stack: Rc::new(RefCell::new(
+            builder
+                .get_object("canteens-stack")
+                .context("'canteens-stack' not available in glade file")?,
+        )),
+        canteen_label: Rc::new(RefCell::new(
+            builder
+                .get_object("canteen-label")
+                .context("'canteen-label' not available in glade file")?,
+        )),
+        canteens_menu: builder
+            .get_object("canteens-menu")
+            .context("'canteens-menu' not available in glade file")?,
     };
-    let about_dialog: AboutDialog = builder.get_object("about").unwrap();
-    let about_button: Button = builder.get_object("about-btn").unwrap();
+    let about_dialog: AboutDialog = builder
+        .get_object("about")
+        .context("'about' not available in glade file")?;
+    let about_button: Button = builder
+        .get_object("about-btn")
+        .context("'about-btn' not available in glade file")?;
 
     about_dialog.set_version(Some(env!("CARGO_PKG_VERSION")));
     about_button.connect_clicked(move |_btn| {
@@ -81,11 +98,16 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<(), &'static str> {
     let (tx, mut rx) = channel(canteens.len());
     let mut canteen_components = Vec::new();
     for canteen_desc in canteens.drain(..) {
-        canteen_components.push(CanteenComponent::new(canteen_desc.clone(), &window));
+        let comp = CanteenComponent::new(canteen_desc.clone(), &window)
+            .context(format!("Failed to create canteen {:?}", canteen_desc))?;
+        canteen_components.push(comp);
         let mut canteen_tx = tx.clone();
         rt.spawn(async move {
             let canteen = Canteen::new(canteen_desc.clone()).await;
-            canteen_tx.send((canteen_desc, canteen)).await.unwrap();
+            if let Err(e) = canteen_tx.send((canteen_desc, canteen)).await {
+                eprintln!("error: {}", e);
+                // TODO: handle tx send error by displaying canteen not available
+            }
         });
     }
 
@@ -94,11 +116,12 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<(), &'static str> {
         // fetching parallel loaded canteens here and inserting
         // one canteen after another into the GUI.
         while let Some((desc, canteen)) = rx.recv().await {
-            let comp = canteen_components
-                .iter()
-                .find(|c| c.description == desc)
-                .unwrap();
-            comp.loaded(canteen).await;
+            if let Some(comp) = canteen_components.iter().find(|c| c.description == desc) {
+                comp.loaded(canteen).await;
+            } else {
+                eprintln!("canteen {:?} not found in components list", desc);
+                // TODO: display error dialog
+            }
         }
     });
 
@@ -114,15 +137,15 @@ pub struct Application {
 }
 
 impl Application {
-    pub fn new() -> Result<Self, &'static str> {
-        gtk::init().map_err(|_| "Failed to initialize GTK!")?;
+    pub fn new() -> Result<Self> {
+        gtk::init().context("Failed to initialize GTK!")?;
 
         let css_provider = CssProvider::new();
         css_provider
             .load_from_data(std::include_str!("../data/gnome-ovgu-canteen.css").as_bytes())
-            .unwrap();
+            .context("Failed to load stylesheets")?;
 
-        let screen = Screen::get_default().ok_or("Cannot find default screen!")?;
+        let screen = Screen::get_default().context("Cannot find default screen!")?;
         gtk::StyleContext::add_provider_for_screen(
             &screen,
             &css_provider,
@@ -134,16 +157,17 @@ impl Application {
             .threaded_scheduler()
             .thread_name("gnome-ovgu-canteen-tokio")
             .build()
-            .unwrap();
+            .context("Cannot create tokio runtime")?;
 
         let g_app =
             gtk::Application::new(Some("org.gnome.ovgu-canteen"), ApplicationFlags::default())
-                .map_err(|_| "Failed to create application!")?;
+                .context("Failed to create application!")?;
 
         let build_rt = runtime.handle().clone();
         g_app.connect_activate(move |app| match build(&build_rt, app) {
             Ok(()) => {}
             Err(err) => {
+                // TODO: display dialog with error message
                 eprintln!("error: {}", err);
                 app.quit();
             }
