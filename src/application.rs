@@ -113,6 +113,7 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
     c.spawn_local(async move {
         // fetching parallel loaded canteens here and inserting
         // one canteen after another into the GUI.
+        // TODO: render currently visible canteen first
         while let Some((desc, canteen)) = rx.recv().await {
             if let Some(comp) = canteen_components.iter().find(|c| c.description == desc) {
                 comp.loaded(canteen).await;
