@@ -1,13 +1,13 @@
-use gio::prelude::*;
-use gtk::prelude::*;
 use gdk::Screen;
+use gio::prelude::*;
 use gio::ApplicationFlags;
+use gtk::prelude::*;
 use gtk::{AboutDialog, Builder, Button, CssProvider};
 use ovgu_canteen::{Canteen, CanteenDescription};
-use tokio::runtime::{Builder as RuntimeBuilder, Handle, Runtime};
-use tokio::sync::mpsc::channel;
 use std::cell::RefCell;
 use std::rc::Rc;
+use tokio::runtime::{Builder as RuntimeBuilder, Handle, Runtime};
+use tokio::sync::mpsc::channel;
 
 use crate::components::{CanteenComponent, WindowComponent, GLADE};
 
@@ -94,7 +94,8 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<(), &'static str> {
         // fetching parallel loaded canteens here and inserting
         // one canteen after another into the GUI.
         while let Some((desc, canteen)) = rx.recv().await {
-            let comp = canteen_components.iter()
+            let comp = canteen_components
+                .iter()
                 .find(|c| c.description == desc)
                 .unwrap();
             comp.loaded(canteen).await;
@@ -135,8 +136,9 @@ impl Application {
             .build()
             .unwrap();
 
-        let g_app = gtk::Application::new(Some("org.gnome.ovgu-canteen"), ApplicationFlags::default())
-            .map_err(|_| "Failed to create application!")?;
+        let g_app =
+            gtk::Application::new(Some("org.gnome.ovgu-canteen"), ApplicationFlags::default())
+                .map_err(|_| "Failed to create application!")?;
 
         let build_rt = runtime.handle().clone();
         g_app.connect_activate(move |app| match build(&build_rt, app) {

@@ -1,10 +1,10 @@
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
 use gtk::{
-    ApplicationWindow, Menu, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow,
-    Stack, Spinner, Box, MenuItem,
+    ApplicationWindow, Box, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, Menu, MenuItem,
+    Spinner, Stack,
 };
-use ovgu_canteen::{Canteen, CanteenDescription, Day, Meal, Error as CanteenError};
+use ovgu_canteen::{Canteen, CanteenDescription, Day, Error as CanteenError, Meal};
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -60,10 +60,7 @@ pub struct WindowComponent {
 }
 
 impl CanteenComponent {
-    pub fn new(
-        description: CanteenDescription,
-        window: &WindowComponent,
-    ) -> Self {
+    pub fn new(description: CanteenDescription, window: &WindowComponent) -> Self {
         let builder = Builder::new_from_string(GLADE);
         let canteen_stack: Stack = builder.get_object("canteen-stack").unwrap();
         let canteen_spinner: Spinner = builder.get_object("canteen-spinner").unwrap();
@@ -73,12 +70,17 @@ impl CanteenComponent {
         let menu_item = MenuItem::new_with_label(&canteen_name);
         window.canteens_menu.append(&menu_item);
         menu_item.show();
-        window.canteens_stack.borrow_mut().add_named(&canteen_stack, &canteen_name);
+        window
+            .canteens_stack
+            .borrow_mut()
+            .add_named(&canteen_stack, &canteen_name);
 
         let canteens_stack_handle = Rc::clone(&window.canteens_stack);
         let canteen_label_handle = Rc::clone(&window.canteen_label);
         menu_item.connect_activate(move |_menu_item| {
-            canteens_stack_handle.borrow().set_visible_child_name(&canteen_name);
+            canteens_stack_handle
+                .borrow()
+                .set_visible_child_name(&canteen_name);
             canteen_label_handle.borrow().set_text(&canteen_name);
         });
 
