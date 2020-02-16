@@ -1,21 +1,27 @@
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
 use gtk::{
-    ApplicationWindow, Box, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, MenuItem, Spinner,
-    Stack,
+    ApplicationWindow, Menu, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow,
+    Stack, Spinner, Box, MenuItem,
 };
-use ovgu_canteen::{Day, Meal};
-
+use ovgu_canteen::{Canteen, CanteenDescription, Day, Meal, Error as CanteenError};
 use std::cell::RefCell;
 use std::rc::Rc;
 
 pub const GLADE: &str = std::include_str!("../data/gnome-ovgu-canteen.glade");
 
-#[macro_export]
 macro_rules! glib_yield {
     () => {
         glib::timeout_future_with_priority(glib::PRIORITY_DEFAULT_IDLE, 0).await
     };
+}
+
+#[derive(Debug)]
+pub struct CanteenComponent {
+    pub canteen_stack: Stack,
+    pub canteen_spinner: Spinner,
+    pub days_box: Box,
+    pub description: CanteenDescription,
 }
 
 #[derive(Debug)]
@@ -25,6 +31,7 @@ pub struct DayComponent {
     pub meals_list_box: ListBox,
 }
 
+#[derive(Debug)]
 pub struct MealComponent {
     pub meal: ListBoxRow,
     pub name: Label,
@@ -34,101 +41,74 @@ pub struct MealComponent {
     pub price_guest: Label,
 }
 
+#[derive(Debug)]
 pub struct BadgeComponent {
     pub label: Label,
 }
 
+#[derive(Debug)]
 pub struct LiteBadgeComponent {
     pub label: Label,
 }
 
+#[derive(Debug)]
 pub struct WindowComponent {
-    pub window: Rc<RefCell<ApplicationWindow>>,
-    pub canteen_stack: Rc<RefCell<Stack>>,
-    pub canteen_label: Rc<RefCell<Label>>,
-    pub lower_hall_days_box: Rc<RefCell<Box>>,
-    pub lower_hall_spinner: Rc<RefCell<Spinner>>,
-    pub upper_hall_days_box: Rc<RefCell<Box>>,
-    pub upper_hall_spinner: Rc<RefCell<Spinner>>,
-    pub kellercafe_days_box: Rc<RefCell<Box>>,
-    pub kellercafe_spinner: Rc<RefCell<Spinner>>,
-    pub herrenkrug_days_box: Rc<RefCell<Box>>,
-    pub herrenkrug_spinner: Rc<RefCell<Spinner>>,
-    pub stendal_days_box: Rc<RefCell<Box>>,
-    pub stendal_spinner: Rc<RefCell<Spinner>>,
-    pub wernigerode_days_box: Rc<RefCell<Box>>,
-    pub wernigerode_spinner: Rc<RefCell<Spinner>>,
-    pub dom_cafete_days_box: Rc<RefCell<Box>>,
-    pub dom_cafete_spinner: Rc<RefCell<Spinner>>,
-    pub lower_hall_item: Rc<RefCell<MenuItem>>,
-    pub upper_hall_item: Rc<RefCell<MenuItem>>,
-    pub kellercafe_item: Rc<RefCell<MenuItem>>,
-    pub herrenkrug_item: Rc<RefCell<MenuItem>>,
-    pub stendal_item: Rc<RefCell<MenuItem>>,
-    pub wernigerode_item: Rc<RefCell<MenuItem>>,
-    pub dom_cafete_item: Rc<RefCell<MenuItem>>,
-}
-
-pub struct WindowComponentBuilder {
     pub window: ApplicationWindow,
-    pub canteen_stack: Stack,
-    pub canteen_label: Label,
-    pub lower_hall_days_box: Box,
-    pub lower_hall_spinner: Spinner,
-    pub upper_hall_days_box: Box,
-    pub upper_hall_spinner: Spinner,
-    pub kellercafe_days_box: Box,
-    pub kellercafe_spinner: Spinner,
-    pub herrenkrug_days_box: Box,
-    pub herrenkrug_spinner: Spinner,
-    pub stendal_days_box: Box,
-    pub stendal_spinner: Spinner,
-    pub wernigerode_days_box: Box,
-    pub wernigerode_spinner: Spinner,
-    pub dom_cafete_days_box: Box,
-    pub dom_cafete_spinner: Spinner,
-    pub lower_hall_item: MenuItem,
-    pub upper_hall_item: MenuItem,
-    pub kellercafe_item: MenuItem,
-    pub herrenkrug_item: MenuItem,
-    pub stendal_item: MenuItem,
-    pub wernigerode_item: MenuItem,
-    pub dom_cafete_item: MenuItem,
+    pub canteens_stack: Rc<RefCell<Stack>>,
+    pub canteens_menu: Menu,
+    pub canteen_label: Rc<RefCell<Label>>,
 }
 
-impl WindowComponentBuilder {
-    pub fn build(self) -> WindowComponent {
-        WindowComponent {
-            window: Rc::new(RefCell::new(self.window)),
-            canteen_stack: Rc::new(RefCell::new(self.canteen_stack)),
-            canteen_label: Rc::new(RefCell::new(self.canteen_label)),
-            lower_hall_days_box: Rc::new(RefCell::new(self.lower_hall_days_box)),
-            lower_hall_spinner: Rc::new(RefCell::new(self.lower_hall_spinner)),
-            upper_hall_days_box: Rc::new(RefCell::new(self.upper_hall_days_box)),
-            upper_hall_spinner: Rc::new(RefCell::new(self.upper_hall_spinner)),
-            kellercafe_days_box: Rc::new(RefCell::new(self.kellercafe_days_box)),
-            kellercafe_spinner: Rc::new(RefCell::new(self.kellercafe_spinner)),
-            herrenkrug_days_box: Rc::new(RefCell::new(self.herrenkrug_days_box)),
-            herrenkrug_spinner: Rc::new(RefCell::new(self.herrenkrug_spinner)),
-            stendal_days_box: Rc::new(RefCell::new(self.stendal_days_box)),
-            stendal_spinner: Rc::new(RefCell::new(self.stendal_spinner)),
-            wernigerode_days_box: Rc::new(RefCell::new(self.wernigerode_days_box)),
-            wernigerode_spinner: Rc::new(RefCell::new(self.wernigerode_spinner)),
-            dom_cafete_days_box: Rc::new(RefCell::new(self.dom_cafete_days_box)),
-            dom_cafete_spinner: Rc::new(RefCell::new(self.dom_cafete_spinner)),
-            lower_hall_item: Rc::new(RefCell::new(self.lower_hall_item)),
-            upper_hall_item: Rc::new(RefCell::new(self.upper_hall_item)),
-            kellercafe_item: Rc::new(RefCell::new(self.kellercafe_item)),
-            herrenkrug_item: Rc::new(RefCell::new(self.herrenkrug_item)),
-            stendal_item: Rc::new(RefCell::new(self.stendal_item)),
-            wernigerode_item: Rc::new(RefCell::new(self.wernigerode_item)),
-            dom_cafete_item: Rc::new(RefCell::new(self.dom_cafete_item)),
+impl CanteenComponent {
+    pub fn new(
+        description: CanteenDescription,
+        window: &WindowComponent,
+    ) -> Self {
+        let builder = Builder::new_from_string(GLADE);
+        let canteen_stack: Stack = builder.get_object("canteen-stack").unwrap();
+        let canteen_spinner: Spinner = builder.get_object("canteen-spinner").unwrap();
+        let days_box: Box = builder.get_object("days-box").unwrap();
+        let canteen_name = format!("{:?}", description);
+
+        let menu_item = MenuItem::new_with_label(&canteen_name);
+        window.canteens_menu.append(&menu_item);
+        menu_item.show();
+        window.canteens_stack.borrow_mut().add_named(&canteen_stack, &canteen_name);
+
+        let canteens_stack_handle = Rc::clone(&window.canteens_stack);
+        let canteen_label_handle = Rc::clone(&window.canteen_label);
+        menu_item.connect_activate(move |_menu_item| {
+            canteens_stack_handle.borrow().set_visible_child_name(&canteen_name);
+            canteen_label_handle.borrow().set_text(&canteen_name);
+        });
+
+        Self {
+            canteen_stack,
+            canteen_spinner,
+            days_box,
+            description,
         }
+    }
+
+    pub async fn loaded(&self, load_result: Result<Canteen, CanteenError>) {
+        if let Ok(mut canteen) = load_result {
+            for day in canteen.days.drain(..) {
+                let day_comp = DayComponent::new(&day).await;
+                self.days_box.pack_start(&day_comp.frame, false, true, 0);
+                glib_yield!();
+            }
+        } else {
+            self.canteen_stack.set_visible_child_name("canteen-error");
+            // TODO: display error message
+        }
+
+        self.canteen_spinner.stop();
+        self.canteen_spinner.hide();
     }
 }
 
 impl DayComponent {
-    pub async fn new(day: &Day) -> DayComponent {
+    pub async fn new(day: &Day) -> Self {
         let builder = Builder::new_from_string(GLADE);
         let frame: Frame = builder.get_object("day-frame").unwrap();
         let label: Label = builder.get_object("day-label").unwrap();
@@ -161,19 +141,19 @@ impl DayComponent {
             glib_yield!();
         }
 
-        for side_dish in day.side_dishes.iter() {
+        for side_dish in &day.side_dishes {
             let badge = BadgeComponent::new(side_dish).await;
             side_dish_badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
-        if day.side_dishes.len() == 0 {
+        if day.side_dishes.is_empty() {
             let badge = LiteBadgeComponent::new("nicht vorhanden").await;
             side_dish_badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
-        DayComponent {
+        Self {
             frame,
             label,
             meals_list_box,
@@ -182,7 +162,7 @@ impl DayComponent {
 }
 
 impl MealComponent {
-    pub async fn new(meal: &Meal) -> MealComponent {
+    pub async fn new(meal: &Meal) -> Self {
         let builder = Builder::new_from_string(GLADE);
         let meal_box: ListBoxRow = builder.get_object("meal").unwrap();
         let name: Label = builder.get_object("meal-name").unwrap();
@@ -196,25 +176,25 @@ impl MealComponent {
         price_staff.set_text(format!("{:.2} €", meal.price.staff).as_str());
         price_guest.set_text(format!("{:.2} €", meal.price.guest).as_str());
 
-        for additive in meal.additives.iter() {
+        for additive in &meal.additives {
             let badge = LiteBadgeComponent::new(additive.to_german_str()).await;
             badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
-        for allergenic in meal.allergenics.iter() {
+        for allergenic in &meal.allergenics {
             let badge = LiteBadgeComponent::new(allergenic.to_german_str()).await;
             badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
-        for symbol in meal.symbols.iter() {
+        for symbol in &meal.symbols {
             let badge = BadgeComponent::new(symbol.to_german_str()).await;
             badges.insert(&badge.label, 0);
             glib_yield!();
         }
 
-        MealComponent {
+        Self {
             meal: meal_box,
             name,
             badges,
@@ -226,23 +206,23 @@ impl MealComponent {
 }
 
 impl BadgeComponent {
-    pub async fn new(text: &str) -> BadgeComponent {
+    pub async fn new(text: &str) -> Self {
         let builder = Builder::new_from_string(GLADE);
         let label: Label = builder.get_object("badge").unwrap();
 
         label.set_text(text);
 
-        BadgeComponent { label }
+        Self { label }
     }
 }
 
 impl LiteBadgeComponent {
-    pub async fn new(text: &str) -> LiteBadgeComponent {
+    pub async fn new(text: &str) -> Self {
         let builder = Builder::new_from_string(GLADE);
         let label: Label = builder.get_object("lite-badge").unwrap();
 
         label.set_text(text);
 
-        LiteBadgeComponent { label }
+        Self { label }
     }
 }
