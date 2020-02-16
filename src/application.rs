@@ -9,14 +9,12 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use tokio::runtime::{Builder as RuntimeBuilder, Handle, Runtime};
 use tokio::sync::mpsc::channel;
+use cargo_author::Author;
 
 use crate::components::{get, CanteenComponent, WindowComponent, GLADE};
 
 // TODO: set offset of canteen popup-menu so that the current item is on the
 //       mouse position
-// ASSIGNEE: @fin-ger
-
-// TODO: show authors from Cargo.toml in about dialog
 // ASSIGNEE: @fin-ger
 
 // TODO: add settings window with hamburger menu to access the settings
@@ -59,7 +57,23 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
     let about_dialog: AboutDialog = get(&builder, "about")?;
     let about_button: Button = get(&builder, "about-btn")?;
 
+    let authors = env!("CARGO_PKG_AUTHORS")
+        .split(':')
+        .map(|author| Author::new(author))
+        .collect::<Vec<_>>();
+
     about_dialog.set_version(Some(env!("CARGO_PKG_VERSION")));
+    about_dialog.set_authors(&authors.iter().map(|author| {
+        if let Some(name) = &author.name {
+            name.as_str()
+        } else if let Some(email) = &author.email {
+            email.as_str()
+        } else if let Some(url) = &author.url {
+            url.as_str()
+        } else {
+            panic!("Failed to get author name");
+        }
+    }).collect::<Vec<_>>());
     about_button.connect_clicked(move |_btn| {
         about_dialog.run();
         about_dialog.hide();
