@@ -17,6 +17,13 @@ macro_rules! glib_yield {
     };
 }
 
+#[inline]
+pub fn get<T: IsA<glib::Object>>(builder: &Builder, id: &str) -> Result<T> {
+    builder
+        .get_object(id)
+        .context(format!("'{}' is not available in glade file", id))
+}
+
 #[derive(Debug)]
 pub struct CanteenComponent {
     pub canteen_stack: Stack,
@@ -63,15 +70,9 @@ pub struct WindowComponent {
 impl CanteenComponent {
     pub fn new(description: CanteenDescription, window: &WindowComponent) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let canteen_stack: Stack = builder
-            .get_object("canteen-stack")
-            .context("'canteen-stack' not available in glade file")?;
-        let canteen_spinner: Spinner = builder
-            .get_object("canteen-spinner")
-            .context("'canteen-spinner' not available in glade file")?;
-        let days_box: Box = builder
-            .get_object("days-box")
-            .context("'days-box' not avaiable in glade file")?;
+        let canteen_stack: Stack = get(&builder, "canteen-stack")?;
+        let canteen_spinner: Spinner = get(&builder, "canteen-spinner")?;
+        let days_box: Box = get(&builder, "days-box")?;
         let canteen_name = format!("{:?}", description);
 
         let menu_item = MenuItem::new_with_label(&canteen_name);
@@ -100,27 +101,29 @@ impl CanteenComponent {
     }
 
     pub async fn loaded(&self, load_result: Result<Canteen, CanteenError>) {
-        match load_result {
-            Ok(mut canteen) => {
-                for day in canteen.days.drain(..) {
-                    match DayComponent::new(&day).await {
-                        Ok(day_comp) => {
-                            self.days_box.pack_start(&day_comp.frame, false, true, 0);
-                        }
-                        Err(e) => {
-                            eprintln!("error: {}", e);
-                            // TODO: add error handling for failed daycomponent
-                        }
-                    }
-
-                    glib_yield!();
-                }
-            }
+        let mut canteen = match load_result {
+            Ok(canteen) => canteen,
             Err(e) => {
                 eprintln!("error: {}", e);
                 self.canteen_stack.set_visible_child_name("canteen-error");
                 // TODO: display error message
+                return;
             }
+        };
+
+        for day in canteen.days.drain(..) {
+            match DayComponent::new(&day).await {
+                Ok(day_comp) => {
+                    self.days_box.pack_start(&day_comp.frame, false, true, 0);
+                }
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                    // TODO: add error handling for failed daycomponent
+                    continue;
+                }
+            }
+
+            glib_yield!();
         }
 
         self.canteen_spinner.stop();
@@ -131,18 +134,10 @@ impl CanteenComponent {
 impl DayComponent {
     pub async fn new(day: &Day) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let frame: Frame = builder
-            .get_object("day-frame")
-            .context("'day-frame' not available in glade file")?;
-        let label: Label = builder
-            .get_object("day-label")
-            .context("'day-label' not available in glade file")?;
-        let meals_list_box: ListBox = builder
-            .get_object("day-meals-list-box")
-            .context("'day-meals-list-box' not available in glade file")?;
-        let side_dish_badges: FlowBox = builder
-            .get_object("side-dish-badges")
-            .context("'side-dish-badges' not available in glade file")?;
+        let frame: Frame = get(&builder, "day-frame")?;
+        let label: Label = get(&builder, "day-label")?;
+        let meals_list_box: ListBox = get(&builder, "day-meals-list-box")?;
+        let side_dish_badges: FlowBox = get(&builder, "side-dish-badges")?;
 
         let mut day_name = match day.date.weekday() {
             Weekday::Mon => "Montag",
@@ -205,24 +200,12 @@ impl DayComponent {
 impl MealComponent {
     pub async fn new(meal: &Meal) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let meal_box: ListBoxRow = builder
-            .get_object("meal")
-            .context("'meal' not available in glade file")?;
-        let name: Label = builder
-            .get_object("meal-name")
-            .context("'meal-name' not available in glade file")?;
-        let badges: FlowBox = builder
-            .get_object("badges")
-            .context("'badges' not available in glade file")?;
-        let price_student: Label = builder
-            .get_object("meal-price-student")
-            .context("'meal-price-student' not available in glade file")?;
-        let price_staff: Label = builder
-            .get_object("meal-price-staff")
-            .context("'meal-price-staff' not available in glade file")?;
-        let price_guest: Label = builder
-            .get_object("meal-price-guest")
-            .context("'meal-price-guest' not available in glade file")?;
+        let meal_box: ListBoxRow = get(&builder, "meal")?;
+        let name: Label = get(&builder, "meal-name")?;
+        let badges: FlowBox = get(&builder, "badges")?;
+        let price_student: Label = get(&builder, "meal-price-student")?;
+        let price_staff: Label = get(&builder, "meal-price-staff")?;
+        let price_guest: Label = get(&builder, "meal-price-guest")?;
 
         name.set_text(&meal.name);
         price_student.set_text(format!("{:.2} €", meal.price.student).as_str());
@@ -261,9 +244,7 @@ impl MealComponent {
 impl BadgeComponent {
     pub async fn new(text: &str) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let label: Label = builder
-            .get_object("badge")
-            .context("'badge' not available in glade file")?;
+        let label: Label = get(&builder, "badge")?;
 
         label.set_text(text);
 
@@ -274,9 +255,7 @@ impl BadgeComponent {
 impl LiteBadgeComponent {
     pub async fn new(text: &str) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let label: Label = builder
-            .get_object("lite-badge")
-            .context("'lite-badge' not available in glade file")?;
+        let label: Label = get(&builder, "lite-badge")?;
 
         label.set_text(text);
 

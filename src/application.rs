@@ -10,7 +10,7 @@ use std::rc::Rc;
 use tokio::runtime::{Builder as RuntimeBuilder, Handle, Runtime};
 use tokio::sync::mpsc::channel;
 
-use crate::components::{CanteenComponent, WindowComponent, GLADE};
+use crate::components::{get, CanteenComponent, WindowComponent, GLADE};
 
 // TODO: set offset of canteen popup-menu so that the current item is on the
 //       mouse position
@@ -51,29 +51,13 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
     let builder = Builder::new_from_string(GLADE);
 
     let window = WindowComponent {
-        window: builder
-            .get_object("window")
-            .context("'window' not available in glade file")?,
-        canteens_stack: Rc::new(RefCell::new(
-            builder
-                .get_object("canteens-stack")
-                .context("'canteens-stack' not available in glade file")?,
-        )),
-        canteen_label: Rc::new(RefCell::new(
-            builder
-                .get_object("canteen-label")
-                .context("'canteen-label' not available in glade file")?,
-        )),
-        canteens_menu: builder
-            .get_object("canteens-menu")
-            .context("'canteens-menu' not available in glade file")?,
+        window: get(&builder, "window")?,
+        canteens_stack: Rc::new(RefCell::new(get(&builder, "canteens-stack")?)),
+        canteen_label: Rc::new(RefCell::new(get(&builder, "canteen-label")?)),
+        canteens_menu: get(&builder, "canteens-menu")?,
     };
-    let about_dialog: AboutDialog = builder
-        .get_object("about")
-        .context("'about' not available in glade file")?;
-    let about_button: Button = builder
-        .get_object("about-btn")
-        .context("'about-btn' not available in glade file")?;
+    let about_dialog: AboutDialog = get(&builder, "about")?;
+    let about_button: Button = get(&builder, "about-btn")?;
 
     about_dialog.set_version(Some(env!("CARGO_PKG_VERSION")));
     about_button.connect_clicked(move |_btn| {
