@@ -9,26 +9,32 @@ use tokio::sync::oneshot::channel;
 use crate::components::{DayComponent, WindowComponentBuilder, GLADE};
 use crate::glib_yield;
 
-// TODO: show loading indicator while a canteen menu is fetched:
-//        - animate the reload button
+// TODO: set offset of canteen popup-menu so that the current item is on the
+//       mouse position
+// ASSIGNEE: @fin-ger
+
+// TODO: show authors from Cargo.toml in about dialog
+// ASSIGNEE: @fin-ger
+
+// TODO: add settings window with hamburger menu to access the settings
+// ASSIGNEE: @jwuensche
+
+// TODO: move about button to hamburger menu
+// ASSIGNEE: @jwuensche
+
+// TODO: add dark theme to settings
+// ASSIGNEE: @jwuensche
+
+// TODO: set default canteen in settings
+// ASSIGNEE: @jwuensche
 
 // TODO: persist canteen menus on disk for faster loading of app and update menus
 //       when loaded
-
-// TODO: add settings window with hamburger menu to access the settings
-
-// TODO: add dark theme to settings
-
-// TODO: set default canteen in settings
-
-// TODO: move about button to hamburger menu
+//        - add setting to settings menu for number of menus per canteen to cache
+// ASSIGNEE: @fin-ger
 
 // TODO: add reload button for reloading canteen menus on network failure
-
-// TODO: set offset of canteen popup-menu so that the current item is on the
-//       mouse position
-
-// TODO: show authors from Cargo.toml in about dialog
+// ASSIGNEE: @jwuensche
 
 // TODO: create flatpak package
 
