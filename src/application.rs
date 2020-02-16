@@ -74,6 +74,10 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<(), &'static str> {
         CanteenDescription::DomCafeteHalberstadt,
     ];
 
+    // canteens are downloaded in parallel here,
+    // but in order for one canteen to show up in a batch
+    // we are using an mpsc channel to put the parallel loaded canteens
+    // in an order which is later sequentially inserted into the GUI.
     let (tx, mut rx) = channel(canteens.len());
     let mut canteen_components = Vec::new();
     for canteen_desc in canteens.drain(..) {
@@ -87,6 +91,8 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<(), &'static str> {
 
     let c = glib::MainContext::default();
     c.spawn_local(async move {
+        // fetching parallel loaded canteens here and inserting
+        // one canteen after another into the GUI.
         while let Some((desc, canteen)) = rx.recv().await {
             let comp = canteen_components.iter()
                 .find(|c| c.description == desc)
