@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use cargo_author::Author;
 use gdk::Screen;
 use gio::prelude::*;
@@ -68,16 +68,16 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
             .iter()
             .map(|author| {
                 if let Some(name) = &author.name {
-                    name.as_str()
+                    Ok(name.as_str())
                 } else if let Some(email) = &author.email {
-                    email.as_str()
+                    Ok(email.as_str())
                 } else if let Some(url) = &author.url {
-                    url.as_str()
+                    Ok(url.as_str())
                 } else {
-                    panic!("Failed to get author name");
+                    bail!("Failed to get author name");
                 }
             })
-            .collect::<Vec<_>>(),
+            .collect::<Result<Vec<_>>>()?,
     );
     about_button.connect_clicked(move |_btn| {
         about_dialog.run();
