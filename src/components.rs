@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
 use gtk::{
-    ApplicationWindow, Box, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, Menu, MenuItem,
+    Window, Box, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, Menu, MenuItem,
     Spinner, Stack,
 };
 use ovgu_canteen::{Canteen, CanteenDescription, Day, Error as CanteenError, Meal};
@@ -10,6 +10,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 pub const GLADE: &str = std::include_str!("../data/gnome-ovgu-canteen.glade");
+pub const ICON: &str = std::include_str!("../data/mensa.svg");
 
 macro_rules! glib_yield {
     () => {
@@ -61,7 +62,7 @@ pub struct LiteBadgeComponent {
 
 #[derive(Debug)]
 pub struct WindowComponent {
-    pub window: ApplicationWindow,
+    pub window: Window,
     pub canteens_stack: Rc<RefCell<Stack>>,
     pub canteens_menu: Menu,
     pub canteen_label: Rc<RefCell<Label>>,

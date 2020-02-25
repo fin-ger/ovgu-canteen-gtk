@@ -1,17 +1,18 @@
 use anyhow::{bail, Context, Result};
 use cargo_author::Author;
 use gdk::Screen;
+use gdk_pixbuf::PixbufLoader;
 use gio::prelude::*;
-use gio::ApplicationFlags;
+use gdk_pixbuf::prelude::*;
 use gtk::prelude::*;
-use gtk::{AboutDialog, Builder, Button, CssProvider};
+use gtk::{ApplicationBuilder, AboutDialog, Builder, Button, CssProvider, MenuButton};
 use ovgu_canteen::{Canteen, CanteenDescription};
 use std::cell::RefCell;
 use std::rc::Rc;
 use tokio::runtime::{Builder as RuntimeBuilder, Handle, Runtime};
 use tokio::sync::mpsc::channel;
 
-use crate::components::{get, CanteenComponent, WindowComponent, GLADE};
+use crate::components::{get, CanteenComponent, WindowComponent, GLADE, ICON};
 
 // TODO: set offset of canteen popup-menu so that the current item is on the
 //       mouse position
@@ -56,6 +57,14 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
     };
     let about_dialog: AboutDialog = get(&builder, "about")?;
     let about_button: Button = get(&builder, "about-btn")?;
+    let options_button: MenuButton = get(&builder, "options-button")?;
+
+    let icon_loader = PixbufLoader::new();
+    icon_loader.write(ICON.as_bytes()).context("Failed to create icon")?;
+    icon_loader.close().context("Failed to create icon")?;
+    let icon = icon_loader.get_pixbuf().context("Failed to create icon")?;
+    window.window.set_icon(Some(&icon));
+    about_dialog.set_logo(Some(&icon));
 
     let authors = env!("CARGO_PKG_AUTHORS")
         .split(':')
@@ -63,6 +72,9 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
         .collect::<Vec<_>>();
 
     about_dialog.set_version(Some(env!("CARGO_PKG_VERSION")));
+    about_dialog.set_website(Some(env!("CARGO_PKG_REPOSITORY")));
+    about_dialog.set_website_label(Some("Source Code"));
+    about_dialog.set_comments(Some(env!("CARGO_PKG_DESCRIPTION")));
     about_dialog.set_authors(
         &authors
             .iter()
@@ -80,6 +92,10 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
             .collect::<Result<Vec<_>>>()?,
     );
     about_button.connect_clicked(move |_btn| {
+        if let Some(popover) = options_button.get_popover() {
+            popover.popdown();
+        }
+
         about_dialog.run();
         about_dialog.hide();
     });
@@ -163,9 +179,9 @@ impl Application {
             .build()
             .context("Cannot create tokio runtime")?;
 
-        let g_app =
-            gtk::Application::new(Some("org.gnome.ovgu-canteen"), ApplicationFlags::default())
-                .context("Failed to create application!")?;
+        let g_app = ApplicationBuilder::new()
+            .application_id("org.gnome.ovgu-canteen")
+            .build();
 
         let build_rt = runtime.handle().clone();
         g_app.connect_activate(move |app| match build(&build_rt, app) {

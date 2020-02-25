@@ -455,20 +455,6 @@ Author: Fin Christensen
       </object>
     </child>
   </object>
-  <object class="GtkPopoverMenu" id="options">
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">label</property>
-      </object>
-      <packing>
-        <property name="submenu">main</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-  </object>
   <object class="GtkPopoverMenu" id="options-menu">
     <property name="can_focus">False</property>
     <child>
@@ -479,7 +465,8 @@ Author: Fin Christensen
         <child>
           <object class="GtkButton" id="preference-btn">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
+            <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <property name="margin_left">5</property>
             <property name="margin_right">5</property>
@@ -503,7 +490,8 @@ Author: Fin Christensen
         <child>
           <object class="GtkButton" id="about-btn">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
+            <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <property name="margin_left">5</property>
             <property name="margin_right">5</property>
@@ -527,14 +515,14 @@ Author: Fin Christensen
       </object>
       <packing>
         <property name="submenu">main</property>
+        <property name="position">1</property>
       </packing>
     </child>
   </object>
-  <object class="GtkApplicationWindow" id="window">
+  <object class="GtkWindow" id="window">
     <property name="can_focus">False</property>
     <property name="default_width">600</property>
     <property name="default_height">600</property>
-    <property name="icon_name">poi-restaurant</property>
     <child type="titlebar">
       <object class="GtkHeaderBar">
         <property name="visible">True</property>
@@ -616,6 +604,7 @@ Author: Fin Christensen
           <object class="GtkMenuButton" id="options-button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <property name="popover">options-menu</property>
             <child>
@@ -651,8 +640,7 @@ Author: Fin Christensen
     <property name="transient_for">window</property>
     <property name="program_name">OvGU Canteen</property>
     <property name="copyright" translatable="yes">Fin Christensen © 2020</property>
-    <property name="authors">Fin Christensen</property>
-    <property name="logo_icon_name">poi-restaurant</property>
+    <property name="logo_icon_name"/>
     <property name="license_type">gpl-3-0</property>
     <child>
       <placeholder/>
