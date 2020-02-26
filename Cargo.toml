@@ -1,8 +1,8 @@
 [package]
 name = "gnome-ovgu-canteen"
 version = "0.1.0"
-description = "View the OvGU Mensa menu in a gnome app"
-authors = ["Fin Christensen <christensen.fin@gmail.com>"]
+description = "View the OvGU Mensa Menu in a Gnome App"
+authors = ["Fin Christensen <christensen.fin@gmail.com>", "Johannes Wünsche <johannes@spacesnek.rocks>"]
 license = "GPL-3.0-or-later"
 repository = "https://github.com/fin-ger/gnome-ovgu-canteen"
 readme = "README.md"
@@ -15,8 +15,8 @@ gtk = { version = "0.8.1", features = ["v3_22"] }
 gdk = { version = "0.12.1", features = ["v3_22"] }
 gdk-pixbuf = "0.8.0"
 gio = { version = "0.8.1", features = ["v2_44"] }
-glib = { version = "0.9.2", features = ["v2_44"] }
-ovgu-canteen = "0.3.0"
+glib = { version = "0.9.3", features = ["v2_44"] }
+ovgu-canteen = "0.3.1"
 chrono = "0.4.10"
 tokio = { version = "0.2.11", features = ["full"] }
 chrono-tz = "0.5.1"

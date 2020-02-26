@@ -1,9 +1,11 @@
 use anyhow::{Context, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
+use gio::prelude::*;
+use gio::SimpleAction;
 use gtk::{
-    Window, Box, Button, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, MenuButton,
-    Spinner, Stack, ReliefStyle,
+    Box, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, MenuButton,
+    Spinner, Stack, Window, ButtonRole, ModelButtonBuilder,
 };
 use ovgu_canteen::{Canteen, CanteenDescription, Day, Error as CanteenError, Meal};
 use std::cell::RefCell;
@@ -64,43 +66,44 @@ pub struct LiteBadgeComponent {
 pub struct WindowComponent {
     pub window: Window,
     pub canteens_stack: Rc<RefCell<Stack>>,
-    pub canteen_menu_button: Rc<RefCell<MenuButton>>,
-    pub canteens_menu_box: Box,
+    pub canteens_menu: Box,
+    pub canteen_menu_button: MenuButton,
     pub canteen_label: Rc<RefCell<Label>>,
 }
 
 impl CanteenComponent {
-    pub fn new(description: CanteenDescription, window: &WindowComponent) -> Result<Self> {
+    pub fn new(description: CanteenDescription, app: &gtk::Application, window: &WindowComponent) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
         let canteen_stack: Stack = get(&builder, "canteen-stack")?;
         let canteen_spinner: Spinner = get(&builder, "canteen-spinner")?;
         let days_box: Box = get(&builder, "days-box")?;
         let canteen_name = format!("{:?}", description);
 
-        let menu_item = Button::new_with_label(&canteen_name);
-        menu_item.set_focus_on_click(false);
-        menu_item.set_can_focus(false);
-        menu_item.set_relief(ReliefStyle::None);
-        window.canteens_menu_box.pack_start(&menu_item, false, true, 0);
-        menu_item.show();
         window
             .canteens_stack
             .borrow_mut()
             .add_named(&canteen_stack, &canteen_name);
 
+        let model_btn = ModelButtonBuilder::new()
+            .visible(true)
+            .text(&canteen_name)
+            .can_focus(false)
+            .action_name(&format!("app.{}", canteen_name))
+            .role(ButtonRole::Radio)
+            .build();
+
+        window.canteens_menu.pack_start(&model_btn, false, true, 0);
+
+        let action = SimpleAction::new(&canteen_name, None);
         let canteens_stack_handle = Rc::clone(&window.canteens_stack);
         let canteen_label_handle = Rc::clone(&window.canteen_label);
-        let canteen_menu_button_handle = Rc::clone(&window.canteen_menu_button);
-        menu_item.connect_clicked(move |_menu_item| {
+        action.connect_activate(move |_action, _variant| {
             canteens_stack_handle
                 .borrow()
                 .set_visible_child_name(&canteen_name);
             canteen_label_handle.borrow().set_text(&canteen_name);
-
-            if let Some(popover) = canteen_menu_button_handle.borrow().get_popover() {
-                popover.popdown();
-            }
         });
+        app.add_action(&action);
 
         Ok(Self {
             canteen_stack,

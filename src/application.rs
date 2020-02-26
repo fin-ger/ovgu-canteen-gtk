@@ -1,11 +1,11 @@
 use anyhow::{bail, Context, Result};
 use cargo_author::Author;
 use gdk::Screen;
+use gdk_pixbuf::prelude::*;
 use gdk_pixbuf::PixbufLoader;
 use gio::prelude::*;
-use gdk_pixbuf::prelude::*;
 use gtk::prelude::*;
-use gtk::{ApplicationBuilder, AboutDialog, Builder, Button, CssProvider, MenuButton};
+use gtk::{AboutDialog, ApplicationBuilder, Builder, Button, CssProvider, MenuButton};
 use ovgu_canteen::{Canteen, CanteenDescription};
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -31,6 +31,13 @@ use crate::components::{get, CanteenComponent, WindowComponent, GLADE, ICON};
 // TODO: add reload button for reloading canteen menus on network failure
 // ASSIGNEE: @jwuensche
 
+// TODO: Create custom flow widget for menu badges
+// ASSIGNEE: ?
+
+// TODO: Replace button with toggle button in menu selection popover to
+//       indicate current canteen
+// ASSIGNEE: ?
+
 // TODO: create flatpak package
 
 // TODO: write readme
@@ -45,16 +52,18 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
     let window = WindowComponent {
         window: get(&builder, "window")?,
         canteens_stack: Rc::new(RefCell::new(get(&builder, "canteens-stack")?)),
+        canteens_menu: get(&builder, "canteens-menu")?,
         canteen_label: Rc::new(RefCell::new(get(&builder, "canteen-label")?)),
-        canteen_menu_button: Rc::new(RefCell::new(get(&builder, "canteen-menu-button")?)),
-        canteens_menu_box: get(&builder, "canteens-menu-box")?,
+        canteen_menu_button: get(&builder, "canteen-menu-button")?,
     };
     let about_dialog: AboutDialog = get(&builder, "about")?;
     let about_button: Button = get(&builder, "about-btn")?;
     let options_button: MenuButton = get(&builder, "options-button")?;
 
     let icon_loader = PixbufLoader::new();
-    icon_loader.write(ICON.as_bytes()).context("Failed to create icon")?;
+    icon_loader
+        .write(ICON.as_bytes())
+        .context("Failed to create icon")?;
     icon_loader.close().context("Failed to create icon")?;
     let icon = icon_loader.get_pixbuf().context("Failed to create icon")?;
     window.window.set_icon(Some(&icon));
@@ -111,7 +120,7 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
     let (tx, mut rx) = channel(canteens.len());
     let mut canteen_components = Vec::new();
     for canteen_desc in canteens.drain(..) {
-        let comp = CanteenComponent::new(canteen_desc.clone(), &window)
+        let comp = CanteenComponent::new(canteen_desc.clone(), app, &window)
             .context(format!("Failed to create canteen {:?}", canteen_desc))?;
         canteen_components.push(comp);
         let mut canteen_tx = tx.clone();

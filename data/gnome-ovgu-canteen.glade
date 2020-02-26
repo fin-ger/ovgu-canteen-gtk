@@ -120,16 +120,16 @@ Author: Fin Christensen
       </packing>
     </child>
   </object>
-  <object class="GtkPopoverMenu" id="canteens-menu">
+  <object class="GtkPopoverMenu" id="canteens-popover">
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkBox" id="canteens-menu-box">
+      <object class="GtkBox" id="canteens-menu">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">5</property>
-        <property name="margin_right">5</property>
-        <property name="margin_top">5</property>
-        <property name="margin_bottom">5</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
         <property name="orientation">vertical</property>
         <child>
           <placeholder/>
@@ -137,6 +137,7 @@ Author: Fin Christensen
       </object>
       <packing>
         <property name="submenu">main</property>
+        <property name="position">1</property>
       </packing>
     </child>
   </object>
@@ -415,20 +416,17 @@ Author: Fin Christensen
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">5</property>
-        <property name="margin_right">5</property>
-        <property name="margin_top">5</property>
-        <property name="margin_bottom">5</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkButton" id="preference-btn">
-            <property name="label" translatable="yes">Preferences</property>
+          <object class="GtkModelButton" id="preferences-btn">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
-            <property name="margin_right">5</property>
-            <property name="relief">none</property>
+            <property name="text" translatable="yes">Preferences</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -437,13 +435,11 @@ Author: Fin Christensen
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="about-btn">
-            <property name="label" translatable="yes">About</property>
+          <object class="GtkModelButton" id="about-btn">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
-            <property name="relief">none</property>
+            <property name="text" translatable="yes">About</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -475,8 +471,7 @@ Author: Fin Christensen
             <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <property name="relief">none</property>
-            <property name="use_popover">False</property>
-            <property name="popover">canteens-menu</property>
+            <property name="popover">canteens-popover</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
