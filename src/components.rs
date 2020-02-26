@@ -2,8 +2,8 @@ use anyhow::{Context, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
 use gtk::{
-    Window, Box, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, Menu, MenuItem,
-    Spinner, Stack,
+    Window, Box, Button, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, MenuButton,
+    Spinner, Stack, ReliefStyle,
 };
 use ovgu_canteen::{Canteen, CanteenDescription, Day, Error as CanteenError, Meal};
 use std::cell::RefCell;
@@ -64,7 +64,8 @@ pub struct LiteBadgeComponent {
 pub struct WindowComponent {
     pub window: Window,
     pub canteens_stack: Rc<RefCell<Stack>>,
-    pub canteens_menu: Menu,
+    pub canteen_menu_button: Rc<RefCell<MenuButton>>,
+    pub canteens_menu_box: Box,
     pub canteen_label: Rc<RefCell<Label>>,
 }
 
@@ -76,8 +77,11 @@ impl CanteenComponent {
         let days_box: Box = get(&builder, "days-box")?;
         let canteen_name = format!("{:?}", description);
 
-        let menu_item = MenuItem::new_with_label(&canteen_name);
-        window.canteens_menu.append(&menu_item);
+        let menu_item = Button::new_with_label(&canteen_name);
+        menu_item.set_focus_on_click(false);
+        menu_item.set_can_focus(false);
+        menu_item.set_relief(ReliefStyle::None);
+        window.canteens_menu_box.pack_start(&menu_item, false, true, 0);
         menu_item.show();
         window
             .canteens_stack
@@ -86,11 +90,16 @@ impl CanteenComponent {
 
         let canteens_stack_handle = Rc::clone(&window.canteens_stack);
         let canteen_label_handle = Rc::clone(&window.canteen_label);
-        menu_item.connect_activate(move |_menu_item| {
+        let canteen_menu_button_handle = Rc::clone(&window.canteen_menu_button);
+        menu_item.connect_clicked(move |_menu_item| {
             canteens_stack_handle
                 .borrow()
                 .set_visible_child_name(&canteen_name);
             canteen_label_handle.borrow().set_text(&canteen_name);
+
+            if let Some(popover) = canteen_menu_button_handle.borrow().get_popover() {
+                popover.popdown();
+            }
         });
 
         Ok(Self {
@@ -244,10 +253,12 @@ impl MealComponent {
 
 impl BadgeComponent {
     pub async fn new(text: &str) -> Result<Self> {
-        let builder = Builder::new_from_string(GLADE);
-        let label: Label = get(&builder, "badge")?;
-
-        label.set_text(text);
+        let label: Label = Label::new(Some(text));
+        let context = label.get_style_context();
+        context.add_class("badge");
+        label.set_selectable(true);
+        label.set_line_wrap(false);
+        label.set_visible(true);
 
         Ok(Self { label })
     }
@@ -255,10 +266,12 @@ impl BadgeComponent {
 
 impl LiteBadgeComponent {
     pub async fn new(text: &str) -> Result<Self> {
-        let builder = Builder::new_from_string(GLADE);
-        let label: Label = get(&builder, "lite-badge")?;
-
-        label.set_text(text);
+        let label: Label = Label::new(Some(text));
+        let context = label.get_style_context();
+        context.add_class("badge-lite");
+        label.set_selectable(true);
+        label.set_line_wrap(false);
+        label.set_visible(true);
 
         Ok(Self { label })
     }

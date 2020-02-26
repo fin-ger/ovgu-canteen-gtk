@@ -29,20 +29,6 @@ Author: Fin Christensen
   <!-- interface-description Menu information for the OvGU canteen. -->
   <!-- interface-copyright Fin Christensen -->
   <!-- interface-authors Fin Christensen -->
-  <object class="GtkImage" id="about-icon">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">dialog-information</property>
-  </object>
-  <object class="GtkLabel" id="badge">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="label" translatable="yes">MensaVital</property>
-    <property name="selectable">True</property>
-    <style>
-      <class name="badge"/>
-    </style>
-  </object>
   <object class="GtkStack" id="canteen-stack">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -134,48 +120,25 @@ Author: Fin Christensen
       </packing>
     </child>
   </object>
-  <object class="GtkListStore" id="canteens">
-    <columns>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-      <!-- column-name id -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">&lt;b&gt;OvGU Canteen&lt;/b&gt;
-&lt;small&gt;UniCampus Unten&lt;/small&gt;</col>
-        <col id="1" translatable="yes">UniCampusLowerHall</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">UniCampus Oben</col>
-        <col id="1" translatable="yes">UniCampusUpperHall</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Kellercafé</col>
-        <col id="1" translatable="yes">Kellercafe</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Herrenkrug</col>
-        <col id="1" translatable="yes">Herrenkrug</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Wernigerode</col>
-        <col id="1" translatable="yes">Wernigerode</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">DomCafete Halberstadt</col>
-        <col id="1" translatable="yes">DomCafeteHalberstadt</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkMenu" id="canteens-menu">
-    <property name="width_request">200</property>
-    <property name="visible">True</property>
+  <object class="GtkPopoverMenu" id="canteens-menu">
     <property name="can_focus">False</property>
-    <property name="take_focus">False</property>
-    <property name="reserve_toggle_size">False</property>
-    <property name="rect_anchor_dy">-44</property>
+    <child>
+      <object class="GtkBox" id="canteens-menu-box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
+      </packing>
+    </child>
   </object>
   <object class="GtkFrame" id="day-frame">
     <property name="visible">True</property>
@@ -285,15 +248,6 @@ Author: Fin Christensen
     </child>
     <style>
       <class name="view"/>
-    </style>
-  </object>
-  <object class="GtkLabel" id="lite-badge">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="label" translatable="yes">2</property>
-    <property name="selectable">True</property>
-    <style>
-      <class name="badge-lite"/>
     </style>
   </object>
   <object class="GtkListBoxRow" id="meal">
@@ -461,25 +415,20 @@ Author: Fin Christensen
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkButton" id="preference-btn">
+            <property name="label" translatable="yes">Preferences</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
-            <property name="margin_left">5</property>
             <property name="margin_right">5</property>
-            <property name="margin_top">5</property>
             <property name="relief">none</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Preferences</property>
-                <property name="xalign">0</property>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -489,22 +438,12 @@ Author: Fin Christensen
         </child>
         <child>
           <object class="GtkButton" id="about-btn">
+            <property name="label" translatable="yes">About</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">5</property>
-            <property name="margin_bottom">5</property>
             <property name="relief">none</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">About</property>
-                <property name="xalign">0</property>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -536,8 +475,8 @@ Author: Fin Christensen
             <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <property name="relief">none</property>
-            <property name="popup">canteens-menu</property>
             <property name="use_popover">False</property>
+            <property name="popover">canteens-menu</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -672,10 +611,5 @@ Author: Fin Christensen
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="preferences-icon">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">preferences-desktop</property>
   </object>
 </interface>

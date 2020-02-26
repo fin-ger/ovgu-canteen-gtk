@@ -14,14 +14,7 @@ use tokio::sync::mpsc::channel;
 
 use crate::components::{get, CanteenComponent, WindowComponent, GLADE, ICON};
 
-// TODO: set offset of canteen popup-menu so that the current item is on the
-//       mouse position
-// ASSIGNEE: @fin-ger
-
 // TODO: add settings window with hamburger menu to access the settings
-// ASSIGNEE: @jwuensche
-
-// TODO: move about button to hamburger menu
 // ASSIGNEE: @jwuensche
 
 // TODO: add dark theme to settings
@@ -53,7 +46,8 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
         window: get(&builder, "window")?,
         canteens_stack: Rc::new(RefCell::new(get(&builder, "canteens-stack")?)),
         canteen_label: Rc::new(RefCell::new(get(&builder, "canteen-label")?)),
-        canteens_menu: get(&builder, "canteens-menu")?,
+        canteen_menu_button: Rc::new(RefCell::new(get(&builder, "canteen-menu-button")?)),
+        canteens_menu_box: get(&builder, "canteens-menu-box")?,
     };
     let about_dialog: AboutDialog = get(&builder, "about")?;
     let about_button: Button = get(&builder, "about-btn")?;
