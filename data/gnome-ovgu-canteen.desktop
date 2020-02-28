@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=OvGU Mensa
+Exec=gnome-ovgu-canteen
+Icon=ovgu-canteen32
+Type=Application
+Terminal=false
+Comment=View the OvGU Mensa Menu in a Gnome App
+Comment[de]=Zeige das OvGU Mensa Menü in einer Gnome App
+Categories=GTK;GNOME;Utility;

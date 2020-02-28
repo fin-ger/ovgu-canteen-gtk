@@ -1,8 +1,6 @@
 use anyhow::{bail, Context, Result};
 use cargo_author::Author;
 use gdk::Screen;
-use gdk_pixbuf::prelude::*;
-use gdk_pixbuf::PixbufLoader;
 use gio::prelude::*;
 use gtk::prelude::*;
 use gtk::{AboutDialog, ApplicationBuilder, Builder, Button, CssProvider, MenuButton};
@@ -12,7 +10,7 @@ use std::rc::Rc;
 use tokio::runtime::{Builder as RuntimeBuilder, Handle, Runtime};
 use tokio::sync::mpsc::channel;
 
-use crate::components::{get, CanteenComponent, WindowComponent, GLADE, ICON};
+use crate::components::{get, CanteenComponent, WindowComponent, GLADE};
 
 // TODO: add settings window with hamburger menu to access the settings
 // ASSIGNEE: @jwuensche
@@ -60,14 +58,8 @@ fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
     let about_button: Button = get(&builder, "about-btn")?;
     let options_button: MenuButton = get(&builder, "options-button")?;
 
-    let icon_loader = PixbufLoader::new();
-    icon_loader
-        .write(ICON.as_bytes())
-        .context("Failed to create icon")?;
-    icon_loader.close().context("Failed to create icon")?;
-    let icon = icon_loader.get_pixbuf().context("Failed to create icon")?;
-    window.window.set_icon(Some(&icon));
-    about_dialog.set_logo(Some(&icon));
+    window.window.set_icon_name(Some("ovgu-canteen32"));
+    about_dialog.set_logo_icon_name(Some("ovgu-canteen128"));
 
     let authors = env!("CARGO_PKG_AUTHORS")
         .split(':')

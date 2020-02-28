@@ -12,7 +12,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 pub const GLADE: &str = std::include_str!("../data/gnome-ovgu-canteen.glade");
-pub const ICON: &str = std::include_str!("../data/mensa.svg");
 
 macro_rules! glib_yield {
     () => {
