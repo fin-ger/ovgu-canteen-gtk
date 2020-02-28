@@ -1,11 +1,11 @@
 use anyhow::{Context, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
-use gtk::prelude::*;
 use gio::prelude::*;
 use gio::SimpleAction;
+use gtk::prelude::*;
 use gtk::{
-    Box, Builder, FlowBox, Frame, Label, ListBox, ListBoxRow, MenuButton,
-    Spinner, Stack, Window, ButtonRole, ModelButtonBuilder,
+    Box, Builder, ButtonRole, FlowBox, Frame, Label, ListBox, ListBoxRow, MenuButton,
+    ModelButtonBuilder, Spinner, Stack, Window,
 };
 use ovgu_canteen::{Canteen, CanteenDescription, Day, Error as CanteenError, Meal};
 use std::cell::RefCell;
@@ -71,7 +71,11 @@ pub struct WindowComponent {
 }
 
 impl CanteenComponent {
-    pub fn new(description: CanteenDescription, app: &gtk::Application, window: &WindowComponent) -> Result<Self> {
+    pub fn new(
+        description: CanteenDescription,
+        app: &gtk::Application,
+        window: &WindowComponent,
+    ) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
         let canteen_stack: Stack = get(&builder, "canteen-stack")?;
         let canteen_spinner: Spinner = get(&builder, "canteen-spinner")?;
