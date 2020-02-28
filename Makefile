@@ -18,7 +18,7 @@ install: build
 	@gtk-update-icon-cache
 
 run:
-	@$(MAKE) -s install PREFIX=~/.local CARGO_BUILD_ARGS= TARGET_DIR=debug
+	@$(MAKE) -s install PREFIX=$(HOME)/.local CARGO_BUILD_ARGS= TARGET_DIR=debug
 	@gnome-ovgu-canteen
 
 uninstall:
@@ -28,5 +28,5 @@ uninstall:
 	@rm "$(PREFIX)/bin/gnome-ovgu-canteen"
 
 clean:
-	@$(MAKE) -s uninstall PREFIX=~/.local
+	@$(MAKE) -s uninstall PREFIX=$(HOME)/.local
 	@rm -r target
