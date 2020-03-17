@@ -16,8 +16,9 @@ gdk = { version = "0.12.1", features = ["v3_22"] }
 gio = { version = "0.8.1", features = ["v2_44"] }
 glib = { version = "0.9.3", features = ["v2_44"] }
 ovgu-canteen = "0.3.1"
-chrono = "0.4.10"
-tokio = { version = "0.2.11", features = ["full"] }
+chrono = "0.4.11"
+tokio = { version = "0.2.13", features = ["full"] }
 chrono-tz = "0.5.1"
-anyhow = "1.0.26"
+anyhow = "1.0.27"
 cargo_author = "1.0.2"
+xdg = "2.2.0"

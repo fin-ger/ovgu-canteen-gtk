@@ -1,16 +1,11 @@
-use anyhow::{bail, Context, Result};
-use cargo_author::Author;
+use anyhow::{Context, Result};
 use gdk::Screen;
 use gio::prelude::*;
 use gtk::prelude::*;
-use gtk::{AboutDialog, ApplicationBuilder, Builder, Button, CssProvider, MenuButton};
-use ovgu_canteen::{Canteen, CanteenDescription};
-use std::cell::RefCell;
-use std::rc::Rc;
-use tokio::runtime::{Builder as RuntimeBuilder, Handle, Runtime};
-use tokio::sync::mpsc::channel;
+use gtk::{ApplicationBuilder, CssProvider};
+use tokio::runtime::{Builder as RuntimeBuilder, Runtime};
 
-use crate::components::{get, CanteenComponent, WindowComponent, GLADE};
+use crate::components::WindowComponent;
 
 // TODO: add settings window with hamburger menu to access the settings
 // ASSIGNEE: @jwuensche
@@ -27,7 +22,7 @@ use crate::components::{get, CanteenComponent, WindowComponent, GLADE};
 // ASSIGNEE: @fin-ger
 
 // TODO: add reload button for reloading canteen menus on network failure
-// ASSIGNEE: @jwuensche
+// ASSIGNEE: @fin-ger
 
 // TODO: Create custom flow widget for menu badges
 // ASSIGNEE: ?
@@ -43,108 +38,6 @@ use crate::components::{get, CanteenComponent, WindowComponent, GLADE};
 // TODO: try porting to windows metro app
 
 // TODO: try porting to macos app
-
-fn build(rt: &Handle, app: &gtk::Application) -> Result<()> {
-    let builder = Builder::new_from_string(GLADE);
-
-    let window = WindowComponent {
-        window: get(&builder, "window")?,
-        canteens_stack: Rc::new(RefCell::new(get(&builder, "canteens-stack")?)),
-        canteens_menu: get(&builder, "canteens-menu")?,
-        canteen_label: Rc::new(RefCell::new(get(&builder, "canteen-label")?)),
-        canteen_menu_button: get(&builder, "canteen-menu-button")?,
-    };
-    let about_dialog: AboutDialog = get(&builder, "about")?;
-    let about_button: Button = get(&builder, "about-btn")?;
-    let options_button: MenuButton = get(&builder, "options-button")?;
-
-    window.window.set_icon_name(Some("ovgu-canteen32"));
-    about_dialog.set_logo_icon_name(Some("ovgu-canteen128"));
-
-    let authors = env!("CARGO_PKG_AUTHORS")
-        .split(':')
-        .map(|author| Author::new(author))
-        .collect::<Vec<_>>();
-
-    about_dialog.set_version(Some(env!("CARGO_PKG_VERSION")));
-    about_dialog.set_website(Some(env!("CARGO_PKG_REPOSITORY")));
-    about_dialog.set_website_label(Some("Source Code"));
-    about_dialog.set_comments(Some(env!("CARGO_PKG_DESCRIPTION")));
-    about_dialog.set_authors(
-        &authors
-            .iter()
-            .map(|author| {
-                if let Some(name) = &author.name {
-                    Ok(name.as_str())
-                } else if let Some(email) = &author.email {
-                    Ok(email.as_str())
-                } else if let Some(url) = &author.url {
-                    Ok(url.as_str())
-                } else {
-                    bail!("Failed to get author name");
-                }
-            })
-            .collect::<Result<Vec<_>>>()?,
-    );
-    about_button.connect_clicked(move |_btn| {
-        if let Some(popover) = options_button.get_popover() {
-            popover.popdown();
-        }
-
-        about_dialog.run();
-        about_dialog.hide();
-    });
-
-    let mut canteens = vec![
-        CanteenDescription::UniCampusLowerHall,
-        CanteenDescription::UniCampusUpperHall,
-        CanteenDescription::Kellercafe,
-        CanteenDescription::Herrenkrug,
-        CanteenDescription::Stendal,
-        CanteenDescription::Wernigerode,
-        CanteenDescription::DomCafeteHalberstadt,
-    ];
-
-    // canteens are downloaded in parallel here,
-    // but in order for one canteen to show up in a batch
-    // we are using an mpsc channel to put the parallel loaded canteens
-    // in an order which is later sequentially inserted into the GUI.
-    let (tx, mut rx) = channel(canteens.len());
-    let mut canteen_components = Vec::new();
-    for canteen_desc in canteens.drain(..) {
-        let comp = CanteenComponent::new(canteen_desc.clone(), app, &window)
-            .context(format!("Failed to create canteen {:?}", canteen_desc))?;
-        canteen_components.push(comp);
-        let mut canteen_tx = tx.clone();
-        rt.spawn(async move {
-            let canteen = Canteen::new(canteen_desc.clone()).await;
-            if let Err(e) = canteen_tx.send((canteen_desc, canteen)).await {
-                eprintln!("error: {}", e);
-                // TODO: handle tx send error by displaying canteen not available
-            }
-        });
-    }
-
-    let c = glib::MainContext::default();
-    c.spawn_local(async move {
-        // fetching parallel loaded canteens here and inserting
-        // one canteen after another into the GUI.
-        // TODO: render currently visible canteen first
-        while let Some((desc, canteen)) = rx.recv().await {
-            if let Some(comp) = canteen_components.iter().find(|c| c.description == desc) {
-                comp.loaded(canteen).await;
-            } else {
-                eprintln!("canteen {:?} not found in components list", desc);
-                // TODO: display error dialog
-            }
-        }
-    });
-
-    window.window.set_application(Some(app));
-    window.window.show_all();
-
-    Ok(())
-}
 
 pub struct Application {
     pub g_app: gtk::Application,
@@ -179,7 +72,7 @@ impl Application {
             .build();
 
         let build_rt = runtime.handle().clone();
-        g_app.connect_activate(move |app| match build(&build_rt, app) {
+        g_app.connect_activate(move |app| match WindowComponent::new(&build_rt, app) {
             Ok(()) => {}
             Err(err) => {
                 // TODO: display dialog with error message
