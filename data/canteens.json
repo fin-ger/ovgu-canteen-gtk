@@ -1,0 +1,187 @@
+[
+  {
+    "description": "UniCampusLowerHall",
+    "days": [
+      {
+        "date": "2020-04-17",
+        "meals": [
+          {
+            "name": "Büffelfilet",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          },
+          {
+            "name": "Milchreis",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          },
+          {
+            "name": "Käseschnitzel",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          }
+        ],
+        "side_dishes": ["Kartoffeln", "Reis", "Kartoffelspalten", "Pommes"]
+      },
+      {
+        "date": "2020-04-18",
+        "meals": [
+          {
+            "name": "Warzenschwein",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          },
+          {
+            "name": "Gefüllte Zucchini",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          }
+        ],
+        "side_dishes": ["Kartoffeln", "Reis", "Pommes"]
+      },
+      {
+        "date": "2020-04-20",
+        "meals": [
+          {
+            "name": "Kartoffelgratin",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          }
+        ],
+        "side_dishes": []
+      }
+    ]
+  },
+  {
+    "description": "UniCampusUpperHall",
+    "days": []
+  },
+  {
+    "description": "Kellercafe",
+    "days": []
+  },
+  {
+    "description": "Herrenkrug",
+    "days": []
+  },
+  {
+    "description": "Stendal",
+    "days": []
+  },
+  {
+    "description": "Wernigerode",
+    "days": []
+  },
+  {
+    "description": "DomCafeteHalberstadt",
+    "days": []
+  }
+]

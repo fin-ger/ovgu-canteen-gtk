@@ -14,6 +14,7 @@
 
 mod application;
 mod components;
+mod util;
 
 fn main() {
     match application::Application::new() {
