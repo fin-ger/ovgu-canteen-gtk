@@ -1,9 +1,9 @@
-use anyhow::{Result, Error};
+use anyhow::{Error, Result};
 use gtk::prelude::*;
-use gtk::{Stack, Spinner, Builder, Box};
+use gtk::{Box, Builder, Spinner, Stack};
 use ovgu_canteen::{Canteen, CanteenDescription, Error as CanteenError};
 
-use crate::components::{GLADE, get, glib_yield, WindowComponent, DayComponent};
+use crate::components::{get, glib_yield, DayComponent, WindowComponent, GLADE};
 use crate::util::AdjustingVec;
 
 #[derive(Debug)]
@@ -14,10 +14,7 @@ pub struct CanteenComponent {
 }
 
 impl CanteenComponent {
-    pub fn new(
-        description: CanteenDescription,
-        window: &WindowComponent,
-    ) -> Result<Self> {
+    pub fn new(description: CanteenDescription, window: &WindowComponent) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
         let canteen_stack: Stack = get(&builder, "canteen-stack")?;
         let canteen_spinner: Spinner = get(&builder, "canteen-spinner")?;
@@ -65,11 +62,14 @@ impl CanteenComponent {
             }
         };
 
-        let days_result = self.days.adjust(&canteen.days, |mut comp, day| async move {
-            comp.load(day).await;
-            glib_yield!();
-            Ok(comp)
-        }).await;
+        let days_result = self
+            .days
+            .adjust(&canteen.days, |mut comp, day| async move {
+                comp.load(day).await;
+                glib_yield!();
+                Ok(comp)
+            })
+            .await;
 
         if days_result.is_err() {
             // TODO: handle error

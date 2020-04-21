@@ -1,14 +1,20 @@
 use std::future::Future;
 use std::pin::Pin;
 
-use itertools::{Itertools, EitherOrBoth};
-use futures::stream::{self, TryStreamExt};
 use async_trait::async_trait;
+use futures::stream::{self, TryStreamExt};
+use itertools::{EitherOrBoth, Itertools};
 
 #[async_trait(?Send)]
 trait AdjustingVecHandlers<T, E> {
-    async fn create(&self) -> Result<T, E> where T: 'async_trait, E: 'async_trait;
-    async fn destroy(&self, item: T) -> Result<(), E> where T: 'async_trait, E: 'async_trait;
+    async fn create(&self) -> Result<T, E>
+    where
+        T: 'async_trait,
+        E: 'async_trait;
+    async fn destroy(&self, item: T) -> Result<(), E>
+    where
+        T: 'async_trait,
+        E: 'async_trait;
 }
 
 struct AdjustingVecHandlersImpl<C, D> {
@@ -22,11 +28,19 @@ where
     C: Fn() -> Pin<Box<dyn Future<Output = Result<T, E>>>>,
     D: Fn(T) -> Pin<Box<dyn Future<Output = Result<(), E>>>>,
 {
-    async fn create(&self) -> Result<T, E> where T: 'async_trait, E: 'async_trait {
+    async fn create(&self) -> Result<T, E>
+    where
+        T: 'async_trait,
+        E: 'async_trait,
+    {
         (self.creator)().await
     }
 
-    async fn destroy(&self, item: T) -> Result<(), E> where T: 'async_trait, E: 'async_trait {
+    async fn destroy(&self, item: T) -> Result<(), E>
+    where
+        T: 'async_trait,
+        E: 'async_trait,
+    {
         (&self.destroyer)(item).await
     }
 }
@@ -54,34 +68,32 @@ impl<T, E> AdjustingVec<T, E> {
             data: Vec::new(),
             handlers: Box::new(AdjustingVecHandlersImpl {
                 creator: move || Box::pin(creator()) as Pin<Box<dyn Future<Output = Result<T, E>>>>,
-                destroyer: move |item| Box::pin(destroyer(item)) as Pin<Box<dyn Future<Output = Result<(), E>>>>,
+                destroyer: move |item| {
+                    Box::pin(destroyer(item)) as Pin<Box<dyn Future<Output = Result<(), E>>>>
+                },
             }),
         }
     }
 
-    pub async fn adjust<A, I, F, FT>(&mut self, iterable: I, mapper: F) -> Result<(), E> where
+    pub async fn adjust<A, I, F, FT>(&mut self, iterable: I, mapper: F) -> Result<(), E>
+    where
         I: IntoIterator<Item = A>,
         F: Fn(T, A) -> FT,
         FT: Future<Output = Result<T, E>>,
     {
         let mut data: Vec<T> = self.data.drain(..).collect();
-        let iter = data
-            .drain(..)
-            .zip_longest(iterable.into_iter())
-            .map(Ok);
+        let iter = data.drain(..).zip_longest(iterable.into_iter()).map(Ok);
         self.data = stream::iter(iter)
             .try_filter_map(|zipped| async {
                 match zipped {
                     EitherOrBoth::Left(current) => {
                         self.handlers.destroy(current).await?;
                         Ok(None)
-                    },
+                    }
                     EitherOrBoth::Right(next) => {
                         Ok(Some(mapper(self.handlers.create().await?, next).await?))
-                    },
-                    EitherOrBoth::Both(current, next) => {
-                        Ok(Some(mapper(current, next).await?))
-                    },
+                    }
+                    EitherOrBoth::Both(current, next) => Ok(Some(mapper(current, next).await?)),
                 }
             })
             .try_collect()

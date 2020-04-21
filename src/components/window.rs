@@ -1,18 +1,21 @@
 use std::cell::RefCell;
-use std::rc::Rc;
 use std::collections::HashMap;
+use std::rc::Rc;
 
 use anyhow::{bail, Context, Result};
 use cargo_author::Author;
 use gio::prelude::*;
 use gio::SimpleAction;
 use gtk::prelude::*;
-use gtk::{Window, Box, MenuButton, Label, Button, Builder, Stack, AboutDialog, ModelButtonBuilder, ButtonRole};
-use tokio::sync::mpsc::channel;
-use tokio::runtime::Handle;
+use gtk::{
+    AboutDialog, Box, Builder, Button, ButtonRole, Label, MenuButton, ModelButtonBuilder, Stack,
+    Window,
+};
 use ovgu_canteen::{Canteen, CanteenDescription};
+use tokio::runtime::Handle;
+use tokio::sync::mpsc::channel;
 
-use crate::components::{GLADE, get, CanteenComponent};
+use crate::components::{get, CanteenComponent, GLADE};
 
 #[derive(Debug)]
 pub struct WindowComponent {
@@ -102,8 +105,7 @@ impl WindowComponent {
         for desc in canteens.drain(..) {
             canteen_components_borrow.insert(
                 desc.clone(),
-                CanteenComponent::new(desc, &comp)
-                    .context("Failed to create canteen!")?,
+                CanteenComponent::new(desc, &comp).context("Failed to create canteen!")?,
             );
         }
         drop(canteen_components_borrow);
@@ -135,11 +137,11 @@ impl WindowComponent {
         let canteens_stack_handle = self.canteens_stack.clone();
         let canteen_label_handle = self.canteen_label.clone();
         action.connect_activate(move |_action, _variant| {
-            canteens_stack_handle
-                .set_visible_child_name(&canteen_name);
+            canteens_stack_handle.set_visible_child_name(&canteen_name);
             canteen_label_handle.set_text(&canteen_name);
         });
-        self.window.get_application()
+        self.window
+            .get_application()
             .context("GTK Application not initialized!")?
             .add_action(&action);
 
@@ -161,11 +163,13 @@ impl WindowComponent {
                 let canteen = if cfg!(feature = "test-with-local-files") {
                     use std::fs::File;
 
-                    let file = File::open("data/canteens.json")
-                        .expect("'data/canteens.json' not found!");
+                    let file =
+                        File::open("data/canteens.json").expect("'data/canteens.json' not found!");
                     let mut canteens: Vec<Canteen> = serde_json::from_reader(&file)
                         .expect("Could not parse 'data/cateens.json'");
-                    let canteen = canteens.drain(..).find(|c| c.description == canteen_desc)
+                    let canteen = canteens
+                        .drain(..)
+                        .find(|c| c.description == canteen_desc)
                         .expect("Canteen not found!");
                     Ok(canteen)
                 } else {

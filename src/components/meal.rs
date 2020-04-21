@@ -1,9 +1,9 @@
-use anyhow::{Result, Error};
+use anyhow::{Error, Result};
 use gtk::prelude::*;
-use gtk::{Label, ListBoxRow, Builder, FlowBox};
+use gtk::{Builder, FlowBox, Label, ListBoxRow};
 use ovgu_canteen::Meal;
 
-use crate::components::{GLADE, get, glib_yield, BadgeComponent, LiteBadgeComponent};
+use crate::components::{get, glib_yield, BadgeComponent, LiteBadgeComponent, GLADE};
 use crate::util::AdjustingVec;
 
 #[derive(Debug)]
@@ -131,36 +131,36 @@ impl MealComponent {
 
     pub async fn load(&mut self, meal: &Meal) -> Result<()> {
         self.name.set_text(&meal.name);
-        self.price_student.set_text(format!("{:.2} €", meal.price.student).as_str());
-        self.price_staff.set_text(format!("{:.2} €", meal.price.staff).as_str());
-        self.price_guest.set_text(format!("{:.2} €", meal.price.guest).as_str());
+        self.price_student
+            .set_text(format!("{:.2} €", meal.price.student).as_str());
+        self.price_staff
+            .set_text(format!("{:.2} €", meal.price.staff).as_str());
+        self.price_guest
+            .set_text(format!("{:.2} €", meal.price.guest).as_str());
 
-        self.additives.adjust(
-            &meal.additives,
-            |badge, additive| async move {
+        self.additives
+            .adjust(&meal.additives, |badge, additive| async move {
                 badge.load(additive.to_german_str()).await;
                 glib_yield!();
                 Ok(badge)
-            },
-        ).await?;
+            })
+            .await?;
 
-        self.allergenics.adjust(
-            &meal.allergenics,
-            |badge, allergenic| async move {
+        self.allergenics
+            .adjust(&meal.allergenics, |badge, allergenic| async move {
                 badge.load(allergenic.to_german_str()).await;
                 glib_yield!();
                 Ok(badge)
-            },
-        ).await?;
+            })
+            .await?;
 
-        self.symbols.adjust(
-            &meal.symbols,
-            |badge, symbol| async move {
+        self.symbols
+            .adjust(&meal.symbols, |badge, symbol| async move {
                 badge.load(symbol.to_german_str()).await;
                 glib_yield!();
                 Ok(badge)
-            },
-        ).await?;
+            })
+            .await?;
 
         Ok(())
     }

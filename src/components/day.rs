@@ -1,10 +1,12 @@
-use anyhow::{Result, Error};
-use gtk::prelude::*;
-use gtk::{Builder, Frame, Label, FlowBox, ListBox};
+use anyhow::{Error, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
+use gtk::prelude::*;
+use gtk::{Builder, FlowBox, Frame, Label, ListBox};
 use ovgu_canteen::Day;
 
-use crate::components::{GLADE, get, glib_yield, MealComponent, BadgeComponent, LiteBadgeComponent};
+use crate::components::{
+    get, glib_yield, BadgeComponent, LiteBadgeComponent, MealComponent, GLADE,
+};
 use crate::util::AdjustingVec;
 
 #[derive(Debug)]
@@ -109,21 +111,27 @@ impl DayComponent {
 
         self.label.set_text(day_name);
 
-        let meal_result = self.meals.adjust(&day.meals, |mut comp, meal| async move {
-            comp.load(meal).await?;
-            glib_yield!();
-            Ok(comp)
-        }).await;
+        let meal_result = self
+            .meals
+            .adjust(&day.meals, |mut comp, meal| async move {
+                comp.load(meal).await?;
+                glib_yield!();
+                Ok(comp)
+            })
+            .await;
 
         if meal_result.is_err() {
             // TODO: handle error
         }
 
-        let side_dish_result = self.side_dishes.adjust(&day.side_dishes, |badge, side_dish| async move {
-            badge.load(side_dish).await;
-            glib_yield!();
-            Ok(badge)
-        }).await;
+        let side_dish_result = self
+            .side_dishes
+            .adjust(&day.side_dishes, |badge, side_dish| async move {
+                badge.load(side_dish).await;
+                glib_yield!();
+                Ok(badge)
+            })
+            .await;
 
         if side_dish_result.is_err() {
             // TODO: handle error
@@ -135,7 +143,7 @@ impl DayComponent {
                 Err(_e) => {
                     // TODO: handle error
                     unimplemented!();
-                },
+                }
             };
             badge.load("nicht vorhanden").await;
             self.side_dish_badges.insert(badge.root_widget(), 0);
