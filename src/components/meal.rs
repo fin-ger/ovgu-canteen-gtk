@@ -32,19 +32,24 @@ impl MealComponent {
         let mut allergenic_offset = 0;
         let mut symbol_offset = 0;
 
+        let additive_badges = badges.clone();
         let additives = AdjustingVec::new(
-            || async {
-                let comp = LiteBadgeComponent::new().await?;
-                badges.insert(comp.root_widget(), additive_offset);
+            move || {
+                let inner_badges = additive_badges.clone();
 
-                additive_offset += 1;
-                allergenic_offset += 1;
-                symbol_offset += 1;
+                async move {
+                    let comp = LiteBadgeComponent::new().await?;
+                    inner_badges.insert(comp.root_widget(), additive_offset);
 
-                glib_yield!();
-                Ok(comp)
+                    additive_offset += 1;
+                    allergenic_offset += 1;
+                    symbol_offset += 1;
+
+                    glib_yield!();
+                    Ok(comp)
+                }
             },
-            |badge| async {
+            move |badge| async move {
                 badge.root_widget().destroy();
 
                 additive_offset -= 1;
@@ -56,18 +61,23 @@ impl MealComponent {
             },
         );
 
+        let allergenic_badges = badges.clone();
         let allergenics = AdjustingVec::new(
-            || async {
-                let comp = LiteBadgeComponent::new().await?;
-                badges.insert(comp.root_widget(), allergenic_offset);
+            move || {
+                let inner_badges = allergenic_badges.clone();
 
-                allergenic_offset += 1;
-                symbol_offset += 1;
+                async move {
+                    let comp = LiteBadgeComponent::new().await?;
+                    inner_badges.insert(comp.root_widget(), allergenic_offset);
 
-                glib_yield!();
-                Ok(comp)
+                    allergenic_offset += 1;
+                    symbol_offset += 1;
+
+                    glib_yield!();
+                    Ok(comp)
+                }
             },
-            |badge| async {
+            move |badge| async move {
                 badge.root_widget().destroy();
 
                 allergenic_offset -= 1;
@@ -77,17 +87,23 @@ impl MealComponent {
                 Ok(())
             },
         );
+
+        let symbol_badges = badges.clone();
         let symbols = AdjustingVec::new(
-            || async {
-                let comp = BadgeComponent::new().await?;
-                badges.insert(comp.root_widget(), symbol_offset);
+            move || {
+                let inner_badges = symbol_badges.clone();
 
-                symbol_offset += 1;
+                async move {
+                    let comp = BadgeComponent::new().await?;
+                    inner_badges.insert(comp.root_widget(), symbol_offset);
 
-                glib_yield!();
-                Ok(comp)
+                    symbol_offset += 1;
+
+                    glib_yield!();
+                    Ok(comp)
+                }
             },
-            |badge| async {
+            move |badge| async move {
                 badge.root_widget().destroy();
 
                 symbol_offset -= 1;
@@ -113,7 +129,7 @@ impl MealComponent {
         &self.meal
     }
 
-    pub async fn load(&mut self, meal: &Meal) {
+    pub async fn load(&mut self, meal: &Meal) -> Result<()> {
         self.name.set_text(&meal.name);
         self.price_student.set_text(format!("{:.2} €", meal.price.student).as_str());
         self.price_staff.set_text(format!("{:.2} €", meal.price.staff).as_str());
@@ -121,29 +137,31 @@ impl MealComponent {
 
         self.additives.adjust(
             &meal.additives,
-            |badge, additive| async {
-                badge.load(additive.to_german_str());
+            |badge, additive| async move {
+                badge.load(additive.to_german_str()).await;
                 glib_yield!();
-                badge
+                Ok(badge)
             },
-        ).await;
+        ).await?;
 
         self.allergenics.adjust(
             &meal.allergenics,
-            |badge, allergenic| async {
-                badge.load(allergenic.to_german_str());
+            |badge, allergenic| async move {
+                badge.load(allergenic.to_german_str()).await;
                 glib_yield!();
-                badge
+                Ok(badge)
             },
-        ).await;
+        ).await?;
 
         self.symbols.adjust(
             &meal.symbols,
-            |badge, symbol| async {
-                badge.load(symbol.to_german_str());
+            |badge, symbol| async move {
+                badge.load(symbol.to_german_str()).await;
                 glib_yield!();
-                badge
+                Ok(badge)
             },
-        ).await;
+        ).await?;
+
+        Ok(())
     }
 }

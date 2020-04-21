@@ -45,16 +45,16 @@ impl<T: std::fmt::Debug, E> std::fmt::Debug for AdjustingVec<T, E> {
 impl<T, E> AdjustingVec<T, E> {
     pub fn new<C, FC, D, FD>(creator: C, destroyer: D) -> Self
     where
-        C: Fn() -> FC,
-        FC: Future<Output = Result<T, E>>,
-        D: Fn(T) -> FD,
-        FD: Future<Output = Result<(), E>>,
+        C: 'static + Fn() -> FC,
+        FC: 'static + Future<Output = Result<T, E>>,
+        D: 'static + Fn(T) -> FD,
+        FD: 'static + Future<Output = Result<(), E>>,
     {
         Self {
             data: Vec::new(),
             handlers: Box::new(AdjustingVecHandlersImpl {
-                creator: || Box::pin(creator()),
-                destroyer: |item| Box::pin(destroyer(item)),
+                creator: move || Box::pin(creator()) as Pin<Box<dyn Future<Output = Result<T, E>>>>,
+                destroyer: move |item| Box::pin(destroyer(item)) as Pin<Box<dyn Future<Output = Result<(), E>>>>,
             }),
         }
     }
@@ -62,7 +62,7 @@ impl<T, E> AdjustingVec<T, E> {
     pub async fn adjust<A, I, F, FT>(&mut self, iterable: I, mapper: F) -> Result<(), E> where
         I: IntoIterator<Item = A>,
         F: Fn(T, A) -> FT,
-        FT: Future<Output = T>,
+        FT: Future<Output = Result<T, E>>,
     {
         let mut data: Vec<T> = self.data.drain(..).collect();
         let iter = data
@@ -77,10 +77,10 @@ impl<T, E> AdjustingVec<T, E> {
                         Ok(None)
                     },
                     EitherOrBoth::Right(next) => {
-                        Ok(Some(mapper(self.handlers.create().await?, next).await))
+                        Ok(Some(mapper(self.handlers.create().await?, next).await?))
                     },
                     EitherOrBoth::Both(current, next) => {
-                        Ok(Some(mapper(current, next).await))
+                        Ok(Some(mapper(current, next).await?))
                     },
                 }
             })

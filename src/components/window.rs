@@ -17,11 +17,11 @@ use crate::components::{GLADE, get, CanteenComponent};
 #[derive(Debug)]
 pub struct WindowComponent {
     window: Window,
-    canteens_stack: Rc<RefCell<Stack>>,
+    canteens_stack: Stack,
     canteens_menu: Box,
     canteen_menu_button: MenuButton,
-    canteen_label: Rc<RefCell<Label>>,
-    reload_button: Rc<RefCell<Button>>,
+    canteen_label: Label,
+    reload_button: Button,
     canteen_components: Rc<RefCell<HashMap<CanteenDescription, CanteenComponent>>>,
 }
 
@@ -39,14 +39,14 @@ impl WindowComponent {
             CanteenDescription::DomCafeteHalberstadt,
         ];
         let window: Window = get(&builder, "window")?;
-        let canteens_stack: Rc<RefCell<Stack>> = Rc::new(RefCell::new(get(&builder, "canteens-stack")?));
+        let canteens_stack: Stack = get(&builder, "canteens-stack")?;
         let canteens_menu: Box = get(&builder, "canteens-menu")?;
-        let canteen_label: Rc<RefCell<Label>> = Rc::new(RefCell::new(get(&builder, "canteen-label")?));
+        let canteen_label: Label = get(&builder, "canteen-label")?;
         let canteen_menu_button: MenuButton = get(&builder, "canteen-menu-button")?;
         let about_dialog: AboutDialog = get(&builder, "about")?;
         let about_button: Button = get(&builder, "about-btn")?;
         let options_button: MenuButton = get(&builder, "options-button")?;
-        let reload_button: Rc<RefCell<Button>> = Rc::new(RefCell::new(get(&builder, "reload-button")?));
+        let reload_button: Button = get(&builder, "reload-button")?;
 
         window.set_application(Some(app));
         window.set_icon_name(Some("ovgu-canteen32"));
@@ -111,7 +111,7 @@ impl WindowComponent {
         comp.load(rt);
 
         let reload_rt = rt.clone();
-        comp.reload_button.clone().borrow().connect_clicked(move |_btn| {
+        comp.reload_button.clone().connect_clicked(move |_btn| {
             comp.load(&reload_rt);
         });
 
@@ -119,9 +119,7 @@ impl WindowComponent {
     }
 
     pub fn add_canteen(&self, canteen_stack: &Stack, canteen_name: &'static str) -> Result<()> {
-        self.canteens_stack
-            .borrow_mut()
-            .add_named(canteen_stack, &canteen_name);
+        self.canteens_stack.add_named(canteen_stack, &canteen_name);
 
         let model_btn = ModelButtonBuilder::new()
             .visible(true)
@@ -134,13 +132,12 @@ impl WindowComponent {
         self.canteens_menu.pack_start(&model_btn, false, true, 0);
 
         let action = SimpleAction::new(&canteen_name, None);
-        let canteens_stack_handle = Rc::clone(&self.canteens_stack);
-        let canteen_label_handle = Rc::clone(&self.canteen_label);
+        let canteens_stack_handle = self.canteens_stack.clone();
+        let canteen_label_handle = self.canteen_label.clone();
         action.connect_activate(move |_action, _variant| {
             canteens_stack_handle
-                .borrow()
                 .set_visible_child_name(&canteen_name);
-            canteen_label_handle.borrow().set_text(&canteen_name);
+            canteen_label_handle.set_text(&canteen_name);
         });
         self.window.get_application()
             .context("GTK Application not initialized!")?
@@ -150,7 +147,7 @@ impl WindowComponent {
     }
 
     pub fn load(&self, rt: &Handle) {
-        self.reload_button.borrow().set_sensitive(false);
+        self.reload_button.set_sensitive(false);
 
         // canteens are downloaded in parallel here,
         // but in order for one canteen to show up in a batch
@@ -189,7 +186,7 @@ impl WindowComponent {
             // one canteen after another into the GUI.
             // TODO: render currently visible canteen first
             while let Some((desc, canteen)) = rx.recv().await {
-                if let Some(comp) = fetch_canteen_components.borrow().get(&desc) {
+                if let Some(comp) = fetch_canteen_components.borrow_mut().get_mut(&desc) {
                     comp.load(canteen).await;
                 } else {
                     eprintln!("canteen {:?} not found in components list", desc);
@@ -197,7 +194,7 @@ impl WindowComponent {
                 }
             }
 
-            fetch_reload_button.borrow().set_sensitive(true);
+            fetch_reload_button.set_sensitive(true);
         });
     }
 }

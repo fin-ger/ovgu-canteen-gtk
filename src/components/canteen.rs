@@ -24,16 +24,20 @@ impl CanteenComponent {
         let days_box: Box = get(&builder, "days-box")?;
         let canteen_name = description.to_german_str();
 
-        window.add_canteen(&canteen_stack, canteen_name);
+        window.add_canteen(&canteen_stack, canteen_name)?;
 
         let days = AdjustingVec::new(
-            || async {
-                let comp = DayComponent::new().await?;
-                days_box.pack_start(comp.root_widget(), false, true, 0);
-                glib_yield!();
-                Ok(comp)
+            move || {
+                let inner_days_box = days_box.clone();
+
+                async move {
+                    let comp = DayComponent::new().await?;
+                    inner_days_box.pack_start(comp.root_widget(), false, true, 0);
+                    glib_yield!();
+                    Ok(comp)
+                }
             },
-            |day| async {
+            |day| async move {
                 day.root_widget().destroy();
                 glib_yield!();
                 Ok(())
@@ -47,11 +51,11 @@ impl CanteenComponent {
         })
     }
 
-    pub async fn load(&self, load_result: Result<Canteen, CanteenError>) {
+    pub async fn load(&mut self, load_result: Result<Canteen, CanteenError>) {
         self.canteen_spinner.start();
         self.canteen_spinner.show();
 
-        let mut canteen = match load_result {
+        let canteen = match load_result {
             Ok(canteen) => canteen,
             Err(e) => {
                 eprintln!("error: {}", e);
@@ -61,11 +65,15 @@ impl CanteenComponent {
             }
         };
 
-        self.days.adjust(&canteen.days, |mut comp, day| async {
-            comp.load(day);
+        let days_result = self.days.adjust(&canteen.days, |mut comp, day| async move {
+            comp.load(day).await;
             glib_yield!();
-            comp
-        });
+            Ok(comp)
+        }).await;
+
+        if days_result.is_err() {
+            // TODO: handle error
+        }
 
         self.canteen_spinner.stop();
         self.canteen_spinner.hide();

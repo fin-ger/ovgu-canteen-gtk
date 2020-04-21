@@ -29,16 +29,19 @@ impl DayComponent {
         let mut side_dish_offset = 0;
 
         let meals = AdjustingVec::new(
-            || async {
-                let comp = MealComponent::new().await?;
-                meals_list_box.insert(comp.root_widget(), meal_offset);
+            move || {
+                let inner_meals_list_box = meals_list_box.clone();
+                async move {
+                    let comp = MealComponent::new().await?;
+                    inner_meals_list_box.insert(comp.root_widget(), meal_offset);
 
-                meal_offset += 1;
+                    meal_offset += 1;
 
-                glib_yield!();
-                Ok(comp)
+                    glib_yield!();
+                    Ok(comp)
+                }
             },
-            |meal| async {
+            move |meal| async move {
                 meal.root_widget().destroy();
 
                 meal_offset -= 1;
@@ -48,15 +51,20 @@ impl DayComponent {
             },
         );
 
+        let badges = side_dish_badges.clone();
         let side_dishes = AdjustingVec::new(
-            || async {
-                let comp = BadgeComponent::new().await?;
-                side_dish_badges.insert(comp.root_widget(), side_dish_offset);
+            move || {
+                let inner_side_dish_badges = badges.clone();
 
-                glib_yield!();
-                Ok(comp)
+                async move {
+                    let comp = BadgeComponent::new().await?;
+                    inner_side_dish_badges.insert(comp.root_widget(), side_dish_offset);
+
+                    glib_yield!();
+                    Ok(comp)
+                }
             },
-            |badge| async {
+            move |badge| async move {
                 badge.root_widget().destroy();
 
                 side_dish_offset -= 1;
@@ -80,7 +88,7 @@ impl DayComponent {
         &self.frame
     }
 
-    pub async fn load(&self, day: &Day) {
+    pub async fn load(&mut self, day: &Day) {
         let mut day_name = match day.date.weekday() {
             Weekday::Mon => "Montag",
             Weekday::Tue => "Dienstag",
@@ -101,17 +109,25 @@ impl DayComponent {
 
         self.label.set_text(day_name);
 
-        self.meals.adjust(&day.meals, |mut comp, meal| async {
-            comp.load(meal);
+        let meal_result = self.meals.adjust(&day.meals, |mut comp, meal| async move {
+            comp.load(meal).await?;
             glib_yield!();
-            comp
-        });
+            Ok(comp)
+        }).await;
 
-        self.side_dishes.adjust(&day.side_dishes, |mut badge, side_dish| async {
-            badge.load(side_dish);
+        if meal_result.is_err() {
+            // TODO: handle error
+        }
+
+        let side_dish_result = self.side_dishes.adjust(&day.side_dishes, |badge, side_dish| async move {
+            badge.load(side_dish).await;
             glib_yield!();
-            badge
-        });
+            Ok(badge)
+        }).await;
+
+        if side_dish_result.is_err() {
+            // TODO: handle error
+        }
 
         if day.side_dishes.is_empty() && self.empty_side_dishes_label.is_none() {
             let badge = match LiteBadgeComponent::new().await {
@@ -121,7 +137,7 @@ impl DayComponent {
                     unimplemented!();
                 },
             };
-            badge.load("nicht vorhanden");
+            badge.load("nicht vorhanden").await;
             self.side_dish_badges.insert(badge.root_widget(), 0);
             glib_yield!();
         } else if !day.side_dishes.is_empty() && self.empty_side_dishes_label.is_some() {
