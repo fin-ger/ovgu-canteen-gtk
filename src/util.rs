@@ -1,4 +1,6 @@
 use std::future::Future;
+use std::pin::Pin;
+
 use itertools::{Itertools, EitherOrBoth};
 use futures::stream::{self, TryStreamExt};
 use async_trait::async_trait;
@@ -15,12 +17,10 @@ struct AdjustingVecHandlersImpl<C, D> {
 }
 
 #[async_trait(?Send)]
-impl<T, E, C, FC, D, FD> AdjustingVecHandlers<T, E> for AdjustingVecHandlersImpl<C, D>
+impl<T, E, C, D> AdjustingVecHandlers<T, E> for AdjustingVecHandlersImpl<C, D>
 where
-    C: Fn() -> FC,
-    FC: Future<Output = Result<T, E>>,
-    D: Fn(T) -> FD,
-    FD: Future<Output = Result<(), E>>,
+    C: Fn() -> Pin<Box<dyn Future<Output = Result<T, E>>>>,
+    D: Fn(T) -> Pin<Box<dyn Future<Output = Result<(), E>>>>,
 {
     async fn create(&self) -> Result<T, E> where T: 'async_trait, E: 'async_trait {
         (self.creator)().await
@@ -53,8 +53,8 @@ impl<T, E> AdjustingVec<T, E> {
         Self {
             data: Vec::new(),
             handlers: Box::new(AdjustingVecHandlersImpl {
-                creator,
-                destroyer,
+                creator: || Box::pin(creator()),
+                destroyer: |item| Box::pin(destroyer(item)),
             }),
         }
     }
