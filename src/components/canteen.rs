@@ -4,7 +4,7 @@ use gtk::{Box, Builder, Spinner, Stack};
 use ovgu_canteen::{Canteen, CanteenDescription, Error as CanteenError};
 
 use crate::components::{get, glib_yield, DayComponent, WindowComponent, GLADE};
-use crate::util::AdjustingVec;
+use crate::util::{enclose, AdjustingVec};
 
 #[derive(Debug)]
 pub struct CanteenComponent {
@@ -24,16 +24,15 @@ impl CanteenComponent {
         window.add_canteen(&canteen_stack, canteen_name)?;
 
         let days = AdjustingVec::new(
-            move || {
-                let inner_days_box = days_box.clone();
-
-                async move {
+            enclose! { (days_box) move || {
+                enclose! { (days_box) async move {
                     let comp = DayComponent::new().await?;
-                    inner_days_box.pack_start(comp.root_widget(), false, true, 0);
+                    days_box.pack_start(comp.root_widget(), false, true, 0);
+
                     glib_yield!();
                     Ok(comp)
-                }
-            },
+                }}
+            }},
             |day| async move {
                 day.root_widget().destroy();
                 glib_yield!();

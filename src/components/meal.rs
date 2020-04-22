@@ -7,7 +7,7 @@ use gtk::{Builder, FlowBox, Label, ListBoxRow};
 use ovgu_canteen::Meal;
 
 use crate::components::{get, glib_yield, BadgeComponent, LiteBadgeComponent, GLADE};
-use crate::util::AdjustingVec;
+use crate::util::{enclose, AdjustingVec};
 
 #[derive(Debug)]
 pub struct MealComponent {
@@ -31,118 +31,80 @@ impl MealComponent {
         let price_staff: Label = get(&builder, "meal-price-staff")?;
         let price_guest: Label = get(&builder, "meal-price-guest")?;
 
-        let additive_offset_create = Arc::new(AtomicI32::new(0));
-        let additive_offset_destroy = Arc::clone(&additive_offset_create);
-        let allergenic_offset_create = Arc::new(AtomicI32::new(0));
-        let allergenic_offset_destroy = Arc::clone(&allergenic_offset_create);
-        let allergenic_offset_additive_create = Arc::clone(&allergenic_offset_create);
-        let allergenic_offset_additive_destroy = Arc::clone(&allergenic_offset_create);
-        let symbol_offset_create = Arc::new(AtomicI32::new(0));
-        let symbol_offset_destroy = Arc::clone(&symbol_offset_create);
-        let symbol_offset_additive_create = Arc::clone(&symbol_offset_create);
-        let symbol_offset_additive_destroy = Arc::clone(&symbol_offset_create);
-        let symbol_offset_allergenic_create = Arc::clone(&symbol_offset_create);
-        let symbol_offset_allergenic_destroy = Arc::clone(&symbol_offset_create);
+        let additive_offset = Arc::new(AtomicI32::new(0));
+        let allergenic_offset = Arc::new(AtomicI32::new(0));
+        let symbol_offset = Arc::new(AtomicI32::new(0));
 
-        let additive_badges = badges.clone();
         let additives = AdjustingVec::new(
-            move || {
-                let inner_badges = additive_badges.clone();
-                let inner_additive_offset = Arc::clone(&additive_offset_create);
-                let inner_allergenic_offset = Arc::clone(&allergenic_offset_additive_create);
-                let inner_symbol_offset = Arc::clone(&symbol_offset_additive_create);
-
-                async move {
+            enclose! { (badges, additive_offset, allergenic_offset, symbol_offset) move || {
+                enclose! { (badges, additive_offset, allergenic_offset, symbol_offset) async move {
                     let comp = LiteBadgeComponent::new().await?;
-                    inner_badges.insert(comp.root_widget(), inner_additive_offset.load(Ordering::SeqCst));
-
-                    inner_additive_offset.fetch_add(1, Ordering::SeqCst);
-                    inner_allergenic_offset.fetch_add(1, Ordering::SeqCst);
-                    inner_symbol_offset.fetch_add(1, Ordering::SeqCst);
+                    badges.insert(comp.root_widget(), additive_offset.load(Ordering::SeqCst));
+                    additive_offset.fetch_add(1, Ordering::SeqCst);
+                    allergenic_offset.fetch_add(1, Ordering::SeqCst);
+                    symbol_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
-                }
-            },
-            move |badge| {
-                let inner_additive_offset = Arc::clone(&additive_offset_destroy);
-                let inner_allergenic_offset = Arc::clone(&allergenic_offset_additive_destroy);
-                let inner_symbol_offset = Arc::clone(&symbol_offset_additive_destroy);
-
-                async move {
+                }}
+            }},
+            enclose! { (additive_offset, allergenic_offset, symbol_offset) move |badge| {
+                enclose! { (additive_offset, allergenic_offset, symbol_offset) async move {
                     badge.root_widget().destroy();
-
-                    inner_additive_offset.fetch_sub(1, Ordering::SeqCst);
-                    inner_allergenic_offset.fetch_sub(1, Ordering::SeqCst);
-                    inner_symbol_offset.fetch_sub(1, Ordering::SeqCst);
+                    additive_offset.fetch_sub(1, Ordering::SeqCst);
+                    allergenic_offset.fetch_sub(1, Ordering::SeqCst);
+                    symbol_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())
-                }
-            },
+                }}
+            }},
         );
 
-        let allergenic_badges = badges.clone();
         let allergenics = AdjustingVec::new(
-            move || {
-                let inner_badges = allergenic_badges.clone();
-                let inner_allergenic_offset = Arc::clone(&allergenic_offset_create);
-                let inner_symbol_offset = Arc::clone(&symbol_offset_allergenic_create);
-
-                async move {
+            enclose! { (badges, allergenic_offset, symbol_offset) move || {
+                enclose! { (badges, allergenic_offset, symbol_offset) async move {
                     let comp = LiteBadgeComponent::new().await?;
-                    inner_badges.insert(comp.root_widget(), inner_allergenic_offset.load(Ordering::SeqCst));
-
-                    inner_allergenic_offset.fetch_add(1, Ordering::SeqCst);
-                    inner_symbol_offset.fetch_add(1, Ordering::SeqCst);
+                    badges.insert(comp.root_widget(), allergenic_offset.load(Ordering::SeqCst));
+                    allergenic_offset.fetch_add(1, Ordering::SeqCst);
+                    symbol_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
-                }
-            },
-            move |badge| {
-                let inner_allergenic_offset = Arc::clone(&allergenic_offset_destroy);
-                let inner_symbol_offset = Arc::clone(&symbol_offset_allergenic_destroy);
-
-                async move {
+                }}
+            }},
+            enclose! { (allergenic_offset, symbol_offset) move |badge| {
+                enclose! { (allergenic_offset, symbol_offset) async move {
                     badge.root_widget().destroy();
-
-                    inner_allergenic_offset.fetch_sub(1, Ordering::SeqCst);
-                    inner_symbol_offset.fetch_sub(1, Ordering::SeqCst);
+                    allergenic_offset.fetch_sub(1, Ordering::SeqCst);
+                    symbol_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())
-                }
-            },
+                }}
+            }},
         );
 
         let symbols = AdjustingVec::new(
-            move || {
-                let inner_badges = badges.clone();
-                let inner_symbol_offset = Arc::clone(&symbol_offset_create);
-
-                async move {
+            enclose! { (badges, symbol_offset) move || {
+                enclose! { (badges, symbol_offset) async move {
                     let comp = BadgeComponent::new().await?;
-                    inner_badges.insert(comp.root_widget(), inner_symbol_offset.load(Ordering::SeqCst));
-
-                    inner_symbol_offset.fetch_add(1, Ordering::SeqCst);
+                    badges.insert(comp.root_widget(), symbol_offset.load(Ordering::SeqCst));
+                    symbol_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
-                }
-            },
-            move |badge| {
-                let inner_symbol_offset = Arc::clone(&symbol_offset_destroy);
-
-                async move {
+                }}
+            }},
+            enclose! { (symbol_offset) move |badge| {
+                enclose! { (symbol_offset) async move {
                     badge.root_widget().destroy();
-
-                    inner_symbol_offset.fetch_sub(1, Ordering::SeqCst);
+                    symbol_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())
-                }
-            },
+                }}
+            }},
         );
 
         Ok(Self {

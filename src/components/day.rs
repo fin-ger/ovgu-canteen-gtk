@@ -10,7 +10,7 @@ use ovgu_canteen::Day;
 use crate::components::{
     get, glib_yield, BadgeComponent, LiteBadgeComponent, MealComponent, GLADE,
 };
-use crate::util::AdjustingVec;
+use crate::util::{enclose, AdjustingVec};
 
 #[derive(Debug)]
 pub struct DayComponent {
@@ -30,68 +30,51 @@ impl DayComponent {
         let meals_list_box: ListBox = get(&builder, "day-meals-list-box")?;
         let side_dish_badges: FlowBox = get(&builder, "side-dish-badges")?;
 
-        let meal_offset_create = Arc::new(AtomicI32::new(0));
-        let meal_offset_destroy = Arc::clone(&meal_offset_create);
-        let side_dish_offset_create = Arc::new(AtomicI32::new(0));
-        let side_dish_offset_destroy = Arc::clone(&side_dish_offset_create);
+        let meal_offset = Arc::new(AtomicI32::new(0));
+        let side_dish_offset = Arc::new(AtomicI32::new(0));
 
         let meals = AdjustingVec::new(
-            move || {
-                let inner_meals_list_box = meals_list_box.clone();
-                let inner_meal_offset = Arc::clone(&meal_offset_create);
-
-                async move {
+            enclose! { (meals_list_box, meal_offset) move || {
+                enclose! { (meals_list_box, meal_offset) async move {
                     let comp = MealComponent::new().await?;
-                    inner_meals_list_box.insert(comp.root_widget(), inner_meal_offset.load(Ordering::SeqCst));
-
-                    inner_meal_offset.fetch_add(1, Ordering::SeqCst);
+                    meals_list_box.insert(comp.root_widget(), meal_offset.load(Ordering::SeqCst));
+                    meal_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
-                }
-            },
-            move |meal| {
-                let inner_meal_offset = Arc::clone(&meal_offset_destroy);
-
-                async move {
+                }}
+            }},
+            enclose! { (meal_offset) move |meal| {
+                enclose! { (meal_offset) async move {
                     meal.root_widget().destroy();
-
-                    inner_meal_offset.fetch_sub(1, Ordering::SeqCst);
+                    meal_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())
-                }
-            },
+                }}
+            }},
         );
 
-        let badges = side_dish_badges.clone();
         let side_dishes = AdjustingVec::new(
-            move || {
-                let inner_side_dish_badges = badges.clone();
-                let inner_side_dish_offset = Arc::clone(&side_dish_offset_create);
-
-                async move {
+            enclose! { (side_dish_badges, side_dish_offset) move || {
+                enclose! { (side_dish_badges, side_dish_offset) async move {
                     let comp = BadgeComponent::new().await?;
-                    inner_side_dish_badges.insert(comp.root_widget(), inner_side_dish_offset.load(Ordering::SeqCst));
-
-                    inner_side_dish_offset.fetch_add(1, Ordering::SeqCst);
+                    side_dish_badges.insert(comp.root_widget(), side_dish_offset.load(Ordering::SeqCst));
+                    side_dish_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
-                }
-            },
-            move |badge| {
-                let inner_side_dish_offset = Arc::clone(&side_dish_offset_destroy);
-
-                async move {
+                }}
+            }},
+            enclose! { (side_dish_offset) move |badge| {
+                enclose! { (side_dish_offset) async move {
                     badge.root_widget().destroy();
-
-                    inner_side_dish_offset.fetch_sub(1, Ordering::SeqCst);
+                    side_dish_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())
-                }
-            },
+                }}
+            }},
         );
 
         Ok(Self {

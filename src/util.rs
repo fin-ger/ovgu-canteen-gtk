@@ -5,6 +5,16 @@ use async_trait::async_trait;
 use futures::stream::{self, TryStreamExt};
 use itertools::{EitherOrBoth, Itertools};
 
+macro_rules! enclose {
+    ( ($( $x:ident ),*) $y:expr ) => {
+        {
+            $(let $x = $x.clone();)*
+                $y
+        }
+    };
+}
+pub(crate) use enclose;
+
 #[async_trait(?Send)]
 trait AdjustingVecHandlers<T, E> {
     async fn create(&self) -> Result<T, E>

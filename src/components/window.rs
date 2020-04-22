@@ -137,7 +137,7 @@ impl WindowComponent {
         let canteens_stack_handle = self.canteens_stack.clone();
         let canteen_label_handle = self.canteen_label.clone();
         action.connect_activate(move |_action, _variant| {
-            canteens_stack_handle.set_visible_child_name(&canteen_name);
+            canteens_stack_handle.set_visible_child_name(canteen_name);
             canteen_label_handle.set_text(canteen_name);
         });
         self.window
