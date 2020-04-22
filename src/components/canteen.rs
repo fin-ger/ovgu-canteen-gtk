@@ -14,7 +14,7 @@ pub struct CanteenComponent {
 }
 
 impl CanteenComponent {
-    pub fn new(description: CanteenDescription, window: &WindowComponent) -> Result<Self> {
+    pub fn new(description: &CanteenDescription, window: &WindowComponent) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
         let canteen_stack: Stack = get(&builder, "canteen-stack")?;
         let canteen_spinner: Spinner = get(&builder, "canteen-spinner")?;

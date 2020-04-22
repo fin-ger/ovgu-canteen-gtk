@@ -24,7 +24,7 @@ impl BadgeComponent {
         Ok(Self { label })
     }
 
-    pub fn root_widget(&self) -> &Label {
+    pub const fn root_widget(&self) -> &Label {
         &self.label
     }
 
@@ -45,7 +45,7 @@ impl LiteBadgeComponent {
         Ok(Self { label })
     }
 
-    pub fn root_widget(&self) -> &Label {
+    pub const fn root_widget(&self) -> &Label {
         &self.label
     }
 

@@ -1,3 +1,6 @@
+use std::sync::Arc;
+use std::sync::atomic::{Ordering, AtomicI32};
+
 use anyhow::{Error, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
@@ -27,29 +30,37 @@ impl DayComponent {
         let meals_list_box: ListBox = get(&builder, "day-meals-list-box")?;
         let side_dish_badges: FlowBox = get(&builder, "side-dish-badges")?;
 
-        let mut meal_offset = 0;
-        let mut side_dish_offset = 0;
+        let meal_offset_create = Arc::new(AtomicI32::new(0));
+        let meal_offset_destroy = Arc::clone(&meal_offset_create);
+        let side_dish_offset_create = Arc::new(AtomicI32::new(0));
+        let side_dish_offset_destroy = Arc::clone(&side_dish_offset_create);
 
         let meals = AdjustingVec::new(
             move || {
                 let inner_meals_list_box = meals_list_box.clone();
+                let inner_meal_offset = Arc::clone(&meal_offset_create);
+
                 async move {
                     let comp = MealComponent::new().await?;
-                    inner_meals_list_box.insert(comp.root_widget(), meal_offset);
+                    inner_meals_list_box.insert(comp.root_widget(), inner_meal_offset.load(Ordering::SeqCst));
 
-                    meal_offset += 1;
+                    inner_meal_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
                 }
             },
-            move |meal| async move {
-                meal.root_widget().destroy();
+            move |meal| {
+                let inner_meal_offset = Arc::clone(&meal_offset_destroy);
 
-                meal_offset -= 1;
+                async move {
+                    meal.root_widget().destroy();
 
-                glib_yield!();
-                Ok(())
+                    inner_meal_offset.fetch_sub(1, Ordering::SeqCst);
+
+                    glib_yield!();
+                    Ok(())
+                }
             },
         );
 
@@ -57,22 +68,29 @@ impl DayComponent {
         let side_dishes = AdjustingVec::new(
             move || {
                 let inner_side_dish_badges = badges.clone();
+                let inner_side_dish_offset = Arc::clone(&side_dish_offset_create);
 
                 async move {
                     let comp = BadgeComponent::new().await?;
-                    inner_side_dish_badges.insert(comp.root_widget(), side_dish_offset);
+                    inner_side_dish_badges.insert(comp.root_widget(), inner_side_dish_offset.load(Ordering::SeqCst));
+
+                    inner_side_dish_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
                 }
             },
-            move |badge| async move {
-                badge.root_widget().destroy();
+            move |badge| {
+                let inner_side_dish_offset = Arc::clone(&side_dish_offset_destroy);
 
-                side_dish_offset -= 1;
+                async move {
+                    badge.root_widget().destroy();
 
-                glib_yield!();
-                Ok(())
+                    inner_side_dish_offset.fetch_sub(1, Ordering::SeqCst);
+
+                    glib_yield!();
+                    Ok(())
+                }
             },
         );
 
@@ -86,7 +104,7 @@ impl DayComponent {
         })
     }
 
-    pub fn root_widget(&self) -> &Frame {
+    pub const fn root_widget(&self) -> &Frame {
         &self.frame
     }
 

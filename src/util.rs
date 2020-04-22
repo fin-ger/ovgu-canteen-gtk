@@ -57,6 +57,7 @@ impl<T: std::fmt::Debug, E> std::fmt::Debug for AdjustingVec<T, E> {
 }
 
 impl<T, E> AdjustingVec<T, E> {
+    #[allow(clippy::as_conversions)]
     pub fn new<C, FC, D, FD>(creator: C, destroyer: D) -> Self
     where
         C: 'static + Fn() -> FC,

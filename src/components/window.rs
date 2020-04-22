@@ -105,7 +105,7 @@ impl WindowComponent {
         for desc in canteens.drain(..) {
             canteen_components_borrow.insert(
                 desc.clone(),
-                CanteenComponent::new(desc, &comp).context("Failed to create canteen!")?,
+                CanteenComponent::new(&desc, &comp).context("Failed to create canteen!")?,
             );
         }
         drop(canteen_components_borrow);
@@ -121,11 +121,11 @@ impl WindowComponent {
     }
 
     pub fn add_canteen(&self, canteen_stack: &Stack, canteen_name: &'static str) -> Result<()> {
-        self.canteens_stack.add_named(canteen_stack, &canteen_name);
+        self.canteens_stack.add_named(canteen_stack, canteen_name);
 
         let model_btn = ModelButtonBuilder::new()
             .visible(true)
-            .text(&canteen_name)
+            .text(canteen_name)
             .can_focus(false)
             .action_name(&format!("app.{}", canteen_name))
             .role(ButtonRole::Radio)
@@ -133,12 +133,12 @@ impl WindowComponent {
 
         self.canteens_menu.pack_start(&model_btn, false, true, 0);
 
-        let action = SimpleAction::new(&canteen_name, None);
+        let action = SimpleAction::new(canteen_name, None);
         let canteens_stack_handle = self.canteens_stack.clone();
         let canteen_label_handle = self.canteen_label.clone();
         action.connect_activate(move |_action, _variant| {
             canteens_stack_handle.set_visible_child_name(&canteen_name);
-            canteen_label_handle.set_text(&canteen_name);
+            canteen_label_handle.set_text(canteen_name);
         });
         self.window
             .get_application()
@@ -184,7 +184,7 @@ impl WindowComponent {
 
         let c = glib::MainContext::default();
         let fetch_reload_button = self.reload_button.clone();
-        let fetch_canteen_components = self.canteen_components.clone();
+        let fetch_canteen_components = Rc::clone(&self.canteen_components);
         c.spawn_local(async move {
             // fetching parallel loaded canteens here and inserting
             // one canteen after another into the GUI.

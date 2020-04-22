@@ -3,13 +3,14 @@
     clippy::restriction,
     clippy::pedantic,
     clippy::nursery,
-    clippy::cargo
+    clippy::cargo,
 )]
 #![allow(
     clippy::missing_docs_in_private_items,
     clippy::implicit_return,
     clippy::non_ascii_literal,
-    clippy::multiple_crate_versions
+    clippy::multiple_crate_versions,
+    clippy::module_name_repetitions,
 )]
 
 mod application;
