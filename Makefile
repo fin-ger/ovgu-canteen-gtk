@@ -1,6 +1,5 @@
 PREFIX ?= /usr
-GLIB_COMPILE_SCHEMAS = $(shell $(PKGCONFIG) --variable=glib_compile_schemas gio-2.0)
-CARGO_BUILD_ARGS = --release
+CARGO_BUILD_ARGS ?= --release
 TARGET_DIR = release
 
 build:

@@ -24,7 +24,7 @@
         "env" : {
             "RUSTFLAGS" : "--remap-path-prefix =../",
             "CARGO_HOME" : "/run/build/OvGUCanteen/cargo",
-            "CARGO_BUILD_ARGS": "--offline --verbose",
+            "CARGO_BUILD_ARGS": "--offline --release --verbose",
             "PREFIX": "/app"
         }
     },
