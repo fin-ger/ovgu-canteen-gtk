@@ -21,14 +21,7 @@ use crate::components::WindowComponent;
 //        - add setting to settings menu for number of menus per canteen to cache
 // ASSIGNEE: @fin-ger
 
-// TODO: add reload button for reloading canteen menus on network failure
-// ASSIGNEE: @fin-ger
-
 // TODO: Create custom flow widget for menu badges
-// ASSIGNEE: ?
-
-// TODO: Replace button with toggle button in menu selection popover to
-//       indicate current canteen
 // ASSIGNEE: ?
 
 // TODO: create flatpak package

@@ -95,6 +95,29 @@ impl WindowComponent {
             about_dialog.hide();
         });
 
+        let canteen_selected_action = SimpleAction::new(
+            // action name
+            "canteen-selected",
+            // single parameter which is a string containing the canteen-name
+            Some(glib::VariantTy::new("s").unwrap()),
+        );
+        let canteens_stack_handle = canteens_stack.clone();
+        let canteen_label_handle = canteen_label.clone();
+        canteen_selected_action.connect_activate(move |_action, maybe_canteen_variant| {
+            let canteen_variant = match maybe_canteen_variant {
+                Some(v) => v,
+                None => return,
+            };
+            let canteen_name = match canteen_variant.get_str() {
+                Some(s) => s,
+                None => return,
+            };
+
+            canteens_stack_handle.set_visible_child_name(canteen_name);
+            canteen_label_handle.set_text(canteen_name);
+        });
+        app.add_action(&canteen_selected_action);
+
         window.show_all();
 
         let comp = Self {
@@ -133,23 +156,12 @@ impl WindowComponent {
             .visible(true)
             .text(canteen_name)
             .can_focus(false)
-            .action_name(&format!("app.{}", canteen_name))
+            .action_name("app.canteen-selected")
+            .action_target(&canteen_name.to_variant())
             .role(ButtonRole::Radio)
             .build();
 
         self.canteens_menu.pack_start(&model_btn, false, true, 0);
-
-        let action = SimpleAction::new(canteen_name, None);
-        let canteens_stack_handle = self.canteens_stack.clone();
-        let canteen_label_handle = self.canteen_label.clone();
-        action.connect_activate(move |_action, _variant| {
-            canteens_stack_handle.set_visible_child_name(canteen_name);
-            canteen_label_handle.set_text(canteen_name);
-        });
-        self.window
-            .get_application()
-            .context("GTK Application not initialized!")?
-            .add_action(&action);
 
         Ok(())
     }
