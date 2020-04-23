@@ -10,7 +10,7 @@ pub use day::DayComponent;
 pub use meal::MealComponent;
 pub use window::WindowComponent;
 
-pub const GLADE: &str = std::include_str!("../../data/gnome-ovgu-canteen.glade");
+pub const GLADE: &str = std::include_str!("../../data/de.fin_ger.OvGUCanteen.glade");
 
 macro_rules! glib_yield {
     () => {

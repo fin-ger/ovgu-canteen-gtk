@@ -9,10 +9,10 @@ install: build
 	@mkdir -p "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@mkdir -p "$(PREFIX)/share/applications/"
 	@mkdir -p "$(PREFIX)/bin"
-	@install -m 0644 data/ovgu-canteen32.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
-	@install -m 0644 data/ovgu-canteen128.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
-	@install -m 0644 data/ovgu-canteen-closed256.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
-	@desktop-file-install -m 0644 --dir="$(PREFIX)/share/applications/" data/gnome-ovgu-canteen.desktop
+	@install -m 0644 data/de.fin_ger.OvGUCanteen.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
+	@install -m 0644 data/de.fin_ger.OvGUCanteen.About.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
+	@install -m 0644 data/de.fin_ger.OvGUCanteen.Closed.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
+	@desktop-file-install -m 0644 --dir="$(PREFIX)/share/applications/" data/de.fin_ger.OvGUCanteen.desktop
 	@install -s -m 0755 "target/$(TARGET_DIR)/gnome-ovgu-canteen" "$(PREFIX)/bin/"
 	@update-desktop-database "$(PREFIX)/share/applications"
 	@gtk-update-icon-cache
@@ -22,11 +22,12 @@ run:
 	@gnome-ovgu-canteen
 
 uninstall:
-	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/ovgu-canteen32.svg"
-	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/ovgu-canteen128.svg"
-	@rm "$(PREFIX)/share/applications/gnome-ovgu-canteen.desktop"
+	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/de.fin_ger.OvGUCanteen.svg"
+	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/de.fin_ger.OvGUCanteen.About.svg"
+	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/de.fin_ger.OvGUCanteen.Closed.svg"
+	@rm "$(PREFIX)/share/applications/de.fin_ger.OvGUCanteen.desktop"
 	@rm "$(PREFIX)/bin/gnome-ovgu-canteen"
 
 clean:
 	@$(MAKE) -s uninstall PREFIX=$(HOME)/.local
-	@rm -r target
+	@echo "Installation files have been cleaned. To also clean cargo build files run 'cargo clean'"
