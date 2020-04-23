@@ -11,6 +11,7 @@
     clippy::non_ascii_literal,
     clippy::multiple_crate_versions,
     clippy::module_name_repetitions,
+    clippy::else_if_without_else,
 )]
 
 mod application;

@@ -23,7 +23,9 @@
         ],
         "env" : {
             "RUSTFLAGS" : "--remap-path-prefix =../",
-            "CARGO_HOME" : "/run/build/OvGUCanteen/cargo"
+            "CARGO_HOME" : "/run/build/OvGUCanteen/cargo",
+            "CARGO_BUILD_ARGS": "--offline --verbose",
+            "PREFIX": "/app"
         }
     },
     "modules": [
@@ -32,8 +34,7 @@
             "buildsystem": "simple",
             "build-commands": [
                 "cargo --offline fetch --manifest-path Cargo.toml --verbose",
-                "cargo --offline build --release --verbose",
-                "install -Dm755 ./target/release/gnome-ovgu-canteen -t /app/bin/"
+                "make install"
             ],
             "sources": [
                 {

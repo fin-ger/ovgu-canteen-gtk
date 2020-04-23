@@ -53,6 +53,7 @@ impl CanteenComponent {
     pub async fn load(&mut self, load_result: Result<Canteen, Error>) {
         self.canteen_spinner.start();
         self.canteen_spinner.show();
+        self.canteen_stack.set_visible_child_name("canteen-menu");
 
         let canteen = match load_result {
             Ok(canteen) => {
@@ -78,8 +79,8 @@ impl CanteenComponent {
         if let Err(e) = days_result {
             self.canteen_stack.set_visible_child_name("canteen-error");
             self.canteen_error_label.set_text(&format!("error: {:#}", e));
-        } else {
-            self.canteen_stack.set_visible_child_name("canteen-menu");
+        } else if canteen.days.is_empty() {
+            self.canteen_stack.set_visible_child_name("canteen-empty");
         }
 
         self.canteen_spinner.stop();

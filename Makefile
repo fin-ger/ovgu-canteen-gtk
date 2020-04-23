@@ -12,6 +12,7 @@ install: build
 	@mkdir -p "$(PREFIX)/bin"
 	@install -m 0644 data/ovgu-canteen32.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@install -m 0644 data/ovgu-canteen128.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
+	@install -m 0644 data/ovgu-canteen-closed256.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@desktop-file-install -m 0644 --dir="$(PREFIX)/share/applications/" data/gnome-ovgu-canteen.desktop
 	@install -s -m 0755 "target/$(TARGET_DIR)/gnome-ovgu-canteen" "$(PREFIX)/bin/"
 	@update-desktop-database "$(PREFIX)/share/applications"

@@ -166,6 +166,27 @@ impl WindowComponent {
         Ok(())
     }
 
+    #[cfg(feature = "test-with-local-files")]
+    async fn load_canteen(canteen_desc: CanteenDescription) -> Result<Canteen> {
+        use std::fs::File;
+
+        let file = File::open("data/canteens.json")
+            .context("'data/canteens.json' not found!")?;
+        let mut canteens: Vec<Canteen> = serde_json::from_reader(&file)
+            .context("Could not parse 'data/cateens.json'")?;
+        let canteen = canteens
+            .drain(..)
+            .find(|c| c.description == canteen_desc)
+            .context("Canteen not found!")?;
+        Ok(canteen)
+    }
+
+    #[cfg(not(feature = "test-with-local-files"))]
+    async fn load_canteen(canteen_desc: CanteenDescription) -> Result<Canteen> {
+        failure::ResultExt::compat(Canteen::new(canteen_desc).await)
+            .context("Failed to fetch canteen")
+    }
+
     pub fn load(&self, rt: &Handle) {
         self.reload_button.set_sensitive(false);
         self.window_stack.set_visible_child_name("canteens-stack");
@@ -178,24 +199,7 @@ impl WindowComponent {
         for (canteen_desc, _comp) in self.canteen_components.borrow().iter() {
             let mut tx = tx.clone();
             rt.spawn(enclose! { (canteen_desc) async move {
-                let canteen = (enclose! { (canteen_desc) || async move {
-                    if cfg!(feature = "test-with-local-files") {
-                        use std::fs::File;
-
-                        let file = File::open("data/canteens.json")
-                            .context("'data/canteens.json' not found!")?;
-                        let mut canteens: Vec<Canteen> = serde_json::from_reader(&file)
-                            .context("Could not parse 'data/cateens.json'")?;
-                        let canteen = canteens
-                            .drain(..)
-                            .find(|c| c.description == canteen_desc)
-                            .context("Canteen not found!")?;
-                        Ok(canteen)
-                    } else {
-                        failure::ResultExt::compat(Canteen::new(canteen_desc.clone()).await)
-                            .context("Failed to fetch canteen")
-                    }
-                }})().await;
+                let canteen = Self::load_canteen(canteen_desc.clone()).await;
                 tx.send((canteen_desc, canteen)).await
                     .expect("Failed to commit downloaded canteen into UI component!");
             }});
