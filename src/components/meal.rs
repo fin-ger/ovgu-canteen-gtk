@@ -24,36 +24,37 @@ pub struct MealComponent {
 impl MealComponent {
     pub async fn new() -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let meal_box: ListBoxRow = get(&builder, "meal")?;
-        let name: Label = get(&builder, "meal-name")?;
-        let badges: FlowBox = get(&builder, "badges")?;
-        let price_student: Label = get(&builder, "meal-price-student")?;
-        let price_staff: Label = get(&builder, "meal-price-staff")?;
-        let price_guest: Label = get(&builder, "meal-price-guest")?;
+        let meal_box: ListBoxRow = get!(&builder, "meal")?;
+        let name: Label = get!(&builder, "meal-name")?;
+        let badges: FlowBox = get!(&builder, "badges")?;
+        let price_student: Label = get!(&builder, "meal-price-student")?;
+        let price_staff: Label = get!(&builder, "meal-price-staff")?;
+        let price_guest: Label = get!(&builder, "meal-price-guest")?;
 
-        let additive_offset = Arc::new(AtomicI32::new(0));
-        let allergenic_offset = Arc::new(AtomicI32::new(0));
         let symbol_offset = Arc::new(AtomicI32::new(0));
+        let allergenic_offset = Arc::new(AtomicI32::new(0));
+        let additive_offset = Arc::new(AtomicI32::new(0));
 
-        let additives = AdjustingVec::new(
-            enclose! { (badges, additive_offset, allergenic_offset, symbol_offset) move || {
-                enclose! { (badges, additive_offset, allergenic_offset, symbol_offset) async move {
-                    let comp = LiteBadgeComponent::new().await?;
-                    badges.insert(comp.root_widget(), additive_offset.load(Ordering::SeqCst));
-                    additive_offset.fetch_add(1, Ordering::SeqCst);
-                    allergenic_offset.fetch_add(1, Ordering::SeqCst);
+        let symbols = AdjustingVec::new(
+            enclose! { (badges, symbol_offset, allergenic_offset, additive_offset) move || {
+                enclose! { (badges, symbol_offset, allergenic_offset, additive_offset) async move {
+                    let comp = BadgeComponent::new().await?;
+                    badges.insert(comp.root_widget(), symbol_offset.load(Ordering::SeqCst));
                     symbol_offset.fetch_add(1, Ordering::SeqCst);
+                    allergenic_offset.fetch_add(1, Ordering::SeqCst);
+                    additive_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
                 }}
             }},
-            enclose! { (additive_offset, allergenic_offset, symbol_offset) move |badge| {
-                enclose! { (additive_offset, allergenic_offset, symbol_offset) async move {
-                    badge.root_widget().destroy();
-                    additive_offset.fetch_sub(1, Ordering::SeqCst);
-                    allergenic_offset.fetch_sub(1, Ordering::SeqCst);
+            enclose! { (symbol_offset, allergenic_offset, additive_offset) move |badge| {
+                enclose! { (symbol_offset, allergenic_offset, additive_offset) async move {
+                    // a flowbox item always has a parent - a FlowBoxChild
+                    badge.root_widget().get_parent().unwrap().destroy();
                     symbol_offset.fetch_sub(1, Ordering::SeqCst);
+                    allergenic_offset.fetch_sub(1, Ordering::SeqCst);
+                    additive_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())
@@ -62,22 +63,23 @@ impl MealComponent {
         );
 
         let allergenics = AdjustingVec::new(
-            enclose! { (badges, allergenic_offset, symbol_offset) move || {
-                enclose! { (badges, allergenic_offset, symbol_offset) async move {
+            enclose! { (badges, allergenic_offset, additive_offset) move || {
+                enclose! { (badges, allergenic_offset, additive_offset) async move {
                     let comp = LiteBadgeComponent::new().await?;
                     badges.insert(comp.root_widget(), allergenic_offset.load(Ordering::SeqCst));
                     allergenic_offset.fetch_add(1, Ordering::SeqCst);
-                    symbol_offset.fetch_add(1, Ordering::SeqCst);
+                    additive_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
                 }}
             }},
-            enclose! { (allergenic_offset, symbol_offset) move |badge| {
-                enclose! { (allergenic_offset, symbol_offset) async move {
-                    badge.root_widget().destroy();
+            enclose! { (allergenic_offset, additive_offset) move |badge| {
+                enclose! { (allergenic_offset, additive_offset) async move {
+                    // a flowbox item always has a parent - a FlowBoxChild
+                    badge.root_widget().get_parent().unwrap().destroy();
                     allergenic_offset.fetch_sub(1, Ordering::SeqCst);
-                    symbol_offset.fetch_sub(1, Ordering::SeqCst);
+                    additive_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())
@@ -85,21 +87,22 @@ impl MealComponent {
             }},
         );
 
-        let symbols = AdjustingVec::new(
-            enclose! { (badges, symbol_offset) move || {
-                enclose! { (badges, symbol_offset) async move {
-                    let comp = BadgeComponent::new().await?;
-                    badges.insert(comp.root_widget(), symbol_offset.load(Ordering::SeqCst));
-                    symbol_offset.fetch_add(1, Ordering::SeqCst);
+        let additives = AdjustingVec::new(
+            enclose! { (badges, additive_offset) move || {
+                enclose! { (badges, additive_offset) async move {
+                    let comp = LiteBadgeComponent::new().await?;
+                    badges.insert(comp.root_widget(), additive_offset.load(Ordering::SeqCst));
+                    additive_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
                 }}
             }},
-            enclose! { (symbol_offset) move |badge| {
-                enclose! { (symbol_offset) async move {
-                    badge.root_widget().destroy();
-                    symbol_offset.fetch_sub(1, Ordering::SeqCst);
+            enclose! { (additive_offset) move |badge| {
+                enclose! { (additive_offset) async move {
+                    // a flowbox item always has a parent - a FlowBoxChild
+                    badge.root_widget().get_parent().unwrap().destroy();
+                    additive_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())

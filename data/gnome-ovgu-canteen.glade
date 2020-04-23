@@ -79,10 +79,14 @@ Author: Fin Christensen
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
         <property name="margin_left">42</property>
         <property name="margin_right">42</property>
         <property name="margin_top">42</property>
         <property name="margin_bottom">42</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">8</property>
         <child>
@@ -110,6 +114,27 @@ Author: Fin Christensen
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="canteen-error-label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">error description</property>
+            <property name="wrap">True</property>
+            <property name="selectable">True</property>
+            <property name="xalign">0</property>
+            <style>
+              <class name="monospace"/>
+              <class name="frame"/>
+              <class name="view"/>
+              <class name="dim-label"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
@@ -177,6 +202,60 @@ Author: Fin Christensen
               </packing>
             </child>
             <child>
+              <object class="GtkInfoBar" id="day-error">
+                <property name="can_focus">False</property>
+                <property name="message_type">error</property>
+                <child internal-child="action_area">
+                  <object class="GtkButtonBox">
+                    <property name="can_focus">False</property>
+                    <property name="spacing">6</property>
+                    <property name="layout_style">end</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child internal-child="content_area">
+                  <object class="GtkBox">
+                    <property name="can_focus">False</property>
+                    <property name="spacing">16</property>
+                    <child>
+                      <object class="GtkLabel" id="day-error-label">
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">error message</property>
+                        <property name="wrap">True</property>
+                        <property name="selectable">True</property>
+                        <property name="xalign">0</property>
+                        <style>
+                          <class name="monospace"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkListBox" id="day-meals-list-box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -236,7 +315,7 @@ Author: Fin Christensen
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -576,13 +655,88 @@ Author: Fin Christensen
       </object>
     </child>
     <child>
-      <object class="GtkStack" id="canteens-stack">
+      <object class="GtkStack" id="window-stack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="transition_duration">100</property>
-        <property name="transition_type">slide-up-down</property>
         <child>
-          <placeholder/>
+          <object class="GtkStack" id="canteens-stack">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="transition_duration">100</property>
+            <property name="transition_type">slide-up-down</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="name">canteens-stack</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="margin_top">42</property>
+            <property name="margin_bottom">42</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">face-crying-symbolic</property>
+                <property name="icon_size">6</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Oh nein! Etwas ist schiefgelaufen...</property>
+                <property name="justify">center</property>
+                <property name="wrap">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="window-error-label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">error description</property>
+                <property name="wrap">True</property>
+                <property name="selectable">True</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="monospace"/>
+                  <class name="frame"/>
+                  <class name="view"/>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="name">window-error</property>
+            <property name="position">1</property>
+          </packing>
         </child>
       </object>
     </child>

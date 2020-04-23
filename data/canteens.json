@@ -3,82 +3,13 @@
     "description": "UniCampusLowerHall",
     "days": [
       {
-        "date": "2020-04-17",
+        "date": "2020-04-22",
         "meals": [
-          {
-            "name": "Büffelfilet",
-            "price": {
-              "student": 2.8,
-              "staff": 4.0,
-              "guest": 4.8
-            },
-            "symbols": [
-              "Poultry"
-            ],
-            "additives": [
-              "Sweetener"
-            ],
-            "allergenics": [
-              "Wheat",
-              "Barley",
-              "Egg",
-              "Soya",
-              "Lactose",
-              "Celery",
-              "Sesame"
-            ]
-          },
-          {
-            "name": "Milchreis",
-            "price": {
-              "student": 2.8,
-              "staff": 4.0,
-              "guest": 4.8
-            },
-            "symbols": [
-              "Poultry"
-            ],
-            "additives": [
-              "Sweetener"
-            ],
-            "allergenics": [
-              "Wheat",
-              "Barley",
-              "Egg",
-              "Soya",
-              "Lactose",
-              "Celery",
-              "Sesame"
-            ]
-          },
-          {
-            "name": "Käseschnitzel",
-            "price": {
-              "student": 2.8,
-              "staff": 4.0,
-              "guest": 4.8
-            },
-            "symbols": [
-              "Poultry"
-            ],
-            "additives": [
-              "Sweetener"
-            ],
-            "allergenics": [
-              "Wheat",
-              "Barley",
-              "Egg",
-              "Soya",
-              "Lactose",
-              "Celery",
-              "Sesame"
-            ]
-          }
         ],
         "side_dishes": ["Kartoffeln", "Reis", "Kartoffelspalten", "Pommes"]
       },
       {
-        "date": "2020-04-18",
+        "date": "2020-04-23",
         "meals": [
           {
             "name": "Warzenschwein",
@@ -130,7 +61,7 @@
         "side_dishes": ["Kartoffeln", "Reis", "Pommes"]
       },
       {
-        "date": "2020-04-20",
+        "date": "2020-04-24",
         "meals": [
           {
             "name": "Kartoffelgratin",

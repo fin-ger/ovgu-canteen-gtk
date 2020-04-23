@@ -4,10 +4,6 @@ mod day;
 mod meal;
 mod window;
 
-use anyhow::{Context, Result};
-use gtk::prelude::*;
-use gtk::Builder;
-
 pub use badge::{BadgeComponent, LiteBadgeComponent};
 pub use canteen::CanteenComponent;
 pub use day::DayComponent;
@@ -21,12 +17,17 @@ macro_rules! glib_yield {
         glib::timeout_future_with_priority(glib::PRIORITY_DEFAULT_IDLE, 0).await
     };
 }
-
 pub(crate) use glib_yield;
 
-#[inline]
-pub fn get<T: IsA<glib::Object>>(builder: &Builder, id: &str) -> Result<T> {
-    builder
-        .get_object(id)
-        .context(format!("'{}' is not available in glade file", id))
+macro_rules! get {
+    ($builder:expr, $id:expr) => {{
+        use anyhow::Context;
+        use gtk::prelude::*;
+
+        let builder = $builder;
+        let id = $id;
+        builder.get_object(id)
+            .context(format!("'{}' is not available in glade file: {}:{}:{}", id, file!(), line!(), column!()))
+    }};
 }
+pub(crate) use get;

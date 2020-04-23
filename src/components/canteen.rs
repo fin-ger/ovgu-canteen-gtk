@@ -1,7 +1,7 @@
 use anyhow::{Error, Result};
 use gtk::prelude::*;
-use gtk::{Box, Builder, Spinner, Stack};
-use ovgu_canteen::{Canteen, CanteenDescription, Error as CanteenError};
+use gtk::{Box, Builder, Spinner, Label, Stack};
+use ovgu_canteen::{Canteen, CanteenDescription};
 
 use crate::components::{get, glib_yield, DayComponent, WindowComponent, GLADE};
 use crate::util::{enclose, AdjustingVec};
@@ -9,6 +9,7 @@ use crate::util::{enclose, AdjustingVec};
 #[derive(Debug)]
 pub struct CanteenComponent {
     canteen_stack: Stack,
+    canteen_error_label: Label,
     canteen_spinner: Spinner,
     days: AdjustingVec<DayComponent, Error>,
 }
@@ -16,9 +17,10 @@ pub struct CanteenComponent {
 impl CanteenComponent {
     pub fn new(description: &CanteenDescription, window: &WindowComponent) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let canteen_stack: Stack = get(&builder, "canteen-stack")?;
-        let canteen_spinner: Spinner = get(&builder, "canteen-spinner")?;
-        let days_box: Box = get(&builder, "days-box")?;
+        let canteen_stack: Stack = get!(&builder, "canteen-stack")?;
+        let canteen_error_label: Label = get!(&builder, "canteen-error-label")?;
+        let canteen_spinner: Spinner = get!(&builder, "canteen-spinner")?;
+        let days_box: Box = get!(&builder, "days-box")?;
         let canteen_name = description.to_german_str();
 
         window.add_canteen(&canteen_stack, canteen_name)?;
@@ -41,22 +43,25 @@ impl CanteenComponent {
         );
 
         Ok(Self {
-            canteen_spinner,
             canteen_stack,
+            canteen_error_label,
+            canteen_spinner,
             days,
         })
     }
 
-    pub async fn load(&mut self, load_result: Result<Canteen, CanteenError>) {
+    pub async fn load(&mut self, load_result: Result<Canteen, Error>) {
         self.canteen_spinner.start();
         self.canteen_spinner.show();
 
         let canteen = match load_result {
-            Ok(canteen) => canteen,
+            Ok(canteen) => {
+                self.canteen_stack.set_visible_child_name("canteen-menu");
+                canteen
+            },
             Err(e) => {
-                eprintln!("error: {}", e);
                 self.canteen_stack.set_visible_child_name("canteen-error");
-                // TODO: display error message
+                self.canteen_error_label.set_text(&format!("error: {:#}", e));
                 return;
             }
         };
@@ -70,8 +75,11 @@ impl CanteenComponent {
             })
             .await;
 
-        if days_result.is_err() {
-            // TODO: handle error
+        if let Err(e) = days_result {
+            self.canteen_stack.set_visible_child_name("canteen-error");
+            self.canteen_error_label.set_text(&format!("error: {:#}", e));
+        } else {
+            self.canteen_stack.set_visible_child_name("canteen-menu");
         }
 
         self.canteen_spinner.stop();

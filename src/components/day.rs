@@ -4,7 +4,7 @@ use std::sync::atomic::{Ordering, AtomicI32};
 use anyhow::{Error, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
-use gtk::{Builder, FlowBox, Frame, Label, ListBox};
+use gtk::{Builder, FlowBox, Frame, Label, ListBox, InfoBar};
 use ovgu_canteen::Day;
 
 use crate::components::{
@@ -16,8 +16,10 @@ use crate::util::{enclose, AdjustingVec};
 pub struct DayComponent {
     frame: Frame,
     label: Label,
+    error: InfoBar,
+    error_label: Label,
     side_dish_badges: FlowBox,
-    empty_side_dishes_label: Option<Label>,
+    empty_side_dishes_label: Option<LiteBadgeComponent>,
     meals: AdjustingVec<MealComponent, Error>,
     side_dishes: AdjustingVec<BadgeComponent, Error>,
 }
@@ -25,10 +27,12 @@ pub struct DayComponent {
 impl DayComponent {
     pub async fn new() -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
-        let frame: Frame = get(&builder, "day-frame")?;
-        let label: Label = get(&builder, "day-label")?;
-        let meals_list_box: ListBox = get(&builder, "day-meals-list-box")?;
-        let side_dish_badges: FlowBox = get(&builder, "side-dish-badges")?;
+        let frame: Frame = get!(&builder, "day-frame")?;
+        let label: Label = get!(&builder, "day-label")?;
+        let error: InfoBar = get!(&builder, "day-error")?;
+        let error_label: Label = get!(&builder, "day-error-label")?;
+        let meals_list_box: ListBox = get!(&builder, "day-meals-list-box")?;
+        let side_dish_badges: FlowBox = get!(&builder, "side-dish-badges")?;
 
         let meal_offset = Arc::new(AtomicI32::new(0));
         let side_dish_offset = Arc::new(AtomicI32::new(0));
@@ -68,7 +72,8 @@ impl DayComponent {
             }},
             enclose! { (side_dish_offset) move |badge| {
                 enclose! { (side_dish_offset) async move {
-                    badge.root_widget().destroy();
+                    // a flowbox item always has a parent - a FlowBoxChild
+                    badge.root_widget().get_parent().unwrap().destroy();
                     side_dish_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
@@ -82,6 +87,8 @@ impl DayComponent {
             side_dish_badges,
             frame,
             label,
+            error,
+            error_label,
             meals,
             side_dishes,
         })
@@ -121,10 +128,6 @@ impl DayComponent {
             })
             .await;
 
-        if meal_result.is_err() {
-            // TODO: handle error
-        }
-
         let side_dish_result = self
             .side_dishes
             .adjust(&day.side_dishes, |badge, side_dish| async move {
@@ -134,23 +137,41 @@ impl DayComponent {
             })
             .await;
 
-        if side_dish_result.is_err() {
-            // TODO: handle error
-        }
-
         if day.side_dishes.is_empty() && self.empty_side_dishes_label.is_none() {
-            let badge = match LiteBadgeComponent::new().await {
-                Ok(badge) => badge,
-                Err(_e) => {
-                    // TODO: handle error
-                    unimplemented!();
-                }
-            };
+            // this cannot fail as the badge component always returns Ok
+            let badge = LiteBadgeComponent::new().await.unwrap();
             badge.load("nicht vorhanden").await;
             self.side_dish_badges.insert(badge.root_widget(), 0);
+            self.empty_side_dishes_label = Some(badge);
+
             glib_yield!();
         } else if !day.side_dishes.is_empty() && self.empty_side_dishes_label.is_some() {
-            self.empty_side_dishes_label.take().unwrap().destroy();
+            self.empty_side_dishes_label
+                .take().unwrap() // checked above
+                .root_widget()
+                .get_parent().unwrap() // a flowbox item always has a parent - a FlowBoxChild
+                .destroy();
+        }
+
+        let mut error_msg = None;
+        if let Err(e) = meal_result {
+            error_msg = Some(format!("error: {:#}", e));
+        }
+
+        if let Err(e) = side_dish_result {
+            let msg = format!("error: {:#}", e);
+            error_msg = if let Some(prev_msg) = error_msg {
+                Some(format!("{}\n{}", prev_msg, msg))
+            } else {
+                Some(msg)
+            };
+        }
+
+        if let Some(msg) = error_msg {
+            self.error.show_all();
+            self.error_label.set_text(&msg);
+        } else {
+            self.error.hide();
         }
     }
 }

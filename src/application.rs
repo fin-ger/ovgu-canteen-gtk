@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use gdk::Screen;
 use gio::prelude::*;
 use gtk::prelude::*;
-use gtk::{ApplicationBuilder, CssProvider};
+use gtk::{ApplicationBuilder, CssProvider, MessageDialogBuilder, ButtonsType, MessageType, WindowPosition};
 use tokio::runtime::{Builder as RuntimeBuilder, Runtime};
 
 use crate::components::WindowComponent;
@@ -75,8 +75,28 @@ impl Application {
         g_app.connect_activate(move |app| match WindowComponent::new(&build_rt, app) {
             Ok(()) => {}
             Err(err) => {
-                // TODO: display dialog with error message
-                eprintln!("error: {}", err);
+                let dialog = MessageDialogBuilder::new()
+                    .buttons(ButtonsType::Close)
+                    .message_type(MessageType::Error)
+                    .text("Fehler beim Starten der Anwendung")
+                    .secondary_text(&format!("<tt>{:#}</tt>", err))
+                    .secondary_use_markup(true)
+                    .application(app)
+                    .destroy_with_parent(true)
+                    .icon_name("dialog-error")
+                    .resizable(true)
+                    .window_position(WindowPosition::Center)
+                    .build();
+                let children = dialog
+                    .get_message_area().unwrap()
+                    .downcast::<gtk::Container>().unwrap()
+                    .get_children();
+                for child in children {
+                    if child.is::<gtk::Label>() {
+                        child.downcast::<gtk::Label>().unwrap().set_selectable(true);
+                    }
+                }
+                dialog.run();
                 app.quit();
             }
         });

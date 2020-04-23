@@ -14,12 +14,16 @@ use gtk::{
 use ovgu_canteen::{Canteen, CanteenDescription};
 use tokio::runtime::Handle;
 use tokio::sync::mpsc::channel;
+use send_wrapper::SendWrapper;
 
 use crate::components::{get, CanteenComponent, GLADE};
+use crate::util::enclose;
 
 #[derive(Debug)]
 pub struct WindowComponent {
     window: Window,
+    window_stack: Stack,
+    window_error_label: Label,
     canteens_stack: Stack,
     canteens_menu: Box,
     canteen_menu_button: MenuButton,
@@ -41,15 +45,17 @@ impl WindowComponent {
             CanteenDescription::Wernigerode,
             CanteenDescription::DomCafeteHalberstadt,
         ];
-        let window: Window = get(&builder, "window")?;
-        let canteens_stack: Stack = get(&builder, "canteens-stack")?;
-        let canteens_menu: Box = get(&builder, "canteens-menu")?;
-        let canteen_label: Label = get(&builder, "canteen-label")?;
-        let canteen_menu_button: MenuButton = get(&builder, "canteen-menu-button")?;
-        let about_dialog: AboutDialog = get(&builder, "about")?;
-        let about_button: Button = get(&builder, "about-btn")?;
-        let options_button: MenuButton = get(&builder, "options-button")?;
-        let reload_button: Button = get(&builder, "reload-button")?;
+        let window: Window = get!(&builder, "windows")?;
+        let window_stack: Stack = get!(&builder, "window-stack")?;
+        let window_error_label: Label = get!(&builder, "window-error-label")?;
+        let canteens_stack: Stack = get!(&builder, "canteens-stack")?;
+        let canteens_menu: Box = get!(&builder, "canteens-menu")?;
+        let canteen_label: Label = get!(&builder, "canteen-label")?;
+        let canteen_menu_button: MenuButton = get!(&builder, "canteen-menu-button")?;
+        let about_dialog: AboutDialog = get!(&builder, "about")?;
+        let about_button: Button = get!(&builder, "about-btn")?;
+        let options_button: MenuButton = get!(&builder, "options-button")?;
+        let reload_button: Button = get!(&builder, "reload-button")?;
 
         window.set_application(Some(app));
         window.set_icon_name(Some("ovgu-canteen32"));
@@ -93,6 +99,8 @@ impl WindowComponent {
 
         let comp = Self {
             window,
+            window_stack,
+            window_error_label,
             canteens_stack,
             canteens_menu,
             canteen_label,
@@ -111,11 +119,9 @@ impl WindowComponent {
         drop(canteen_components_borrow);
 
         comp.load(rt);
-
-        let reload_rt = rt.clone();
-        comp.reload_button.clone().connect_clicked(move |_btn| {
-            comp.load(&reload_rt);
-        });
+        comp.reload_button.clone().connect_clicked(enclose! { (rt) move |_btn| {
+            comp.load(&rt);
+        }});
 
         Ok(())
     }
@@ -150,41 +156,44 @@ impl WindowComponent {
 
     pub fn load(&self, rt: &Handle) {
         self.reload_button.set_sensitive(false);
+        self.window_stack.set_visible_child_name("canteens-stack");
 
         // canteens are downloaded in parallel here,
         // but in order for one canteen to show up in a batch
         // we are using an mpsc channel to put the parallel loaded canteens
         // in an order which is later sequentially inserted into the GUI.
         let (tx, mut rx) = channel(self.canteen_components.borrow().len());
-        for (canteen_desc_ref, _comp) in self.canteen_components.borrow().iter() {
-            let mut canteen_tx = tx.clone();
-            let canteen_desc = canteen_desc_ref.clone();
-            rt.spawn(async move {
-                let canteen = if cfg!(feature = "test-with-local-files") {
-                    use std::fs::File;
+        for (canteen_desc, _comp) in self.canteen_components.borrow().iter() {
+            let mut tx = tx.clone();
+            rt.spawn(enclose! { (canteen_desc) async move {
+                let canteen = (enclose! { (canteen_desc) || async move {
+                    if cfg!(feature = "test-with-local-files") {
+                        use std::fs::File;
 
-                    let file =
-                        File::open("data/canteens.json").expect("'data/canteens.json' not found!");
-                    let mut canteens: Vec<Canteen> = serde_json::from_reader(&file)
-                        .expect("Could not parse 'data/cateens.json'");
-                    let canteen = canteens
-                        .drain(..)
-                        .find(|c| c.description == canteen_desc)
-                        .expect("Canteen not found!");
-                    Ok(canteen)
-                } else {
-                    Canteen::new(canteen_desc.clone()).await
-                };
-                if let Err(e) = canteen_tx.send((canteen_desc, canteen)).await {
-                    eprintln!("error: {}", e);
-                    // TODO: handle tx send error by displaying canteen not available
-                }
-            });
+                        let file = File::open("data/canteens.json")
+                            .context("'data/canteens.json' not found!")?;
+                        let mut canteens: Vec<Canteen> = serde_json::from_reader(&file)
+                            .context("Could not parse 'data/cateens.json'")?;
+                        let canteen = canteens
+                            .drain(..)
+                            .find(|c| c.description == canteen_desc)
+                            .context("Canteen not found!")?;
+                        Ok(canteen)
+                    } else {
+                        failure::ResultExt::compat(Canteen::new(canteen_desc.clone()).await)
+                            .context("Failed to fetch canteen")
+                    }
+                }})().await;
+                tx.send((canteen_desc, canteen)).await
+                    .expect("Failed to commit downloaded canteen into UI component!");
+            }});
         }
 
         let c = glib::MainContext::default();
         let fetch_reload_button = self.reload_button.clone();
         let fetch_canteen_components = Rc::clone(&self.canteen_components);
+        let window_stack = SendWrapper::new(self.window_stack.clone());
+        let window_error_label = SendWrapper::new(self.window_error_label.clone());
         c.spawn_local(async move {
             // fetching parallel loaded canteens here and inserting
             // one canteen after another into the GUI.
@@ -193,8 +202,8 @@ impl WindowComponent {
                 if let Some(comp) = fetch_canteen_components.borrow_mut().get_mut(&desc) {
                     comp.load(canteen).await;
                 } else {
-                    eprintln!("canteen {:?} not found in components list", desc);
-                    // TODO: display error dialog
+                    window_stack.set_visible_child_name("window-error");
+                    window_error_label.set_text(&format!("error: canteen {:?} not found in components list", desc));
                 }
             }
 
