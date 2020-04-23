@@ -45,7 +45,7 @@ impl WindowComponent {
             CanteenDescription::Wernigerode,
             CanteenDescription::DomCafeteHalberstadt,
         ];
-        let window: Window = get!(&builder, "windows")?;
+        let window: Window = get!(&builder, "window")?;
         let window_stack: Stack = get!(&builder, "window-stack")?;
         let window_error_label: Label = get!(&builder, "window-error-label")?;
         let canteens_stack: Stack = get!(&builder, "canteens-stack")?;
