@@ -1,10 +1,10 @@
+use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::Arc;
-use std::sync::atomic::{Ordering, AtomicI32};
 
 use anyhow::{Error, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
-use gtk::{Builder, FlowBox, Frame, Label, ListBox, InfoBar};
+use gtk::{Builder, FlowBox, Frame, InfoBar, Label, ListBox};
 use ovgu_canteen::Day;
 
 use crate::components::{
@@ -147,9 +147,11 @@ impl DayComponent {
             glib_yield!();
         } else if !day.side_dishes.is_empty() && self.empty_side_dishes_label.is_some() {
             self.empty_side_dishes_label
-                .take().unwrap() // checked above
+                .take()
+                .unwrap() // checked above
                 .root_widget()
-                .get_parent().unwrap() // a flowbox item always has a parent - a FlowBoxChild
+                .get_parent()
+                .unwrap() // a flowbox item always has a parent - a FlowBoxChild
                 .destroy();
         }
 

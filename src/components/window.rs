@@ -12,9 +12,9 @@ use gtk::{
     Window,
 };
 use ovgu_canteen::{Canteen, CanteenDescription};
+use send_wrapper::SendWrapper;
 use tokio::runtime::Handle;
 use tokio::sync::mpsc::channel;
-use send_wrapper::SendWrapper;
 
 use crate::components::{get, CanteenComponent, GLADE};
 use crate::util::enclose;
@@ -142,9 +142,11 @@ impl WindowComponent {
         drop(canteen_components_borrow);
 
         comp.load(rt);
-        comp.reload_button.clone().connect_clicked(enclose! { (rt) move |_btn| {
-            comp.load(&rt);
-        }});
+        comp.reload_button
+            .clone()
+            .connect_clicked(enclose! { (rt) move |_btn| {
+                comp.load(&rt);
+            }});
 
         Ok(())
     }
@@ -170,10 +172,9 @@ impl WindowComponent {
     async fn load_canteen(canteen_desc: CanteenDescription) -> Result<Canteen> {
         use std::fs::File;
 
-        let file = File::open("data/canteens.json")
-            .context("'data/canteens.json' not found!")?;
-        let mut canteens: Vec<Canteen> = serde_json::from_reader(&file)
-            .context("Could not parse 'data/cateens.json'")?;
+        let file = File::open("data/canteens.json").context("'data/canteens.json' not found!")?;
+        let mut canteens: Vec<Canteen> =
+            serde_json::from_reader(&file).context("Could not parse 'data/cateens.json'")?;
         let canteen = canteens
             .drain(..)
             .find(|c| c.description == canteen_desc)
@@ -219,7 +220,10 @@ impl WindowComponent {
                     comp.load(canteen).await;
                 } else {
                     window_stack.set_visible_child_name("window-error");
-                    window_error_label.set_text(&format!("error: canteen {:?} not found in components list", desc));
+                    window_error_label.set_text(&format!(
+                        "error: canteen {:?} not found in components list",
+                        desc
+                    ));
                 }
             }
 

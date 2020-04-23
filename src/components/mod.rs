@@ -26,8 +26,13 @@ macro_rules! get {
 
         let builder = $builder;
         let id = $id;
-        builder.get_object(id)
-            .context(format!("'{}' is not available in glade file: {}:{}:{}", id, file!(), line!(), column!()))
+        builder.get_object(id).context(format!(
+            "'{}' is not available in glade file: {}:{}:{}",
+            id,
+            file!(),
+            line!(),
+            column!()
+        ))
     }};
 }
 pub(crate) use get;

@@ -1,6 +1,6 @@
 use anyhow::{Error, Result};
 use gtk::prelude::*;
-use gtk::{Box, Builder, Spinner, Label, Stack};
+use gtk::{Box, Builder, Label, Spinner, Stack};
 use ovgu_canteen::{Canteen, CanteenDescription};
 
 use crate::components::{get, glib_yield, DayComponent, WindowComponent, GLADE};
@@ -59,10 +59,11 @@ impl CanteenComponent {
             Ok(canteen) => {
                 self.canteen_stack.set_visible_child_name("canteen-menu");
                 canteen
-            },
+            }
             Err(e) => {
                 self.canteen_stack.set_visible_child_name("canteen-error");
-                self.canteen_error_label.set_text(&format!("error: {:#}", e));
+                self.canteen_error_label
+                    .set_text(&format!("error: {:#}", e));
                 return;
             }
         };
@@ -78,7 +79,8 @@ impl CanteenComponent {
 
         if let Err(e) = days_result {
             self.canteen_stack.set_visible_child_name("canteen-error");
-            self.canteen_error_label.set_text(&format!("error: {:#}", e));
+            self.canteen_error_label
+                .set_text(&format!("error: {:#}", e));
         } else if canteen.days.is_empty() {
             self.canteen_stack.set_visible_child_name("canteen-empty");
         }

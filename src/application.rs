@@ -2,7 +2,9 @@ use anyhow::{Context, Result};
 use gdk::Screen;
 use gio::prelude::*;
 use gtk::prelude::*;
-use gtk::{ApplicationBuilder, CssProvider, MessageDialogBuilder, ButtonsType, MessageType, WindowPosition};
+use gtk::{
+    ApplicationBuilder, ButtonsType, CssProvider, MessageDialogBuilder, MessageType, WindowPosition,
+};
 use tokio::runtime::{Builder as RuntimeBuilder, Runtime};
 
 use crate::components::WindowComponent;
@@ -81,8 +83,10 @@ impl Application {
                     .window_position(WindowPosition::Center)
                     .build();
                 let children = dialog
-                    .get_message_area().unwrap()
-                    .downcast::<gtk::Container>().unwrap()
+                    .get_message_area()
+                    .unwrap()
+                    .downcast::<gtk::Container>()
+                    .unwrap()
                     .get_children();
                 for child in children {
                     if child.is::<gtk::Label>() {
