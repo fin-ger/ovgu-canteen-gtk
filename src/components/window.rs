@@ -5,7 +5,7 @@ use std::rc::Rc;
 use anyhow::{bail, Context, Result};
 use cargo_author::Author;
 use gio::prelude::*;
-use gio::SimpleAction;
+use gio::{Settings, SimpleAction};
 use gtk::prelude::*;
 use gtk::{
     AboutDialog, Box, Builder, Button, ButtonRole, Label, MenuButton, ModelButtonBuilder, Stack,
@@ -30,10 +30,29 @@ pub struct WindowComponent {
     canteen_label: Label,
     reload_button: Button,
     canteen_components: Rc<RefCell<HashMap<CanteenDescription, CanteenComponent>>>,
+    settings: Settings,
 }
 
 impl WindowComponent {
     pub fn new(rt: &Handle, app: &gtk::Application) -> Result<()> {
+        let settings = Settings::new("de.fin_ger.OvGUCanteen");
+        settings.connect_changed(|settings, key| {
+            match key {
+                "dark-theme-variant" => {
+                    println!("{}: {}", key, settings.get_boolean(key));
+                },
+                "default-canteen" => {
+                    println!("{}: {}", key, settings.get_string(key).unwrap());
+                },
+                "menu-history-length" => {
+                    println!("{}: {}", key, settings.get_uint64(key));
+                },
+                _ => {
+                    println!("You suck - {}", key);
+                },
+            }
+        });
+
         let builder = Builder::new_from_string(GLADE);
 
         let mut canteens = vec![
@@ -130,6 +149,7 @@ impl WindowComponent {
             canteen_menu_button,
             reload_button,
             canteen_components: Rc::new(RefCell::new(HashMap::new())),
+            settings,
         };
 
         let mut canteen_components_borrow = comp.canteen_components.borrow_mut();

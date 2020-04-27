@@ -4,3 +4,4 @@ target/
 flatpak/repo
 flatpak/.flatpak-builder
 flatpak/generated-sources.json
+*.compiled

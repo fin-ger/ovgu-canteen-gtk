@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<schemalist>
+  <schema path="/de/fin_ger/OvGUCanteen/" id="de.fin_ger.OvGUCanteen">
+    <key name="dark-theme-variant" type="b">
+      <default>false</default>
+      <summary>Use the dark theme variant for OvGU Mensa</summary>
+      <description>
+        This key determines whether the dark theme variant of your
+        GTK theme is used for OvGU Mensa or not.
+      </description>
+    </key>
+
+    <key name="default-canteen" type="s">
+      <choices>
+        <choice value="UniCampusLowerHall" />
+        <choice value="UniCampusUpperHall" />
+        <choice value="Kellercafe" />
+        <choice value="Herrenkrug" />
+        <choice value="Stendal" />
+        <choice value="Wernigerode" />
+        <choice value="DomCafeteHalberstadt" />
+      </choices>
+      <default>"UniCampusLowerHall"</default>
+      <summary>Select the canteen which should be displayed on startup</summary>
+      <description>
+        This key determines which application should be selected by default
+        upon startup of OvGU Mensa.
+      </description>
+    </key>
+
+    <key name="menu-history-length" type="t">
+      <default>7</default>
+      <summary>Set the duration in days for how long old menus should be kept</summary>
+      <description>
+        This key determines for how long old canteen menus should be kept
+        in a local cache. The duration is given in days. It does not change
+        how many upcoming menus will be stored.
+      </description>
+    </key>
+  </schema>
+</schemalist>

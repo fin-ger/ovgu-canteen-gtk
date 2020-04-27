@@ -4,6 +4,7 @@ TARGET_DIR = release
 
 build:
 	@cargo build $(CARGO_BUILD_ARGS)
+	@glib-compile-schemas ./schemas
 
 install: build
 	@mkdir -p "$(PREFIX)/share/icons/hicolor/scalable/apps/"
@@ -12,6 +13,8 @@ install: build
 	@install -m 0644 data/de.fin_ger.OvGUCanteen.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@install -m 0644 data/de.fin_ger.OvGUCanteen.About.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@install -m 0644 data/de.fin_ger.OvGUCanteen.Closed.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
+	@install -m 0644 schemas/de.fin_ger.OvGUCanteen.gschema.xml "$(PREFIX)/share/glib-2.0/schemas/"
+	@glib-compile-schemas "$(PREFIX)/share/glib-2.0/schemas/"
 	@desktop-file-install -m 0644 --dir="$(PREFIX)/share/applications/" data/de.fin_ger.OvGUCanteen.desktop
 	@install -s -m 0755 "target/$(TARGET_DIR)/gnome-ovgu-canteen" "$(PREFIX)/bin/"
 	@update-desktop-database "$(PREFIX)/share/applications"

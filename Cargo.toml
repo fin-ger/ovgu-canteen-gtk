@@ -13,8 +13,8 @@ edition = "2018"
 [dependencies]
 gtk = { version = "0.8.1", features = ["v3_22"] }
 gdk = { version = "0.12.1", features = ["v3_22"] }
-gio = { version = "0.8.1", features = ["v2_44"] }
-glib = { version = "0.9.3", features = ["v2_44"] }
+gio = { version = "0.8.1", features = ["v2_50"] }
+glib = { version = "0.9.3", features = ["v2_50"] }
 ovgu-canteen = "0.3.2"
 chrono = "0.4.11"
 tokio = { version = "0.2.18", features = ["full"] }
