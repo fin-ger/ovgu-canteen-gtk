@@ -9,15 +9,6 @@ use tokio::runtime::{Builder as RuntimeBuilder, Runtime};
 
 use crate::components::WindowComponent;
 
-// TODO: add settings window with hamburger menu to access the settings
-// ASSIGNEE: @jwuensche
-
-// TODO: add dark theme to settings
-// ASSIGNEE: @jwuensche
-
-// TODO: set default canteen in settings
-// ASSIGNEE: @jwuensche
-
 // TODO: persist canteen menus on disk for faster loading of app and update menus
 //       when loaded
 //        - add setting to settings menu for number of menus per canteen to cache

@@ -6,7 +6,7 @@ use futures::stream::{self, TryStreamExt};
 use itertools::{EitherOrBoth, Itertools};
 
 macro_rules! enclose {
-    ( ($( $x:ident ),*) $y:expr ) => {
+    ( ($( $x:ident ),* $(,)?) $y:expr ) => {
         {
             $(let $x = $x.clone();)*
                 $y

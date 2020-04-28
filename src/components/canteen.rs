@@ -23,7 +23,7 @@ impl CanteenComponent {
         let days_box: Box = get!(&builder, "days-box")?;
         let canteen_name = description.to_german_str();
 
-        window.add_canteen(&canteen_stack, canteen_name)?;
+        window.add_canteen(&canteen_stack, serde_plain::to_string(description).unwrap(), canteen_name)?;
 
         let days = AdjustingVec::new(
             enclose! { (days_box) move || {

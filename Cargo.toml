@@ -28,6 +28,7 @@ futures = "0.3.4"
 async-trait = "0.1.30"
 send_wrapper = "0.4.0"
 failure = "0.1.7"
+serde_plain = "0.3.0"
 
 [features]
 default = [] #["test-with-local-files"]

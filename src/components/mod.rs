@@ -3,6 +3,7 @@ mod canteen;
 mod day;
 mod meal;
 mod window;
+pub mod preferences;
 
 pub use badge::{BadgeComponent, LiteBadgeComponent};
 pub use canteen::CanteenComponent;

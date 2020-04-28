@@ -9,14 +9,14 @@ use gio::{Settings, SimpleAction};
 use gtk::prelude::*;
 use gtk::{
     AboutDialog, Box, Builder, Button, ButtonRole, Label, MenuButton, ModelButtonBuilder, Stack,
-    Window,
+    Window
 };
 use ovgu_canteen::{Canteen, CanteenDescription};
 use send_wrapper::SendWrapper;
 use tokio::runtime::Handle;
 use tokio::sync::mpsc::channel;
 
-use crate::components::{get, CanteenComponent, GLADE};
+use crate::components::{get, preferences, CanteenComponent, GLADE};
 use crate::util::enclose;
 
 #[derive(Debug)]
@@ -39,19 +39,25 @@ impl WindowComponent {
         settings.connect_changed(|settings, key| {
             match key {
                 "dark-theme-variant" => {
-                    println!("{}: {}", key, settings.get_boolean(key));
-                },
-                "default-canteen" => {
-                    println!("{}: {}", key, settings.get_string(key).unwrap());
+                    if let Some(gtk_settings) = gtk::Settings::get_default() {
+                        gtk::SettingsExt::set_property_gtk_application_prefer_dark_theme(
+                            &gtk_settings,
+                            settings.get_boolean(key),
+                        );
+                    }
                 },
                 "menu-history-length" => {
                     println!("{}: {}", key, settings.get_uint64(key));
                 },
-                _ => {
-                    println!("You suck - {}", key);
-                },
+                _ => {},
             }
         });
+        if let Some(gtk_settings) = gtk::Settings::get_default() {
+            gtk::SettingsExt::set_property_gtk_application_prefer_dark_theme(
+                &gtk_settings,
+                settings.get_boolean("dark-theme-variant"),
+            );
+        }
 
         let builder = Builder::new_from_string(GLADE);
 
@@ -72,6 +78,7 @@ impl WindowComponent {
         let canteen_label: Label = get!(&builder, "canteen-label")?;
         let canteen_menu_button: MenuButton = get!(&builder, "canteen-menu-button")?;
         let about_dialog: AboutDialog = get!(&builder, "about")?;
+        let preferences_button: Button = get!(&builder, "preferences-btn")?;
         let about_button: Button = get!(&builder, "about-btn")?;
         let options_button: MenuButton = get!(&builder, "options-button")?;
         let reload_button: Button = get!(&builder, "reload-button")?;
@@ -105,14 +112,22 @@ impl WindowComponent {
                 })
                 .collect::<Result<Vec<_>>>()?,
         );
-        about_button.connect_clicked(move |_btn| {
+
+        preferences_button.connect_clicked(enclose! { (options_button, window, settings, canteens) move |_btn| {
+            if let Some(popover) = options_button.get_popover() {
+                popover.popdown();
+            }
+
+            let _preferences = preferences::open(&window, &settings, &canteens);
+        }});
+        about_button.connect_clicked(enclose! { (options_button) move |_btn| {
             if let Some(popover) = options_button.get_popover() {
                 popover.popdown();
             }
 
             about_dialog.run();
             about_dialog.hide();
-        });
+        }});
 
         let canteen_selected_action = SimpleAction::new(
             // action name
@@ -133,7 +148,10 @@ impl WindowComponent {
             };
 
             canteens_stack_handle.set_visible_child_name(canteen_name);
-            canteen_label_handle.set_text(canteen_name);
+            canteen_label_handle.set_text(
+                serde_plain::from_str::<CanteenDescription>(canteen_name)
+                    .unwrap().to_german_str()
+            );
         });
         app.add_action(&canteen_selected_action);
 
@@ -161,6 +179,14 @@ impl WindowComponent {
         }
         drop(canteen_components_borrow);
 
+        if let Some(default_canteen) = comp.settings.get_string("default-canteen") {
+            comp.canteens_stack.set_visible_child_name(&default_canteen);
+            comp.canteen_label.set_text(
+                serde_plain::from_str::<CanteenDescription>(&default_canteen)
+                    .unwrap().to_german_str()
+            );
+        }
+
         comp.load(rt);
         comp.reload_button
             .clone()
@@ -171,15 +197,15 @@ impl WindowComponent {
         Ok(())
     }
 
-    pub fn add_canteen(&self, canteen_stack: &Stack, canteen_name: &'static str) -> Result<()> {
-        self.canteens_stack.add_named(canteen_stack, canteen_name);
+    pub fn add_canteen(&self, canteen_stack: &Stack, canteen: String, canteen_name: &'static str) -> Result<()> {
+        self.canteens_stack.add_named(canteen_stack, &canteen);
 
         let model_btn = ModelButtonBuilder::new()
             .visible(true)
             .text(canteen_name)
             .can_focus(false)
             .action_name("app.canteen-selected")
-            .action_target(&canteen_name.to_variant())
+            .action_target(&canteen.to_variant())
             .role(ButtonRole::Radio)
             .build();
 
