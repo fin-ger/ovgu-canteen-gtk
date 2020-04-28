@@ -9,6 +9,7 @@ build:
 install: build
 	@mkdir -p "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@mkdir -p "$(PREFIX)/share/applications/"
+	@mkdir -p "$(PREFIX)/share/glib-2.0/schemas/"
 	@mkdir -p "$(PREFIX)/bin"
 	@install -m 0644 data/de.fin_ger.OvGUCanteen.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@install -m 0644 data/de.fin_ger.OvGUCanteen.About.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
