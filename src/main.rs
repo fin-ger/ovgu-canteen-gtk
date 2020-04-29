@@ -23,10 +23,11 @@ pub use components::canteen;
 use gettextrs::TextDomain;
 
 fn main() {
-    TextDomain::new("gnome-ovgu-canteen")
-        .prepend(shellexpand::tilde("~/.local/share").to_string())
-        .codeset("UTF-8")
-        .init()
+    let mut domain = TextDomain::new("gnome-ovgu-canteen").codeset("UTF-8");
+    if let Ok(xdg) = xdg::BaseDirectories::new() {
+        domain = domain.prepend(xdg.get_data_home());
+    }
+    domain.init()
         .expect("Failed to initialize translation domain");
 
     match application::Application::new() {

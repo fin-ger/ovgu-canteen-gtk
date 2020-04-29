@@ -22,7 +22,7 @@ chrono-tz = "0.5.1"
 anyhow = "1.0.28"
 cargo_author = "1.0.2"
 xdg = "2.2.0"
-serde_json = { version = "1.0.52", optional = true }
+serde_json = "1.0.52"
 itertools = "0.9.0"
 futures = "0.3.4"
 async-trait = "0.1.30"
@@ -30,8 +30,7 @@ send_wrapper = "0.4.0"
 failure = "0.1.7"
 serde_plain = "0.3.0"
 gettext-rs = "0.4.4"
-shellexpand = "2.0.0"
 
 [features]
 default = [] #["test-with-local-files"]
-test-with-local-files = ["serde_json"]
+test-with-local-files = []
