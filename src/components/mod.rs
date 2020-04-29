@@ -1,5 +1,5 @@
 mod badge;
-mod canteen;
+pub mod canteen;
 mod day;
 mod meal;
 mod window;

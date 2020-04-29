@@ -18,6 +18,7 @@ use tokio::sync::mpsc::channel;
 
 use crate::components::{get, preferences, CanteenComponent, GLADE};
 use crate::util::enclose;
+use crate::canteen;
 
 #[derive(Debug)]
 pub struct WindowComponent {
@@ -149,8 +150,9 @@ impl WindowComponent {
 
             canteens_stack_handle.set_visible_child_name(canteen_name);
             canteen_label_handle.set_text(
-                serde_plain::from_str::<CanteenDescription>(canteen_name)
-                    .unwrap().to_german_str()
+                &canteen::translate(
+                    &serde_plain::from_str::<CanteenDescription>(canteen_name).unwrap()
+                )
             );
         });
         app.add_action(&canteen_selected_action);
@@ -182,8 +184,9 @@ impl WindowComponent {
         if let Some(default_canteen) = comp.settings.get_string("default-canteen") {
             comp.canteens_stack.set_visible_child_name(&default_canteen);
             comp.canteen_label.set_text(
-                serde_plain::from_str::<CanteenDescription>(&default_canteen)
-                    .unwrap().to_german_str()
+                &canteen::translate(
+                    &serde_plain::from_str::<CanteenDescription>(&default_canteen).unwrap()
+                )
             );
         }
 
@@ -197,12 +200,12 @@ impl WindowComponent {
         Ok(())
     }
 
-    pub fn add_canteen(&self, canteen_stack: &Stack, canteen: String, canteen_name: &'static str) -> Result<()> {
+    pub fn add_canteen(&self, canteen_stack: &Stack, canteen: String, canteen_name: String) -> Result<()> {
         self.canteens_stack.add_named(canteen_stack, &canteen);
 
         let model_btn = ModelButtonBuilder::new()
             .visible(true)
-            .text(canteen_name)
+            .text(&canteen_name)
             .can_focus(false)
             .action_name("app.canteen-selected")
             .action_target(&canteen.to_variant())

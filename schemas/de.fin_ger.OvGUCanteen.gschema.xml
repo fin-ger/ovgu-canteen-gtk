@@ -24,7 +24,7 @@
       <default>"UniCampusLowerHall"</default>
       <summary>Select the canteen which should be displayed on startup</summary>
       <description>
-        This key determines which application should be selected by default
+        This key determines which canteen should be selected by default
         upon startup of OvGU Mensa.
       </description>
     </key>

@@ -4,7 +4,8 @@ use std::sync::Arc;
 use anyhow::{Error, Result};
 use gtk::prelude::*;
 use gtk::{Builder, FlowBox, Label, ListBoxRow};
-use ovgu_canteen::Meal;
+use gettextrs::gettext as t;
+use ovgu_canteen::{Meal, Additive, Allergenic, Symbol};
 
 use crate::components::{get, glib_yield, BadgeComponent, LiteBadgeComponent, GLADE};
 use crate::util::{enclose, AdjustingVec};
@@ -19,6 +20,72 @@ pub struct MealComponent {
     additives: AdjustingVec<LiteBadgeComponent, Error>,
     allergenics: AdjustingVec<LiteBadgeComponent, Error>,
     symbols: AdjustingVec<BadgeComponent, Error>,
+}
+
+fn translate_additive(additive: &Additive) -> String {
+    match additive {
+        Additive::FoodColoring => t("Food Coloring"),
+        Additive::FoodPreservatives => t("Food Preservatives"),
+        Additive::AntiOxidants => t("Anti Oxidants"),
+        Additive::FlavorEnhancer => t("Flavor Enhancer"),
+        Additive::Sulfurized => t("Sulfurized"),
+        Additive::Waxed => t("Waxed"),
+        Additive::Blackend => t("Blackend"),
+        Additive::Phosphates => t("Phosphates"),
+        Additive::Sweetener => t("Sweetener"),
+        Additive::Phenylalanine => t("Phenylalanine"),
+    }
+}
+
+fn translate_allergenic(allergenic: &Allergenic) -> String {
+    match allergenic {
+        Allergenic::Wheat => t("Wheat"),
+        Allergenic::Rye => t("Rye"),
+        Allergenic::Barley => t("Barley"),
+        Allergenic::Oat => t("Oat"),
+        Allergenic::Spelt => t("Spelt"),
+        Allergenic::Kamut => t("Kamut"),
+        Allergenic::Crustacean => t("Crustacean"),
+        Allergenic::Egg => t("Egg"),
+        Allergenic::Fish => t("Fish"),
+        Allergenic::Peanut => t("Peanut"),
+        Allergenic::Soya => t("Soya"),
+        Allergenic::Lactose => t("Lactose"),
+        Allergenic::Almond => t("Almond"),
+        Allergenic::Hazelnut => t("Hazelnut"),
+        Allergenic::Walnut => t("Walnut"),
+        Allergenic::Cashew => t("Cashew"),
+        Allergenic::PecanNut => t("Pecan Nut"),
+        Allergenic::BrazilNut => t("Brazil Nut"),
+        Allergenic::Pistachio => t("Pistachio"),
+        Allergenic::MacadamiaNut => t("Macadamia Nut"),
+        Allergenic::QueenslandNut => t("Queensland Nut"),
+        Allergenic::Celery => t("Celery"),
+        Allergenic::Mustard => t("Mustard"),
+        Allergenic::Sesame => t("Sesame"),
+        Allergenic::Sulphite => t("Sulphite"),
+        Allergenic::Lupin => t("Lupin"),
+        Allergenic::Mollusc => t("Mollusc"),
+    }
+}
+
+fn translate_symbol(symbol: &Symbol) -> String {
+    match symbol {
+        Symbol::Pig => t("Pig"),
+        Symbol::Cattle => t("Cattle"),
+        Symbol::Poultry => t("Poultry"),
+        Symbol::Fish => t("Fish"),
+        Symbol::Game => t("Game"),
+        Symbol::Lamb => t("Lamb"),
+        Symbol::Vegan => t("Vegan"),
+        Symbol::Organic => t("Organic"),
+        Symbol::Vegetarian => t("Vegetarian"),
+        Symbol::Alcohol => t("Alcohol"),
+        Symbol::SoupOfTheDay => t("Soup of the Day"),
+        Symbol::MensaVital => t("MensaVital"),
+        Symbol::Garlic => t("Garlic"),
+        Symbol::AnimalWelfare => t("Animal Welfare"),
+    }
 }
 
 impl MealComponent {
@@ -137,7 +204,7 @@ impl MealComponent {
 
         self.additives
             .adjust(&meal.additives, |badge, additive| async move {
-                badge.load(additive.to_german_str()).await;
+                badge.load(&translate_additive(&additive)).await;
                 glib_yield!();
                 Ok(badge)
             })
@@ -145,7 +212,7 @@ impl MealComponent {
 
         self.allergenics
             .adjust(&meal.allergenics, |badge, allergenic| async move {
-                badge.load(allergenic.to_german_str()).await;
+                badge.load(&translate_allergenic(&allergenic)).await;
                 glib_yield!();
                 Ok(badge)
             })
@@ -153,7 +220,7 @@ impl MealComponent {
 
         self.symbols
             .adjust(&meal.symbols, |badge, symbol| async move {
-                badge.load(symbol.to_german_str()).await;
+                badge.load(&translate_symbol(&symbol)).await;
                 glib_yield!();
                 Ok(badge)
             })

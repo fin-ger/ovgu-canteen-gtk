@@ -8,6 +8,7 @@ use ovgu_canteen::CanteenDescription;
 
 use crate::components::{get, GLADE};
 use crate::util::enclose;
+use crate::canteen;
 
 pub fn open<'a, I: IntoIterator<Item = &'a CanteenDescription>>(parent_window: &Window, settings: &Settings, canteens: I) -> Result<()> {
     let builder = Builder::new_from_string(GLADE);
@@ -21,7 +22,7 @@ pub fn open<'a, I: IntoIterator<Item = &'a CanteenDescription>>(parent_window: &
         canteen_list_store.insert_with_values(
             Some(idx as u32),
             &[0, 1],
-            &[&canteen.to_german_str().to_string(), &serde_plain::to_string(&canteen).unwrap()],
+            &[&canteen::translate(&canteen), &serde_plain::to_string(&canteen).unwrap()],
         );
     }
 

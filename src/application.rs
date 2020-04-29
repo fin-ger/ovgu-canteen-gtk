@@ -64,7 +64,7 @@ impl Application {
                 let dialog = MessageDialogBuilder::new()
                     .buttons(ButtonsType::Close)
                     .message_type(MessageType::Error)
-                    .text("Fehler beim Starten der Anwendung")
+                    .text("Error starting the application!")
                     .secondary_text(&format!("<tt>{:#}</tt>", err))
                     .secondary_use_markup(true)
                     .application(app)

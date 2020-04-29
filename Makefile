@@ -1,10 +1,11 @@
 PREFIX ?= /usr
 CARGO_BUILD_ARGS ?= --release
-TARGET_DIR = release
+TARGET_DIR ?= release
 
 build:
 	@cargo build $(CARGO_BUILD_ARGS)
 	@glib-compile-schemas ./schemas
+	@./scripts/translations.sh update
 
 install: build
 	@mkdir -p "$(PREFIX)/share/icons/hicolor/scalable/apps/"
@@ -18,6 +19,7 @@ install: build
 	@glib-compile-schemas "$(PREFIX)/share/glib-2.0/schemas/"
 	@desktop-file-install -m 0644 --dir="$(PREFIX)/share/applications/" data/de.fin_ger.OvGUCanteen.desktop
 	@install -s -m 0755 "target/$(TARGET_DIR)/gnome-ovgu-canteen" "$(PREFIX)/bin/"
+	@./scripts/translations.sh install
 	@update-desktop-database "$(PREFIX)/share/applications"
 	@gtk-update-icon-cache
 
@@ -29,8 +31,11 @@ uninstall:
 	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/de.fin_ger.OvGUCanteen.svg"
 	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/de.fin_ger.OvGUCanteen.About.svg"
 	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/de.fin_ger.OvGUCanteen.Closed.svg"
+	@rm "$(PREFIX)/share/glib-2.0/schemas/de.fin_ger.OvGUCanteen.gschema.xml"
+	@glib-compile-schemas "$(PREFIX)/share/glib-2.0/schemas/"
 	@rm "$(PREFIX)/share/applications/de.fin_ger.OvGUCanteen.desktop"
 	@rm "$(PREFIX)/bin/gnome-ovgu-canteen"
+	@./scripts/translations.sh uninstall
 
 clean:
 	@$(MAKE) -s uninstall PREFIX=$(HOME)/.local

@@ -100,21 +100,21 @@ impl DayComponent {
 
     pub async fn load(&mut self, day: &Day) {
         let mut day_name = match day.date.weekday() {
-            Weekday::Mon => "Montag",
-            Weekday::Tue => "Dienstag",
-            Weekday::Wed => "Mittwoch",
-            Weekday::Thu => "Donnerstag",
-            Weekday::Fri => "Freitag",
-            Weekday::Sat => "Samstag",
-            Weekday::Sun => "Sonntag",
+            Weekday::Mon => "Monday",
+            Weekday::Tue => "Tuesday",
+            Weekday::Wed => "Wednesday",
+            Weekday::Thu => "Thursday",
+            Weekday::Fri => "Friday",
+            Weekday::Sat => "Saturday",
+            Weekday::Sun => "Sunday",
         };
         let today = Utc::today();
         let date = chrono_tz::Europe::Berlin.ymd(day.date.year(), day.date.month(), day.date.day());
         if date == today {
-            day_name = "Heute";
+            day_name = "Today";
         }
         if date == today.succ() {
-            day_name = "Morgen";
+            day_name = "Tomorrow";
         }
 
         self.label.set_text(day_name);
@@ -140,7 +140,7 @@ impl DayComponent {
         if day.side_dishes.is_empty() && self.empty_side_dishes_label.is_none() {
             // this cannot fail as the badge component always returns Ok
             let badge = LiteBadgeComponent::new().await.unwrap();
-            badge.load("nicht vorhanden").await;
+            badge.load("not available").await;
             self.side_dish_badges.insert(badge.root_widget(), 0);
             self.empty_side_dishes_label = Some(badge);
 

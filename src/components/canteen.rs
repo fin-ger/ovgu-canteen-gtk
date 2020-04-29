@@ -1,6 +1,7 @@
 use anyhow::{Error, Result};
 use gtk::prelude::*;
 use gtk::{Box, Builder, Label, Spinner, Stack};
+use gettextrs::gettext as t;
 use ovgu_canteen::{Canteen, CanteenDescription};
 
 use crate::components::{get, glib_yield, DayComponent, WindowComponent, GLADE};
@@ -14,6 +15,18 @@ pub struct CanteenComponent {
     days: AdjustingVec<DayComponent, Error>,
 }
 
+pub fn translate(description: &CanteenDescription) -> String {
+    match description {
+        CanteenDescription::UniCampusLowerHall => t("UniCampus Magdeburg Lower Hall"),
+        CanteenDescription::UniCampusUpperHall => t("UniCampus Magdeburg Upper Hall"),
+        CanteenDescription::Kellercafe => t("Kellercafé Magdeburg"),
+        CanteenDescription::Herrenkrug => t("Herrenkrug Magdeburg"),
+        CanteenDescription::Stendal => t("Stendal"),
+        CanteenDescription::Wernigerode => t("Wernigerode"),
+        CanteenDescription::DomCafeteHalberstadt => t("DomCafete Halberstadt"),
+    }
+}
+
 impl CanteenComponent {
     pub fn new(description: &CanteenDescription, window: &WindowComponent) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
@@ -21,7 +34,7 @@ impl CanteenComponent {
         let canteen_error_label: Label = get!(&builder, "canteen-error-label")?;
         let canteen_spinner: Spinner = get!(&builder, "canteen-spinner")?;
         let days_box: Box = get!(&builder, "days-box")?;
-        let canteen_name = description.to_german_str();
+        let canteen_name = translate(description);
 
         window.add_canteen(&canteen_stack, serde_plain::to_string(description).unwrap(), canteen_name)?;
 

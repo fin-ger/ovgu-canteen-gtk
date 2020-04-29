@@ -18,7 +18,17 @@ mod application;
 mod components;
 mod util;
 
+pub use components::canteen;
+
+use gettextrs::TextDomain;
+
 fn main() {
+    TextDomain::new("gnome-ovgu-canteen")
+        .prepend(shellexpand::tilde("~/.local/share").to_string())
+        .codeset("UTF-8")
+        .init()
+        .expect("Failed to initialize translation domain");
+
     match application::Application::new() {
         Ok(app) => {
             std::process::exit(app.run(&std::env::args().collect::<Vec<_>>()));

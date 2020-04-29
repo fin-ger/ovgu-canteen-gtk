@@ -1,0 +1,325 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-ovgu-canteen\n"
+"POT-Creation-Date: 2020-04-29 16:38+0200\n"
+"PO-Revision-Date: 2020-04-29 16:38+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: t\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: target\n"
+"X-Poedit-SearchPathExcluded-1: .git\n"
+"X-Poedit-SearchPathExcluded-2: flatpak/repo\n"
+"X-Poedit-SearchPathExcluded-3: flatpak/.flatpak-builder\n"
+"X-Poedit-SearchPathExcluded-4: data/de.fin_ger.OvGUCanteen.desktop\n"
+
+#: src/components/canteen.rs:20
+msgid "UniCampus Magdeburg Lower Hall"
+msgstr ""
+
+#: src/components/canteen.rs:21
+msgid "UniCampus Magdeburg Upper Hall"
+msgstr ""
+
+#: src/components/canteen.rs:22
+msgid "Kellercafé Magdeburg"
+msgstr ""
+
+#: src/components/canteen.rs:23
+msgid "Herrenkrug Magdeburg"
+msgstr ""
+
+#: src/components/canteen.rs:24
+msgid "Stendal"
+msgstr ""
+
+#: src/components/canteen.rs:25
+msgid "Wernigerode"
+msgstr ""
+
+#: src/components/canteen.rs:26
+msgid "DomCafete Halberstadt"
+msgstr ""
+
+#: src/components/meal.rs:27
+msgid "Food Coloring"
+msgstr ""
+
+#: src/components/meal.rs:28
+msgid "Food Preservatives"
+msgstr ""
+
+#: src/components/meal.rs:29
+msgid "Anti Oxidants"
+msgstr ""
+
+#: src/components/meal.rs:30
+msgid "Flavor Enhancer"
+msgstr ""
+
+#: src/components/meal.rs:31
+msgid "Sulfurized"
+msgstr ""
+
+#: src/components/meal.rs:32
+msgid "Waxed"
+msgstr ""
+
+#: src/components/meal.rs:33
+msgid "Blackend"
+msgstr ""
+
+#: src/components/meal.rs:34
+msgid "Phosphates"
+msgstr ""
+
+#: src/components/meal.rs:35
+msgid "Sweetener"
+msgstr ""
+
+#: src/components/meal.rs:36
+msgid "Phenylalanine"
+msgstr ""
+
+#: src/components/meal.rs:42
+msgid "Wheat"
+msgstr ""
+
+#: src/components/meal.rs:43
+msgid "Rye"
+msgstr ""
+
+#: src/components/meal.rs:44
+msgid "Barley"
+msgstr ""
+
+#: src/components/meal.rs:45
+msgid "Oat"
+msgstr ""
+
+#: src/components/meal.rs:46
+msgid "Spelt"
+msgstr ""
+
+#: src/components/meal.rs:47
+msgid "Kamut"
+msgstr ""
+
+#: src/components/meal.rs:48
+msgid "Crustacean"
+msgstr ""
+
+#: src/components/meal.rs:49
+msgid "Egg"
+msgstr ""
+
+#: src/components/meal.rs:50 src/components/meal.rs:77
+msgid "Fish"
+msgstr ""
+
+#: src/components/meal.rs:51
+msgid "Peanut"
+msgstr ""
+
+#: src/components/meal.rs:52
+msgid "Soya"
+msgstr ""
+
+#: src/components/meal.rs:53
+msgid "Lactose"
+msgstr ""
+
+#: src/components/meal.rs:54
+msgid "Almond"
+msgstr ""
+
+#: src/components/meal.rs:55
+msgid "Hazelnut"
+msgstr ""
+
+#: src/components/meal.rs:56
+msgid "Walnut"
+msgstr ""
+
+#: src/components/meal.rs:57
+msgid "Cashew"
+msgstr ""
+
+#: src/components/meal.rs:58
+msgid "Pecan Nut"
+msgstr ""
+
+#: src/components/meal.rs:59
+msgid "Brazil Nut"
+msgstr ""
+
+#: src/components/meal.rs:60
+msgid "Pistachio"
+msgstr ""
+
+#: src/components/meal.rs:61
+msgid "Macadamia Nut"
+msgstr ""
+
+#: src/components/meal.rs:62
+msgid "Queensland Nut"
+msgstr ""
+
+#: src/components/meal.rs:63
+msgid "Celery"
+msgstr ""
+
+#: src/components/meal.rs:64
+msgid "Mustard"
+msgstr ""
+
+#: src/components/meal.rs:65
+msgid "Sesame"
+msgstr ""
+
+#: src/components/meal.rs:66
+msgid "Sulphite"
+msgstr ""
+
+#: src/components/meal.rs:67
+msgid "Lupin"
+msgstr ""
+
+#: src/components/meal.rs:68
+msgid "Mollusc"
+msgstr ""
+
+#: src/components/meal.rs:74
+msgid "Pig"
+msgstr ""
+
+#: src/components/meal.rs:75
+msgid "Cattle"
+msgstr ""
+
+#: src/components/meal.rs:76
+msgid "Poultry"
+msgstr ""
+
+#: src/components/meal.rs:78
+msgid "Game"
+msgstr ""
+
+#: src/components/meal.rs:79
+msgid "Lamb"
+msgstr ""
+
+#: src/components/meal.rs:80
+msgid "Vegan"
+msgstr ""
+
+#: src/components/meal.rs:81
+msgid "Organic"
+msgstr ""
+
+#: src/components/meal.rs:82
+msgid "Vegetarian"
+msgstr ""
+
+#: src/components/meal.rs:83
+msgid "Alcohol"
+msgstr ""
+
+#: src/components/meal.rs:84
+msgid "Soup of the Day"
+msgstr ""
+
+#: src/components/meal.rs:85
+msgid "MensaVital"
+msgstr ""
+
+#: src/components/meal.rs:86
+msgid "Garlic"
+msgstr ""
+
+#: src/components/meal.rs:87
+msgid "Animal Welfare"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:884
+msgid "Oh no! Something went wrong..."
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:184
+msgid "No menus were found!"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:247
+msgid "Today"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:337
+msgid "Side Dishes"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:562 data/de.fin_ger.OvGUCanteen.glade:687
+msgid "Preferences"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:563
+msgid "Customize your OvGU Mensa"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:583
+msgid "Use dark theme variant"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:595
+msgid "Canteen to be displayed on startup"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:620
+msgid "How long should old menus be kept? (in days)"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:700
+msgid "About"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:764
+msgid "OvGU Mensa"
+msgstr ""
+
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:7
+msgid "Use the dark theme variant for OvGU Mensa"
+msgstr ""
+
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:8
+msgid ""
+"This key determines whether the dark theme variant of your GTK theme is used "
+"for OvGU Mensa or not."
+msgstr ""
+
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:25
+msgid "Select the canteen which should be displayed on startup"
+msgstr ""
+
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:26
+msgid ""
+"This key determines which canteen should be selected by default upon startup "
+"of OvGU Mensa."
+msgstr ""
+
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:34
+msgid "Set the duration in days for how long old menus should be kept"
+msgstr ""
+
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:35
+msgid ""
+"This key determines for how long old canteen menus should be kept in a local "
+"cache. The duration is given in days. It does not change how many upcoming "
+"menus will be stored."
+msgstr ""

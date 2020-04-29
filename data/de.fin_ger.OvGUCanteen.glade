@@ -114,7 +114,7 @@ Author: Fin Christensen
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Oh nein! Etwas ist schiefgelaufen...</property>
+            <property name="label" translatable="yes">Oh no! Something went wrong...</property>
             <property name="justify">center</property>
             <property name="wrap">True</property>
           </object>
@@ -128,7 +128,7 @@ Author: Fin Christensen
           <object class="GtkLabel" id="canteen-error-label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">error description</property>
+            <property name="label">error description</property>
             <property name="wrap">True</property>
             <property name="selectable">True</property>
             <property name="xalign">0</property>
@@ -181,7 +181,7 @@ Author: Fin Christensen
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Es wurden keine Menüs gefunden!</property>
+            <property name="label" translatable="yes">No menus were found!</property>
             <property name="justify">center</property>
             <property name="wrap">True</property>
           </object>
@@ -281,7 +281,7 @@ Author: Fin Christensen
                     <child>
                       <object class="GtkLabel" id="day-error-label">
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">error message</property>
+                        <property name="label">error message</property>
                         <property name="wrap">True</property>
                         <property name="selectable">True</property>
                         <property name="xalign">0</property>
@@ -334,7 +334,7 @@ Author: Fin Christensen
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Beilagen</property>
+                            <property name="label" translatable="yes">Side Dishes</property>
                             <property name="wrap">True</property>
                             <property name="selectable">True</property>
                             <property name="xalign">0</property>
@@ -400,7 +400,7 @@ Author: Fin Christensen
           <object class="GtkLabel" id="meal-name">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Asian pan-fried vegetables with tofu and rice</property>
+            <property name="label">Asian pan-fried vegetables with tofu and rice</property>
             <property name="wrap">True</property>
             <property name="selectable">True</property>
             <property name="xalign">0</property>
@@ -438,7 +438,7 @@ Author: Fin Christensen
                 <property name="can_focus">False</property>
                 <property name="opacity">0.5</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">2,10€</property>
+                <property name="label">2,10€</property>
                 <property name="selectable">True</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
@@ -456,7 +456,7 @@ Author: Fin Christensen
                 <property name="can_focus">False</property>
                 <property name="opacity">0.50196078431372548</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">|</property>
+                <property name="label">|</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
@@ -473,7 +473,7 @@ Author: Fin Christensen
                 <property name="can_focus">False</property>
                 <property name="opacity">0.50196078431372548</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">3,70€</property>
+                <property name="label">3,70€</property>
                 <property name="selectable">True</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
@@ -491,7 +491,7 @@ Author: Fin Christensen
                 <property name="can_focus">False</property>
                 <property name="opacity">0.50196078431372548</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">|</property>
+                <property name="label">|</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
@@ -508,7 +508,7 @@ Author: Fin Christensen
                 <property name="can_focus">False</property>
                 <property name="opacity">0.50196078431372548</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">4,75€</property>
+                <property name="label">4,75€</property>
                 <property name="selectable">True</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
@@ -617,7 +617,7 @@ Author: Fin Christensen
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Days for how long old menus are kept</property>
+            <property name="label" translatable="yes">How long should old menus be kept? (in days)</property>
             <property name="xalign">0</property>
           </object>
           <packing>
@@ -742,7 +742,7 @@ Author: Fin Christensen
           <object class="GtkMenuButton" id="canteen-menu-button">
             <property name="width_request">200</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <property name="relief">none</property>
@@ -761,8 +761,10 @@ Author: Fin Christensen
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;OvGU Mensa&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
+                        <property name="label" translatable="yes">OvGU Mensa</property>
+                        <style>
+                          <class name="title"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -774,11 +776,10 @@ Author: Fin Christensen
                       <object class="GtkLabel" id="canteen-label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="opacity">0.75</property>
-                        <property name="label" translatable="yes">UniCampus Magdeburg Unterer Saal</property>
-                        <attributes>
-                          <attribute name="scale" value="0.80000000000000004"/>
-                        </attributes>
+                        <property name="label">UniCampus Magdeburg Lower Hall</property>
+                        <style>
+                          <class name="subtitle"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -880,7 +881,7 @@ Author: Fin Christensen
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Oh nein! Etwas ist schiefgelaufen...</property>
+                <property name="label" translatable="yes">Oh no! Something went wrong...</property>
                 <property name="justify">center</property>
                 <property name="wrap">True</property>
               </object>
@@ -894,7 +895,7 @@ Author: Fin Christensen
               <object class="GtkLabel" id="window-error-label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">error description</property>
+                <property name="label">error description</property>
                 <property name="wrap">True</property>
                 <property name="selectable">True</property>
                 <property name="xalign">0</property>
@@ -924,8 +925,8 @@ Author: Fin Christensen
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">window</property>
-    <property name="program_name">OvGU Canteen</property>
-    <property name="copyright" translatable="yes">Fin Christensen © 2020</property>
+    <property name="program_name">OvGU Mensa</property>
+    <property name="copyright">Fin Christensen © 2020</property>
     <property name="logo_icon_name"/>
     <property name="license_type">gpl-3-0</property>
     <child type="titlebar">
