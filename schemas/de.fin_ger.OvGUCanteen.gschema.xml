@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <schemalist>
-  <schema path="/de/fin_ger/OvGUCanteen/" id="de.fin_ger.OvGUCanteen">
+  <schema path="/de/fin_ger/OvGUCanteen/"
+          id="de.fin_ger.OvGUCanteen"
+          gettext-domain="gnome-ovgu-canteen">
     <key name="dark-theme-variant" type="b">
       <default>false</default>
       <summary>Use the dark theme variant for OvGU Mensa</summary>
