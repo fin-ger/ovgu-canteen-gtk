@@ -5,6 +5,7 @@ use anyhow::{Error, Result};
 use chrono::{Datelike, TimeZone, Utc, Weekday};
 use gtk::prelude::*;
 use gtk::{Builder, FlowBox, Frame, InfoBar, Label, ListBox};
+use gettextrs::gettext as t;
 use ovgu_canteen::Day;
 
 use crate::components::{
@@ -100,24 +101,24 @@ impl DayComponent {
 
     pub async fn load(&mut self, day: &Day) {
         let mut day_name = match day.date.weekday() {
-            Weekday::Mon => "Monday",
-            Weekday::Tue => "Tuesday",
-            Weekday::Wed => "Wednesday",
-            Weekday::Thu => "Thursday",
-            Weekday::Fri => "Friday",
-            Weekday::Sat => "Saturday",
-            Weekday::Sun => "Sunday",
+            Weekday::Mon => t("Monday"),
+            Weekday::Tue => t("Tuesday"),
+            Weekday::Wed => t("Wednesday"),
+            Weekday::Thu => t("Thursday"),
+            Weekday::Fri => t("Friday"),
+            Weekday::Sat => t("Saturday"),
+            Weekday::Sun => t("Sunday"),
         };
         let today = Utc::today();
         let date = chrono_tz::Europe::Berlin.ymd(day.date.year(), day.date.month(), day.date.day());
         if date == today {
-            day_name = "Today";
+            day_name = t("Today");
         }
         if date == today.succ() {
-            day_name = "Tomorrow";
+            day_name = t("Tomorrow");
         }
 
-        self.label.set_text(day_name);
+        self.label.set_text(&day_name);
 
         let meal_result = self
             .meals
@@ -140,7 +141,7 @@ impl DayComponent {
         if day.side_dishes.is_empty() && self.empty_side_dishes_label.is_none() {
             // this cannot fail as the badge component always returns Ok
             let badge = LiteBadgeComponent::new().await.unwrap();
-            badge.load("not available").await;
+            badge.load(&t("not available")).await;
             self.side_dish_badges.insert(badge.root_widget(), 0);
             self.empty_side_dishes_label = Some(badge);
 
@@ -157,11 +158,11 @@ impl DayComponent {
 
         let mut error_msg = None;
         if let Err(e) = meal_result {
-            error_msg = Some(format!("error: {:#}", e));
+            error_msg = Some(format!("{}: {:#}", t("error"), e));
         }
 
         if let Err(e) = side_dish_result {
-            let msg = format!("error: {:#}", e);
+            let msg = format!("{}: {:#}", t("error"), e);
             error_msg = if let Some(prev_msg) = error_msg {
                 Some(format!("{}\n{}", prev_msg, msg))
             } else {

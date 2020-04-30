@@ -63,7 +63,7 @@ impl CanteenComponent {
         })
     }
 
-    pub async fn load(&mut self, load_result: Result<Canteen, Error>) {
+    pub async fn load(&mut self, load_result: Result<Canteen>) -> Option<Canteen> {
         self.canteen_spinner.start();
         self.canteen_spinner.show();
         self.canteen_stack.set_visible_child_name("canteen-menu");
@@ -76,8 +76,8 @@ impl CanteenComponent {
             Err(e) => {
                 self.canteen_stack.set_visible_child_name("canteen-error");
                 self.canteen_error_label
-                    .set_text(&format!("error: {:#}", e));
-                return;
+                    .set_text(&format!("{}: {:#}", t("error"), e));
+                return None;
             }
         };
 
@@ -93,12 +93,14 @@ impl CanteenComponent {
         if let Err(e) = days_result {
             self.canteen_stack.set_visible_child_name("canteen-error");
             self.canteen_error_label
-                .set_text(&format!("error: {:#}", e));
+                .set_text(&format!("{}: {:#}", t("error"), e));
         } else if canteen.days.is_empty() {
             self.canteen_stack.set_visible_child_name("canteen-empty");
         }
 
         self.canteen_spinner.stop();
         self.canteen_spinner.hide();
+
+        Some(canteen)
     }
 }

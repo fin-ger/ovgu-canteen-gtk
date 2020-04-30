@@ -219,6 +219,11 @@ Author: Fin Christensen
       </packing>
     </child>
   </object>
+  <object class="GtkImage" id="clear-cache-image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-delete-symbolic</property>
+  </object>
   <object class="GtkFrame" id="day-frame">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -431,18 +436,15 @@ Author: Fin Christensen
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">end</property>
             <property name="spacing">8</property>
             <child>
               <object class="GtkLabel" id="meal-price-student">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="opacity">0.5</property>
-                <property name="halign">start</property>
                 <property name="label">2,10€</property>
                 <property name="selectable">True</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -451,15 +453,9 @@ Author: Fin Christensen
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="opacity">0.50196078431372548</property>
-                <property name="halign">start</property>
-                <property name="label">|</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -472,12 +468,8 @@ Author: Fin Christensen
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="opacity">0.50196078431372548</property>
-                <property name="halign">start</property>
                 <property name="label">3,70€</property>
                 <property name="selectable">True</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -486,15 +478,9 @@ Author: Fin Christensen
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="opacity">0.50196078431372548</property>
-                <property name="halign">start</property>
-                <property name="label">|</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -507,12 +493,8 @@ Author: Fin Christensen
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="opacity">0.50196078431372548</property>
-                <property name="halign">start</property>
                 <property name="label">4,75€</property>
                 <property name="selectable">True</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -589,18 +571,6 @@ Author: Fin Christensen
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Canteen to be displayed on startup</property>
-            <property name="xalign">0</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkSwitch" id="dark-theme-switch">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -611,18 +581,6 @@ Author: Fin Christensen
           <packing>
             <property name="left_attach">1</property>
             <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">How long should old menus be kept? (in days)</property>
-            <property name="xalign">0</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
           </packing>
         </child>
         <child>
@@ -647,18 +605,157 @@ Author: Fin Christensen
           </packing>
         </child>
         <child>
-          <object class="GtkSpinButton" id="menu-history-length-spin-button">
+          <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Default canteen</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Will be shown on startup</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                  <class name="small"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Length for history of old menus in days</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">4</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Current cache size:</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                      <class name="small"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="cache-size-label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Unknown</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                      <class name="small"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="halign">end</property>
-            <property name="valign">center</property>
-            <property name="hexpand">True</property>
-            <property name="width_chars">3</property>
-            <property name="input_purpose">number</property>
-            <property name="adjustment">menu-history-length-adjustment</property>
-            <property name="climb_rate">0.10000000000000001</property>
-            <property name="snap_to_ticks">True</property>
-            <property name="numeric">True</property>
+            <property name="spacing">4</property>
+            <child>
+              <object class="GtkButton" id="clear-cache-button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">clear-cache-image</property>
+                <property name="relief">none</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="menu-history-length-spin-button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="hexpand">True</property>
+                <property name="width_chars">3</property>
+                <property name="input_purpose">number</property>
+                <property name="adjustment">menu-history-length-adjustment</property>
+                <property name="climb_rate">0.10000000000000001</property>
+                <property name="snap_to_ticks">True</property>
+                <property name="numeric">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -927,6 +1024,8 @@ Author: Fin Christensen
     <property name="transient_for">window</property>
     <property name="program_name">OvGU Mensa</property>
     <property name="copyright">Fin Christensen © 2020</property>
+    <property name="translator_credits">Fin Christensen</property>
+    <property name="artists">Fin Christensen</property>
     <property name="logo_icon_name"/>
     <property name="license_type">gpl-3-0</property>
     <child type="titlebar">

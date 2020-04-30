@@ -36,3 +36,7 @@ menuitem {
     padding-top: 8px;
     padding-bottom: 8px;
 }
+
+.small {
+    font-size: 0.9em;
+}

@@ -1,10 +1,9 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::rc::Rc;
-use std::sync::{Arc, Mutex};
 use std::fs::File;
-use std::io::BufReader;
+use std::rc::Rc;
 
+use lazy_static::lazy_static;
 use anyhow::{bail, Context, Result};
 use cargo_author::Author;
 use gio::prelude::*;
@@ -18,14 +17,27 @@ use ovgu_canteen::{Canteen, CanteenDescription};
 use send_wrapper::SendWrapper;
 use tokio::runtime::Handle;
 use tokio::sync::mpsc::channel;
+use futures::future;
+use chrono::{Local, Duration};
+use gettextrs::gettext as t;
 
 use crate::components::{get, preferences, CanteenComponent, GLADE};
 use crate::util::enclose;
 use crate::canteen;
 
-type CanteenCache = Arc<Mutex<HashMap<CanteenDescription, Canteen>>>;
+lazy_static! {
+    static ref CANTEENS: Vec<CanteenDescription> = vec![
+        CanteenDescription::UniCampusLowerHall,
+        CanteenDescription::UniCampusUpperHall,
+        CanteenDescription::Kellercafe,
+        CanteenDescription::Herrenkrug,
+        CanteenDescription::Stendal,
+        CanteenDescription::Wernigerode,
+        CanteenDescription::DomCafeteHalberstadt,
+    ];
+}
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct WindowComponent {
     window: Window,
     window_stack: Stack,
@@ -36,7 +48,6 @@ pub struct WindowComponent {
     canteen_label: Label,
     reload_button: Button,
     canteen_components: Rc<RefCell<HashMap<CanteenDescription, CanteenComponent>>>,
-    canteen_cache: CanteenCache,
     settings: Settings,
 }
 
@@ -68,15 +79,6 @@ impl WindowComponent {
 
         let builder = Builder::new_from_string(GLADE);
 
-        let mut canteens = vec![
-            CanteenDescription::UniCampusLowerHall,
-            CanteenDescription::UniCampusUpperHall,
-            CanteenDescription::Kellercafe,
-            CanteenDescription::Herrenkrug,
-            CanteenDescription::Stendal,
-            CanteenDescription::Wernigerode,
-            CanteenDescription::DomCafeteHalberstadt,
-        ];
         let window: Window = get!(&builder, "window")?;
         let window_stack: Stack = get!(&builder, "window-stack")?;
         let window_error_label: Label = get!(&builder, "window-error-label")?;
@@ -120,13 +122,6 @@ impl WindowComponent {
                 .collect::<Result<Vec<_>>>()?,
         );
 
-        preferences_button.connect_clicked(enclose! { (options_button, window, settings, canteens) move |_btn| {
-            if let Some(popover) = options_button.get_popover() {
-                popover.popdown();
-            }
-
-            let _preferences = preferences::open(&window, &settings, &canteens);
-        }});
         about_button.connect_clicked(enclose! { (options_button) move |_btn| {
             if let Some(popover) = options_button.get_popover() {
                 popover.popdown();
@@ -165,31 +160,6 @@ impl WindowComponent {
 
         window.show_all();
 
-        let canteen_cache = Arc::new(Mutex::new(HashMap::new()));
-
-        for xdg in xdg::BaseDirectories::new() {
-            // loop will only run once, used to abort early with break as ? is not available in scopes
-            let history_path = match xdg.find_cache_file("gnome-ovgu-canteen/history.json") {
-                Some(path) => path,
-                // if no cache is available, just skip
-                None => break,
-            };
-
-            // this cannot fail, as xdg.find_cache_file makes sure the file exists
-            let history_file = File::open(history_path).unwrap();
-            let history_reader = BufReader::new(history_file);
-
-            let history: Vec<Canteen> = match serde_json::from_reader(history_reader) {
-                Ok(history) => history,
-                // if parsing the cache fails, just skip
-                Err(_) => break,
-            };
-
-            for canteen in history {
-                canteen_cache.lock().unwrap().insert(canteen.description.clone(), canteen);
-            }
-        }
-
         let comp = Self {
             window,
             window_stack,
@@ -200,15 +170,22 @@ impl WindowComponent {
             canteen_menu_button,
             reload_button,
             canteen_components: Rc::new(RefCell::new(HashMap::new())),
-            canteen_cache,
             settings,
         };
 
+        preferences_button.connect_clicked(enclose! { (rt, comp, options_button) move |_btn| {
+            if let Some(popover) = options_button.get_popover() {
+                popover.popdown();
+            }
+
+            let _preferences = preferences::open(&rt, &comp, CANTEENS.iter());
+        }});
+
         let mut canteen_components_borrow = comp.canteen_components.borrow_mut();
-        for desc in canteens.drain(..) {
+        for desc in CANTEENS.iter() {
             canteen_components_borrow.insert(
                 desc.clone(),
-                CanteenComponent::new(&desc, &comp).context("Failed to create canteen!")?,
+                CanteenComponent::new(desc, &comp).context("Failed to create canteen!")?,
             );
         }
         drop(canteen_components_borrow);
@@ -249,11 +226,16 @@ impl WindowComponent {
         Ok(())
     }
 
-    #[cfg(feature = "test-with-local-files")]
-    async fn load_canteen(_canteen_cache: CanteenCache, canteen_desc: CanteenDescription) -> Result<Canteen> {
-        // ignore canteen_cache as we as developers want clean tests
-        use std::fs::File;
+    pub fn window(&self) -> &Window {
+        &self.window
+    }
 
+    pub fn settings(&self) -> &Settings {
+        &self.settings
+    }
+
+    #[cfg(feature = "test-with-local-files")]
+    async fn load_canteen(cached_canteen: Option<Canteen>, canteen_desc: CanteenDescription) -> Result<Canteen> {
         let file = File::open("data/canteens.json").context("'data/canteens.json' not found!")?;
         let mut canteens: Vec<Canteen> =
             serde_json::from_reader(&file).context("Could not parse 'data/cateens.json'")?;
@@ -261,64 +243,129 @@ impl WindowComponent {
             .drain(..)
             .find(|c| c.description == canteen_desc)
             .context("Canteen not found!")?;
-        Ok(canteen)
+
+        if let Some(mut cached_canteen) = cached_canteen {
+            failure::ResultExt::compat(cached_canteen.merge(canteen))
+                .context("Failed to update canteen")?;
+            Ok(cached_canteen)
+        } else {
+            Ok(canteen)
+        }
     }
 
     #[cfg(not(feature = "test-with-local-files"))]
-    async fn load_canteen(canteen_cache: CanteenCache, canteen_desc: CanteenDescription) -> Result<Canteen> {
-        // TODO: load canteen from cache and update if available
-        //       OR
-        //       create new canteen and insert into cache
-        // TODO: figure out when to write cache to disk]
-        //        - after loading?
-        //        - at exit?
-        //        => it should always be done in background -> spawn future
-        // TODO: fetch 'menu-history-length' setting and prune old menu entries
-        failure::ResultExt::compat(Canteen::new(canteen_desc).await)
-            .context("Failed to fetch canteen")
+    async fn load_canteen(cached_canteen: Option<Canteen>, canteen_desc: CanteenDescription) -> Result<Canteen> {
+        if let Some(mut canteen) = cached_canteen {
+            failure::ResultExt::compat(canteen.update().await)
+                .context("Failed to update canteen")?;
+            Ok(canteen)
+        } else {
+            failure::ResultExt::compat(Canteen::new(canteen_desc.clone()).await)
+                .context("Failed to fetch canteen")
+        }
     }
 
     pub fn load(&self, rt: &Handle) {
         self.reload_button.set_sensitive(false);
         self.window_stack.set_visible_child_name("canteens-stack");
 
+        let menu_history_length = self.settings.get_uint64("menu-history-length");
+        let history_duration = Duration::days(menu_history_length as i64);
+        let history_oldest = Local::now().date().naive_local() - history_duration;
+
         // canteens are downloaded in parallel here,
         // but in order for one canteen to show up in a batch
         // we are using an mpsc channel to put the parallel loaded canteens
         // in an order which is later sequentially inserted into the GUI.
         let (tx, mut rx) = channel(self.canteen_components.borrow().len());
-        let canteen_cache = &self.canteen_cache;
-        for (canteen_desc, _comp) in self.canteen_components.borrow().iter() {
-            let mut tx = tx.clone();
-            rt.spawn(enclose! { (canteen_cache, canteen_desc) async move {
-                let canteen = Self::load_canteen(canteen_cache, canteen_desc.clone()).await;
-                tx.send((canteen_desc, canteen)).await
-                    .expect("Failed to commit downloaded canteen into UI component!");
-            }});
-        }
+
+        rt.spawn(async move {
+            let mut canteen_cache = HashMap::new();
+
+            // loop will only run once, used to abort early with break as ? is not available in scopes
+            for xdg in xdg::BaseDirectories::new() {
+                let history_path = match xdg.find_cache_file("gnome-ovgu-canteen/history.json") {
+                    Some(path) => path,
+                    // if no cache is available, just skip
+                    None => break,
+                };
+
+                // this cannot fail, as xdg.find_cache_file makes sure the file exists
+                let history_file = File::open(history_path).unwrap();
+                let history: Vec<Canteen> = match serde_json::from_reader(history_file) {
+                    Ok(history) => history,
+                    // if parsing the cache fails, just skip
+                    Err(_) => break,
+                };
+
+                for canteen in history {
+                    canteen_cache.insert(canteen.description.clone(), canteen);
+                }
+            }
+
+            future::join_all(CANTEENS.iter().map(|canteen_desc| {
+                let cached_canteen = canteen_cache.remove(canteen_desc);
+                enclose! { (mut tx) async move {
+                    let canteen_result = Self::load_canteen(cached_canteen, canteen_desc.clone()).await
+                        .map(|mut canteen| {
+                            canteen.days = canteen.days.drain(..)
+                                // remove old menus
+                                .filter(|day| day.date >= history_oldest)
+                                .collect();
+                            canteen
+                        });
+
+                    tx.send((canteen_desc.clone(), canteen_result)).await
+                        .expect("Failed to commit downloaded canteen into UI component!");
+                }}
+            })).await;
+        });
 
         let c = glib::MainContext::default();
         let fetch_reload_button = self.reload_button.clone();
         let fetch_canteen_components = Rc::clone(&self.canteen_components);
         let window_stack = SendWrapper::new(self.window_stack.clone());
         let window_error_label = SendWrapper::new(self.window_error_label.clone());
-        c.spawn_local(async move {
+        c.spawn_local(enclose! { (rt) async move {
             // fetching parallel loaded canteens here and inserting
             // one canteen after another into the GUI.
             // TODO: render currently visible canteen first
-            while let Some((desc, canteen)) = rx.recv().await {
-                if let Some(comp) = fetch_canteen_components.borrow_mut().get_mut(&desc) {
-                    comp.load(canteen).await;
+            let mut canteen_cache = Vec::new();
+
+            while let Some((canteen_desc, canteen_result)) = rx.recv().await {
+                if let Some(comp) = fetch_canteen_components.borrow_mut().get_mut(&canteen_desc) {
+                    canteen_cache.push(comp.load(canteen_result).await);
                 } else {
                     window_stack.set_visible_child_name("window-error");
                     window_error_label.set_text(&format!(
-                        "error: canteen {:?} not found in components list",
-                        desc
+                        "{}: canteen {:?} not found in components list",
+                        t("error"),
+                        canteen_desc,
                     ));
                 }
             }
 
             fetch_reload_button.set_sensitive(true);
-        });
+
+            rt.spawn(async move {
+                // loop will only run once, used to abort early with break as ? is not available in scopes
+                for xdg in xdg::BaseDirectories::new() {
+                    let history_path = match xdg.place_cache_file("gnome-ovgu-canteen/history.json") {
+                        Ok(path) => path,
+                        // if no cache is available, just skip
+                        Err(_err) => {
+                            // TODO: log error
+                            break;
+                        },
+                    };
+
+                    // this cannot fail, as xdg.find_cache_file makes sure the file exists
+                    let history_file = File::create(history_path).unwrap();
+                    if let Err(_err) = serde_json::to_writer_pretty(history_file, &canteen_cache) {
+                        // TODO: log error
+                    };
+                }
+            });
+        }});
     }
 }

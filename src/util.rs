@@ -6,10 +6,16 @@ use futures::stream::{self, TryStreamExt};
 use itertools::{EitherOrBoth, Itertools};
 
 macro_rules! enclose {
-    ( ($( $x:ident ),* $(,)?) $y:expr ) => {
+    ( __priv (mut $x:ident) ) => {
+        let mut $x = $x.clone();
+    };
+    ( __priv ($x:ident) ) => {
+        let $x = $x.clone();
+    };
+    ( ($( $($x:ident)+ ),* $(,)?) $y:expr ) => {
         {
-            $(let $x = $x.clone();)*
-                $y
+            $(enclose! { __priv ( $($x)+ ) };)*
+            $y
         }
     };
 }

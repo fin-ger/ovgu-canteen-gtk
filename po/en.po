@@ -1,9 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-ovgu-canteen\n"
-"POT-Creation-Date: 2020-04-29 16:38+0200\n"
-"PO-Revision-Date: 2020-04-29 16:39+0200\n"
+"POT-Creation-Date: 2020-04-30 17:50+0200\n"
+"PO-Revision-Date: 2020-04-30 17:50+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,8 +14,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: t\n"
-"Last-Translator: \n"
-"Language: en\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: target\n"
 "X-Poedit-SearchPathExcluded-1: .git\n"
@@ -48,6 +48,52 @@ msgstr "Wernigerode"
 #: src/components/canteen.rs:26
 msgid "DomCafete Halberstadt"
 msgstr "DomCafete Halberstadt"
+
+#: src/components/canteen.rs:79 src/components/canteen.rs:96
+#: src/components/day.rs:161 src/components/day.rs:165
+#: src/components/window.rs:333
+msgid "error"
+msgstr "error"
+
+#: src/components/day.rs:104
+msgid "Monday"
+msgstr "Monday"
+
+#: src/components/day.rs:105
+msgid "Tuesday"
+msgstr "Tuesday"
+
+#: src/components/day.rs:106
+msgid "Wednesday"
+msgstr "Wednesday"
+
+#: src/components/day.rs:107
+msgid "Thursday"
+msgstr "Thursday"
+
+#: src/components/day.rs:108
+msgid "Friday"
+msgstr "Friday"
+
+#: src/components/day.rs:109
+msgid "Saturday"
+msgstr "Saturday"
+
+#: src/components/day.rs:110
+msgid "Sunday"
+msgstr "Sunday"
+
+#: src/components/day.rs:115 data/de.fin_ger.OvGUCanteen.glade:252
+msgid "Today"
+msgstr "Today"
+
+#: src/components/day.rs:118
+msgid "Tomorrow"
+msgstr "Tomorrow"
+
+#: src/components/day.rs:144
+msgid "not available"
+msgstr "not available"
 
 #: src/components/meal.rs:27
 msgid "Food Coloring"
@@ -249,7 +295,11 @@ msgstr "Garlic"
 msgid "Animal Welfare"
 msgstr "Animal Welfare"
 
-#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:884
+#: src/components/preferences.rs:48 data/de.fin_ger.OvGUCanteen.glade:692
+msgid "Unknown"
+msgstr "Unknown"
+
+#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:981
 msgid "Oh no! Something went wrong..."
 msgstr "Oh no! Something went wrong..."
 
@@ -257,47 +307,51 @@ msgstr "Oh no! Something went wrong..."
 msgid "No menus were found!"
 msgstr "No menus were found!"
 
-#: data/de.fin_ger.OvGUCanteen.glade:247
-msgid "Today"
-msgstr "Today"
-
-#: data/de.fin_ger.OvGUCanteen.glade:337
+#: data/de.fin_ger.OvGUCanteen.glade:342
 msgid "Side Dishes"
 msgstr "Side Dishes"
 
-#: data/de.fin_ger.OvGUCanteen.glade:562 data/de.fin_ger.OvGUCanteen.glade:687
+#: data/de.fin_ger.OvGUCanteen.glade:544 data/de.fin_ger.OvGUCanteen.glade:784
 msgid "Preferences"
 msgstr "Preferences"
 
-#: data/de.fin_ger.OvGUCanteen.glade:563
+#: data/de.fin_ger.OvGUCanteen.glade:545
 msgid "Customize your OvGU Mensa"
 msgstr "Customize your OvGU Mensa"
 
-#: data/de.fin_ger.OvGUCanteen.glade:583
+#: data/de.fin_ger.OvGUCanteen.glade:565
 msgid "Use dark theme variant"
 msgstr "Use dark theme variant"
 
-#: data/de.fin_ger.OvGUCanteen.glade:595
-msgid "Canteen to be displayed on startup"
-msgstr "Canteen to be displayed on startup"
+#: data/de.fin_ger.OvGUCanteen.glade:616
+msgid "Default canteen"
+msgstr "Default canteen"
 
-#: data/de.fin_ger.OvGUCanteen.glade:620
-msgid "How long should old menus be kept? (in days)"
-msgstr "How long should old menus be kept? (in days)"
+#: data/de.fin_ger.OvGUCanteen.glade:629
+msgid "Will be shown on startup"
+msgstr "Will be shown on startup"
 
-#: data/de.fin_ger.OvGUCanteen.glade:700
+#: data/de.fin_ger.OvGUCanteen.glade:657
+msgid "Length for history of old menus in days"
+msgstr "Length for history of old menus in days"
+
+#: data/de.fin_ger.OvGUCanteen.glade:675
+msgid "Current cache size:"
+msgstr "Current cache size:"
+
+#: data/de.fin_ger.OvGUCanteen.glade:797
 msgid "About"
 msgstr "About"
 
-#: data/de.fin_ger.OvGUCanteen.glade:764
+#: data/de.fin_ger.OvGUCanteen.glade:861
 msgid "OvGU Mensa"
 msgstr "OvGU Mensa"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:7
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:9
 msgid "Use the dark theme variant for OvGU Mensa"
 msgstr "Use the dark theme variant for OvGU Mensa"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:8
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:10
 msgid ""
 "This key determines whether the dark theme variant of your GTK theme is used "
 "for OvGU Mensa or not."
@@ -305,11 +359,11 @@ msgstr ""
 "This key determines whether the dark theme variant of your GTK theme is used "
 "for OvGU Mensa or not."
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:25
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:27
 msgid "Select the canteen which should be displayed on startup"
 msgstr "Select the canteen which should be displayed on startup"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:26
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:28
 msgid ""
 "This key determines which canteen should be selected by default upon startup "
 "of OvGU Mensa."
@@ -317,11 +371,11 @@ msgstr ""
 "This key determines which canteen should be selected by default upon startup "
 "of OvGU Mensa."
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:34
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:36
 msgid "Set the duration in days for how long old menus should be kept"
 msgstr "Set the duration in days for how long old menus should be kept"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:35
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:37
 msgid ""
 "This key determines for how long old canteen menus should be kept in a local "
 "cache. The duration is given in days. It does not change how many upcoming "
@@ -330,3 +384,12 @@ msgstr ""
 "This key determines for how long old canteen menus should be kept in a local "
 "cache. The duration is given in days. It does not change how many upcoming "
 "menus will be stored."
+
+#~ msgid "error: canteen {:?} not found in components list"
+#~ msgstr "error: canteen {:?} not found in components list"
+
+#~ msgid "Canteen to be displayed on startup"
+#~ msgstr "Canteen to be displayed on startup"
+
+#~ msgid "How long should old menus be kept? (in days)"
+#~ msgstr "How long should old menus be kept? (in days)"

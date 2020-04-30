@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-ovgu-canteen\n"
-"POT-Creation-Date: 2020-04-29 15:55+0200\n"
-"PO-Revision-Date: 2020-04-29 16:57+0200\n"
+"POT-Creation-Date: 2020-04-30 17:50+0200\n"
+"PO-Revision-Date: 2020-04-30 17:50+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -48,6 +48,52 @@ msgstr "Wernigerode"
 #: src/components/canteen.rs:26
 msgid "DomCafete Halberstadt"
 msgstr "DomCafete Halberstadt"
+
+#: src/components/canteen.rs:79 src/components/canteen.rs:96
+#: src/components/day.rs:161 src/components/day.rs:165
+#: src/components/window.rs:333
+msgid "error"
+msgstr "Fehler"
+
+#: src/components/day.rs:104
+msgid "Monday"
+msgstr "Montag"
+
+#: src/components/day.rs:105
+msgid "Tuesday"
+msgstr "Dienstag"
+
+#: src/components/day.rs:106
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+#: src/components/day.rs:107
+msgid "Thursday"
+msgstr "Donnerstag"
+
+#: src/components/day.rs:108
+msgid "Friday"
+msgstr "Freitag"
+
+#: src/components/day.rs:109
+msgid "Saturday"
+msgstr "Samstag"
+
+#: src/components/day.rs:110
+msgid "Sunday"
+msgstr "Sonntag"
+
+#: src/components/day.rs:115 data/de.fin_ger.OvGUCanteen.glade:252
+msgid "Today"
+msgstr "Heute"
+
+#: src/components/day.rs:118
+msgid "Tomorrow"
+msgstr "Morgen"
+
+#: src/components/day.rs:144
+msgid "not available"
+msgstr "nicht verfügbar"
 
 #: src/components/meal.rs:27
 msgid "Food Coloring"
@@ -249,7 +295,11 @@ msgstr "Knoblauch"
 msgid "Animal Welfare"
 msgstr "Artgerechte Tierhaltung"
 
-#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:884
+#: src/components/preferences.rs:48 data/de.fin_ger.OvGUCanteen.glade:692
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:981
 msgid "Oh no! Something went wrong..."
 msgstr "Oh nein! Etwas ist schief gelaufen..."
 
@@ -257,47 +307,51 @@ msgstr "Oh nein! Etwas ist schief gelaufen..."
 msgid "No menus were found!"
 msgstr "Es wurden keine Menüs gefunden!"
 
-#: data/de.fin_ger.OvGUCanteen.glade:247
-msgid "Today"
-msgstr "Heute"
-
-#: data/de.fin_ger.OvGUCanteen.glade:337
+#: data/de.fin_ger.OvGUCanteen.glade:342
 msgid "Side Dishes"
 msgstr "Beilagen"
 
-#: data/de.fin_ger.OvGUCanteen.glade:562 data/de.fin_ger.OvGUCanteen.glade:687
+#: data/de.fin_ger.OvGUCanteen.glade:544 data/de.fin_ger.OvGUCanteen.glade:784
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: data/de.fin_ger.OvGUCanteen.glade:563
+#: data/de.fin_ger.OvGUCanteen.glade:545
 msgid "Customize your OvGU Mensa"
 msgstr "Richte dein OvGU Mensa ein"
 
-#: data/de.fin_ger.OvGUCanteen.glade:583
+#: data/de.fin_ger.OvGUCanteen.glade:565
 msgid "Use dark theme variant"
 msgstr "Nutze die dunkle Themavariante"
 
-#: data/de.fin_ger.OvGUCanteen.glade:595
-msgid "Canteen to be displayed on startup"
-msgstr "Beim Start angezeigte Mensa"
+#: data/de.fin_ger.OvGUCanteen.glade:616
+msgid "Default canteen"
+msgstr "Standardkantine"
 
-#: data/de.fin_ger.OvGUCanteen.glade:620
-msgid "How long should old menus be kept? (in days)"
-msgstr "Wie lange sollen alte Menüs behalten bleiben? (in Tagen)"
+#: data/de.fin_ger.OvGUCanteen.glade:629
+msgid "Will be shown on startup"
+msgstr "Wird beim Start angezeigt"
 
-#: data/de.fin_ger.OvGUCanteen.glade:700
+#: data/de.fin_ger.OvGUCanteen.glade:657
+msgid "Length for history of old menus in days"
+msgstr "Verlaufslänge von alten Menüs in Tagen"
+
+#: data/de.fin_ger.OvGUCanteen.glade:675
+msgid "Current cache size:"
+msgstr "Aktuelle Zwischenspeichergröße:"
+
+#: data/de.fin_ger.OvGUCanteen.glade:797
 msgid "About"
 msgstr "Über"
 
-#: data/de.fin_ger.OvGUCanteen.glade:764
+#: data/de.fin_ger.OvGUCanteen.glade:861
 msgid "OvGU Mensa"
 msgstr "OvGU Mensa"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:7
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:9
 msgid "Use the dark theme variant for OvGU Mensa"
 msgstr "Nutze die dunkle Themavariante für OvGU Mensa"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:8
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:10
 msgid ""
 "This key determines whether the dark theme variant of your GTK theme is used "
 "for OvGU Mensa or not."
@@ -305,11 +359,11 @@ msgstr ""
 "Dieser Schlüssel bestimmt ob die dunkle Themavariante deines GTK Themas für "
 "OvGU Mensa verwendet wird oder nicht."
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:25
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:27
 msgid "Select the canteen which should be displayed on startup"
 msgstr "Wähle die Mensa aus, die zum Start angezeigt wird"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:26
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:28
 msgid ""
 "This key determines which canteen should be selected by default upon startup "
 "of OvGU Mensa."
@@ -317,11 +371,11 @@ msgstr ""
 "Dieser Schlüssel bestimmt welche Mensa standardmäßig beim Start von OvGU "
 "Mensa ausgewählt ist."
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:34
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:36
 msgid "Set the duration in days for how long old menus should be kept"
 msgstr "Setze die Dauer in Tagen für wie lange alte Menüs behalten werden"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:35
+#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:37
 msgid ""
 "This key determines for how long old canteen menus should be kept in a local "
 "cache. The duration is given in days. It does not change how many upcoming "
@@ -330,3 +384,12 @@ msgstr ""
 "Dieser Schlüssel bestimmt für wie lange alte Mensamenüs im lokalen "
 "Zwischenspeicher behalten werden. Die Dauer wird in Tagen angegeben. Das "
 "Speichern von neuen Menüs wird nicht beeinflusst."
+
+#~ msgid "error: canteen {:?} not found in components list"
+#~ msgstr "Fehler: Kantine {:?} wurde nicht in der Komponentenliste gefunden"
+
+#~ msgid "Canteen to be displayed on startup"
+#~ msgstr "Beim Start angezeigte Mensa"
+
+#~ msgid "How long should old menus be kept? (in days)"
+#~ msgstr "Wie lange sollen alte Menüs behalten bleiben? (in Tagen)"

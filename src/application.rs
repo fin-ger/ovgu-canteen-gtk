@@ -9,10 +9,7 @@ use tokio::runtime::{Builder as RuntimeBuilder, Runtime};
 
 use crate::components::WindowComponent;
 
-// TODO: persist canteen menus on disk for faster loading of app and update menus
-//       when loaded
-//        - add setting to settings menu for number of menus per canteen to cache
-// ASSIGNEE: @fin-ger
+// TODO: make today scroll into view on startup
 
 // TODO: Create custom flow widget for menu badges
 // ASSIGNEE: ?
