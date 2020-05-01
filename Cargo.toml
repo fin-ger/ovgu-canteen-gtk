@@ -32,6 +32,7 @@ serde_plain = "0.3.0"
 gettext-rs = "0.4.4"
 lazy_static = "1.4.0"
 humansize = "1.1.0"
+notify = "4.0.15"
 
 [features]
 default = [] # ["test-with-local-files"]

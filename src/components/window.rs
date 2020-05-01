@@ -2,6 +2,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fs::File;
 use std::rc::Rc;
+use std::sync::Arc;
 
 use lazy_static::lazy_static;
 use anyhow::{bail, Context, Result};
@@ -17,6 +18,7 @@ use ovgu_canteen::{Canteen, CanteenDescription};
 use send_wrapper::SendWrapper;
 use tokio::runtime::Handle;
 use tokio::sync::mpsc::channel;
+use tokio::sync::Notify;
 use futures::future;
 use chrono::{Local, Duration};
 use gettextrs::gettext as t;
@@ -199,11 +201,11 @@ impl WindowComponent {
             );
         }
 
-        comp.load(rt);
+        comp.load(rt, None);
         comp.reload_button
             .clone()
             .connect_clicked(enclose! { (rt) move |_btn| {
-                comp.load(&rt);
+                comp.load(&rt, None);
             }});
 
         Ok(())
@@ -265,7 +267,7 @@ impl WindowComponent {
         }
     }
 
-    pub fn load(&self, rt: &Handle) {
+    pub fn load(&self, rt: &Handle, loaded: Option<Arc<Notify>>) {
         self.reload_button.set_sensitive(false);
         self.window_stack.set_visible_child_name("canteens-stack");
 
@@ -283,8 +285,8 @@ impl WindowComponent {
             let mut canteen_cache = HashMap::new();
 
             // loop will only run once, used to abort early with break as ? is not available in scopes
-            for xdg in xdg::BaseDirectories::new() {
-                let history_path = match xdg.find_cache_file("gnome-ovgu-canteen/history.json") {
+            for xdg in xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen") {
+                let history_path = match xdg.find_cache_file("history.json") {
                     Some(path) => path,
                     // if no cache is available, just skip
                     None => break,
@@ -347,10 +349,14 @@ impl WindowComponent {
 
             fetch_reload_button.set_sensitive(true);
 
+            if let Some(loaded) = loaded {
+                loaded.notify();
+            }
+
             rt.spawn(async move {
                 // loop will only run once, used to abort early with break as ? is not available in scopes
-                for xdg in xdg::BaseDirectories::new() {
-                    let history_path = match xdg.place_cache_file("gnome-ovgu-canteen/history.json") {
+                for xdg in xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen") {
+                    let history_path = match xdg.place_cache_file("history.json") {
                         Ok(path) => path,
                         // if no cache is available, just skip
                         Err(_err) => {

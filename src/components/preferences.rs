@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use std::fs::File;
 
 use anyhow::Result;
@@ -9,6 +10,10 @@ use humansize::{FileSize, file_size_opts};
 use ovgu_canteen::CanteenDescription;
 use gettextrs::gettext as t;
 use tokio::runtime::Handle;
+use tokio::sync::Notify;
+use tokio::sync::mpsc::channel;
+use notify::{RecursiveMode, watcher, Watcher};
+use futures::future::{self, Either, FutureExt};
 
 use crate::components::{get, WindowComponent, GLADE};
 use crate::util::enclose;
@@ -17,8 +22,8 @@ use crate::canteen;
 // TODO: make cache size label update when file changes
 
 fn update_cache_size_label(cache_size_label: &Label) {
-    let file = xdg::BaseDirectories::new().ok()
-        .and_then(|xdg| xdg.find_cache_file("gnome-ovgu-canteen/history.json"))
+    let file = xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen").ok()
+        .and_then(|xdg| xdg.find_cache_file("history.json"))
         .map(|path| {
             // this cannot fail, as xdg.find_cache_file makes sure the file exists
             File::open(path).unwrap()
@@ -53,6 +58,55 @@ pub fn open<'a, I: IntoIterator<Item = &'a CanteenDescription>>(rt: &Handle, win
             &[&canteen::translate(&canteen), &serde_plain::to_string(&canteen).unwrap()],
         );
     }
+
+    let (mut tx, mut rx) = channel(32);
+    let quit_send = Arc::new(Notify::new());
+    rt.spawn(enclose! { (quit_send) async move {
+        let (std_tx, std_rx) = std::sync::mpsc::channel();
+        let mut watcher = watcher(std_tx, std::time::Duration::from_millis(100)).unwrap();
+        for xdg in xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen") {
+            watcher.watch(xdg.get_cache_home(), RecursiveMode::NonRecursive).ok();
+
+            loop {
+                let val = std_rx.try_recv();
+                match val {
+                    Ok(event) => {
+                        if let Err(_) = tx.send(event).await {
+                            // quit if error occurred
+                            break;
+                        }
+                    },
+                    Err(std::sync::mpsc::TryRecvError::Empty) => {
+                        // use polling here as notify-rs can only work with std-channels
+                        tokio::time::delay_for(std::time::Duration::from_millis(100)).await;
+                    },
+                    // quit if error occurred
+                    _ => break,
+                }
+
+                if let Some(_) = quit_send.notified().now_or_never() {
+                    // quit if notified
+                    break;
+                }
+            }
+        }
+    }});
+
+    let c = glib::MainContext::default();
+    let quit_recv = Arc::new(Notify::new());
+    c.spawn_local(enclose! { (quit_recv, cache_size_label) async move {
+        loop {
+            match future::select(rx.recv().boxed(), quit_recv.notified().boxed()).await {
+                Either::Left((Some(_event), _quit_future)) => {
+                    update_cache_size_label(&cache_size_label);
+                },
+                _ => {
+                    // quit if notified or any error occurred
+                    break;
+                },
+            }
+        }
+    }});
 
     update_cache_size_label(&cache_size_label);
 
@@ -95,6 +149,10 @@ pub fn open<'a, I: IntoIterator<Item = &'a CanteenDescription>>(rt: &Handle, win
     });
 
     preferences.connect_destroy(enclose! { (settings) move |_window| {
+        // quit the file watcher and label updater futures
+        quit_recv.notify();
+        quit_send.notify();
+
         use glib::translate::{FromGlib, ToGlib}; // clone or copy would be boring...
         settings.disconnect(SignalHandlerId::from_glib(signal_handler.to_glib()));
     }});
@@ -114,28 +172,38 @@ pub fn open<'a, I: IntoIterator<Item = &'a CanteenDescription>>(rt: &Handle, win
         settings.set_uint64("menu-history-length", spin_button.get_value() as u64).unwrap();
     }});
 
-    clear_cache_button.connect_clicked(enclose! { (window, rt, cache_size_label) move |btn| {
-        btn.set_sensitive(false);
+    clear_cache_button.connect_clicked(enclose! { (window, rt) move |btn| {
+        let removed = Arc::new(Notify::new());
+        rt.spawn(enclose! { (removed) async move {
+            // loop will only run once, used to abort early with break as ? is not available in scopes
+            for xdg in xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen") {
+                let history_path = match xdg.find_cache_file("history.json") {
+                    Some(path) => path,
+                    // if no cache is available, just skip
+                    None => break,
+                };
 
-        // TODO: add async file io to not block UI thread when deleting
-        // loop will only run once, used to abort early with break as ? is not available in scopes
-        for xdg in xdg::BaseDirectories::new() {
-            let history_path = match xdg.find_cache_file("gnome-ovgu-canteen/history.json") {
-                Some(path) => path,
-                // if no cache is available, just skip
-                None => break,
-            };
+                // this cannot fail, as xdg.find_cache_file makes sure the file exists
+                if let Err(_err) = tokio::fs::remove_file(history_path).await {
+                    // TODO: log error
+                    break;
+                }
 
-            // this cannot fail, as xdg.find_cache_file makes sure the file exists
-            if let Err(_err) = std::fs::remove_file(history_path) {
-                // TODO: log error
-                break;
+                removed.notify();
             }
+        }});
 
-            update_cache_size_label(&cache_size_label);
-            window.load(&rt);
-        }
-        btn.set_sensitive(true);
+        let c = glib::MainContext::default();
+        c.spawn_local(enclose! { (window, rt, btn) async move {
+            btn.set_sensitive(false);
+
+            removed.notified().await;
+            let loaded = Arc::new(Notify::new());
+            window.load(&rt, Some(loaded.clone()));
+            loaded.notified().await;
+
+            btn.set_sensitive(true);
+        }});
     }});
 
     preferences.show_all();
