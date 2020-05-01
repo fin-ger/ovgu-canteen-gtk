@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-ovgu-canteen\n"
-"POT-Creation-Date: 2020-04-30 17:51+0200\n"
+"POT-Creation-Date: 2020-05-01 14:35+0200\n"
 "PO-Revision-Date: 2020-04-29 16:38+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -52,7 +52,7 @@ msgstr ""
 
 #: src/components/canteen.rs:79 src/components/canteen.rs:96
 #: src/components/day.rs:161 src/components/day.rs:165
-#: src/components/window.rs:333
+#: src/components/window.rs:344
 msgid "error"
 msgstr ""
 
@@ -296,11 +296,11 @@ msgstr ""
 msgid "Animal Welfare"
 msgstr ""
 
-#: src/components/preferences.rs:48 data/de.fin_ger.OvGUCanteen.glade:692
+#: src/components/preferences.rs:39 data/de.fin_ger.OvGUCanteen.glade:692
 msgid "Unknown"
 msgstr ""
 
-#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:981
+#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:982
 msgid "Oh no! Something went wrong..."
 msgstr ""
 
@@ -312,7 +312,7 @@ msgstr ""
 msgid "Side Dishes"
 msgstr ""
 
-#: data/de.fin_ger.OvGUCanteen.glade:544 data/de.fin_ger.OvGUCanteen.glade:784
+#: data/de.fin_ger.OvGUCanteen.glade:544 data/de.fin_ger.OvGUCanteen.glade:785
 msgid "Preferences"
 msgstr ""
 
@@ -340,11 +340,15 @@ msgstr ""
 msgid "Current cache size:"
 msgstr ""
 
-#: data/de.fin_ger.OvGUCanteen.glade:797
+#: data/de.fin_ger.OvGUCanteen.glade:729
+msgid "Clear cache"
+msgstr ""
+
+#: data/de.fin_ger.OvGUCanteen.glade:798
 msgid "About"
 msgstr ""
 
-#: data/de.fin_ger.OvGUCanteen.glade:861
+#: data/de.fin_ger.OvGUCanteen.glade:862
 msgid "OvGU Mensa"
 msgstr ""
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-ovgu-canteen\n"
-"POT-Creation-Date: 2020-04-30 17:50+0200\n"
-"PO-Revision-Date: 2020-04-30 17:50+0200\n"
+"POT-Creation-Date: 2020-05-01 14:35+0200\n"
+"PO-Revision-Date: 2020-05-01 14:35+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -51,7 +51,7 @@ msgstr "DomCafete Halberstadt"
 
 #: src/components/canteen.rs:79 src/components/canteen.rs:96
 #: src/components/day.rs:161 src/components/day.rs:165
-#: src/components/window.rs:333
+#: src/components/window.rs:344
 msgid "error"
 msgstr "Fehler"
 
@@ -295,11 +295,11 @@ msgstr "Knoblauch"
 msgid "Animal Welfare"
 msgstr "Artgerechte Tierhaltung"
 
-#: src/components/preferences.rs:48 data/de.fin_ger.OvGUCanteen.glade:692
+#: src/components/preferences.rs:39 data/de.fin_ger.OvGUCanteen.glade:692
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:981
+#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:982
 msgid "Oh no! Something went wrong..."
 msgstr "Oh nein! Etwas ist schief gelaufen..."
 
@@ -311,7 +311,7 @@ msgstr "Es wurden keine Menüs gefunden!"
 msgid "Side Dishes"
 msgstr "Beilagen"
 
-#: data/de.fin_ger.OvGUCanteen.glade:544 data/de.fin_ger.OvGUCanteen.glade:784
+#: data/de.fin_ger.OvGUCanteen.glade:544 data/de.fin_ger.OvGUCanteen.glade:785
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -339,11 +339,15 @@ msgstr "Verlaufslänge von alten Menüs in Tagen"
 msgid "Current cache size:"
 msgstr "Aktuelle Zwischenspeichergröße:"
 
-#: data/de.fin_ger.OvGUCanteen.glade:797
+#: data/de.fin_ger.OvGUCanteen.glade:729
+msgid "Clear cache"
+msgstr "Zwischenspeicher leeren"
+
+#: data/de.fin_ger.OvGUCanteen.glade:798
 msgid "About"
 msgstr "Über"
 
-#: data/de.fin_ger.OvGUCanteen.glade:861
+#: data/de.fin_ger.OvGUCanteen.glade:862
 msgid "OvGU Mensa"
 msgstr "OvGU Mensa"
 
