@@ -1,6 +1,6 @@
 use anyhow::{Error, Result};
 use gtk::prelude::*;
-use gtk::{Box, Builder, Label, Spinner, Stack};
+use gtk::{Box, Builder, Label, Spinner, Stack, ScrolledWindow};
 use gettextrs::gettext as t;
 use ovgu_canteen::{Canteen, CanteenDescription};
 
@@ -10,6 +10,7 @@ use crate::util::{enclose, AdjustingVec};
 #[derive(Debug)]
 pub struct CanteenComponent {
     canteen_stack: Stack,
+    canteen_scrolled_window: ScrolledWindow,
     canteen_error_label: Label,
     canteen_spinner: Spinner,
     days: AdjustingVec<DayComponent, Error>,
@@ -31,6 +32,7 @@ impl CanteenComponent {
     pub fn new(description: &CanteenDescription, window: &WindowComponent) -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
         let canteen_stack: Stack = get!(&builder, "canteen-stack")?;
+        let canteen_scrolled_window: ScrolledWindow = get!(&builder, "canteen-scrolled-window")?;
         let canteen_error_label: Label = get!(&builder, "canteen-error-label")?;
         let canteen_spinner: Spinner = get!(&builder, "canteen-spinner")?;
         let days_box: Box = get!(&builder, "days-box")?;
@@ -39,9 +41,11 @@ impl CanteenComponent {
         window.add_canteen(&canteen_stack, serde_plain::to_string(description).unwrap(), canteen_name)?;
 
         let days = AdjustingVec::new(
-            enclose! { (days_box) move || {
-                enclose! { (days_box) async move {
-                    let comp = DayComponent::new().await?;
+            enclose! { (canteen_scrolled_window, days_box) move || {
+                enclose! { (canteen_scrolled_window, days_box) async move {
+                    let comp = DayComponent::new(move |y| {
+                        Self::scroll_to(&canteen_scrolled_window, y);
+                    }).await?;
                     days_box.pack_start(comp.root_widget(), false, true, 0);
 
                     glib_yield!();
@@ -57,10 +61,18 @@ impl CanteenComponent {
 
         Ok(Self {
             canteen_stack,
+            canteen_scrolled_window,
             canteen_error_label,
             canteen_spinner,
             days,
         })
+    }
+
+    fn scroll_to(canteen_scrolled_window: &ScrolledWindow, y: i32) {
+        if let Some(position) = canteen_scrolled_window.get_vadjustment() {
+            position.set_value(y as f64 - 42.0);
+            canteen_scrolled_window.set_vadjustment(Some(&position));
+        }
     }
 
     pub async fn load(&mut self, load_result: Result<Canteen>) -> Option<Canteen> {

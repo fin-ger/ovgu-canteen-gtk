@@ -19,8 +19,6 @@ use crate::components::{get, WindowComponent, GLADE};
 use crate::util::enclose;
 use crate::canteen;
 
-// TODO: make cache size label update when file changes
-
 fn update_cache_size_label(cache_size_label: &Label) {
     let file = xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen").ok()
         .and_then(|xdg| xdg.find_cache_file("history.json"))

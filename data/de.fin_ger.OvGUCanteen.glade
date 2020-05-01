@@ -41,7 +41,7 @@ Author: Fin Christensen
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkScrolledWindow">
+      <object class="GtkScrolledWindow" id="canteen-scrolled-window">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hscrollbar_policy">never</property>
@@ -240,19 +240,55 @@ Author: Fin Christensen
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkLabel" id="day-label">
+              <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="opacity">0.5</property>
-                <property name="halign">start</property>
-                <property name="margin_left">8</property>
-                <property name="margin_right">8</property>
-                <property name="margin_top">8</property>
-                <property name="margin_bottom">8</property>
-                <property name="label" translatable="yes">Today</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkLabel" id="day-label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="margin_left">8</property>
+                    <property name="margin_right">8</property>
+                    <property name="margin_top">8</property>
+                    <property name="margin_bottom">8</property>
+                    <property name="label">Today</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="date-label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">end</property>
+                    <property name="margin_left">8</property>
+                    <property name="margin_right">8</property>
+                    <property name="margin_top">8</property>
+                    <property name="margin_bottom">8</property>
+                    <property name="label">dd.mm.yyyy</property>
+                    <style>
+                      <class name="dim-label"/>
+                      <class name="small"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -315,6 +351,19 @@ Author: Fin Christensen
               </packing>
             </child>
             <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">8</property>
+                <property name="margin_right">8</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkListBox" id="day-meals-list-box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -374,7 +423,7 @@ Author: Fin Christensen
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
@@ -442,9 +491,11 @@ Author: Fin Christensen
               <object class="GtkLabel" id="meal-price-student">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="opacity">0.5</property>
                 <property name="label">2,10€</property>
                 <property name="selectable">True</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -467,9 +518,11 @@ Author: Fin Christensen
               <object class="GtkLabel" id="meal-price-staff">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="opacity">0.50196078431372548</property>
                 <property name="label">3,70€</property>
                 <property name="selectable">True</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -492,9 +545,11 @@ Author: Fin Christensen
               <object class="GtkLabel" id="meal-price-guest">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="opacity">0.50196078431372548</property>
                 <property name="label">4,75€</property>
                 <property name="selectable">True</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>

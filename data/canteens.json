@@ -9,7 +9,109 @@
         "side_dishes": ["Kartoffeln", "Reis", "Kartoffelspalten", "Pommes"]
       },
       {
+        "date": "2020-04-29",
+        "meals": [
+          {
+            "name": "Italienischer Nudelsalat",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          },
+          {
+            "name": "Gefüllte Zucchini",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          }
+        ],
+        "side_dishes": ["Kartoffeln", "Reis", "Pommes"]
+      },
+      {
         "date": "2020-04-30",
+        "meals": [
+          {
+            "name": "Italienischer Nudelsalat",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          },
+          {
+            "name": "Gefüllte Zucchini",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          }
+        ],
+        "side_dishes": ["Kartoffeln", "Reis", "Pommes"]
+      },
+      {
+        "date": "2020-05-1",
         "meals": [
           {
             "name": "Warzenschwein",
@@ -61,7 +163,7 @@
         "side_dishes": ["Kartoffeln", "Reis", "Pommes"]
       },
       {
-        "date": "2020-05-1",
+        "date": "2020-05-2",
         "meals": [
           {
             "name": "Kartoffelgratin",

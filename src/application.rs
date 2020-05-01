@@ -9,8 +9,6 @@ use tokio::runtime::{Builder as RuntimeBuilder, Runtime};
 
 use crate::components::WindowComponent;
 
-// TODO: make today scroll into view on startup
-
 // TODO: Create custom flow widget for menu badges
 // ASSIGNEE: ?
 
