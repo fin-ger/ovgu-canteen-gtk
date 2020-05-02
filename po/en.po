@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-ovgu-canteen\n"
-"POT-Creation-Date: 2020-05-01 14:35+0200\n"
-"PO-Revision-Date: 2020-05-01 14:35+0200\n"
+"POT-Creation-Date: 2020-05-02 16:02+0200\n"
+"PO-Revision-Date: 2020-05-02 16:03+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -21,77 +21,77 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-3: flatpak/.flatpak-builder\n"
 "X-Poedit-SearchPathExcluded-4: data/de.fin_ger.OvGUCanteen.desktop\n"
 
-#: src/components/canteen.rs:20
+#: src/components/canteen.rs:21
 msgid "UniCampus Magdeburg Lower Hall"
 msgstr "UniCampus Magdeburg Lower Hall"
 
-#: src/components/canteen.rs:21
+#: src/components/canteen.rs:22
 msgid "UniCampus Magdeburg Upper Hall"
 msgstr "UniCampus Magdeburg Upper Hall"
 
-#: src/components/canteen.rs:22
+#: src/components/canteen.rs:23
 msgid "Kellercafé Magdeburg"
 msgstr "Kellercafé Magdeburg"
 
-#: src/components/canteen.rs:23
+#: src/components/canteen.rs:24
 msgid "Herrenkrug Magdeburg"
 msgstr "Herrenkrug Magdeburg"
 
-#: src/components/canteen.rs:24
+#: src/components/canteen.rs:25
 msgid "Stendal"
 msgstr "Stendal"
 
-#: src/components/canteen.rs:25
+#: src/components/canteen.rs:26
 msgid "Wernigerode"
 msgstr "Wernigerode"
 
-#: src/components/canteen.rs:26
+#: src/components/canteen.rs:27
 msgid "DomCafete Halberstadt"
 msgstr "DomCafete Halberstadt"
 
-#: src/components/canteen.rs:79 src/components/canteen.rs:96
-#: src/components/day.rs:161 src/components/day.rs:165
+#: src/components/canteen.rs:91 src/components/canteen.rs:108
+#: src/components/day.rs:178 src/components/day.rs:182
 #: src/components/window.rs:344
 msgid "error"
 msgstr "error"
 
-#: src/components/day.rs:104
+#: src/components/day.rs:117
 msgid "Monday"
 msgstr "Monday"
 
-#: src/components/day.rs:105
+#: src/components/day.rs:118
 msgid "Tuesday"
 msgstr "Tuesday"
 
-#: src/components/day.rs:106
+#: src/components/day.rs:119
 msgid "Wednesday"
 msgstr "Wednesday"
 
-#: src/components/day.rs:107
+#: src/components/day.rs:120
 msgid "Thursday"
 msgstr "Thursday"
 
-#: src/components/day.rs:108
+#: src/components/day.rs:121
 msgid "Friday"
 msgstr "Friday"
 
-#: src/components/day.rs:109
+#: src/components/day.rs:122
 msgid "Saturday"
 msgstr "Saturday"
 
-#: src/components/day.rs:110
+#: src/components/day.rs:123
 msgid "Sunday"
 msgstr "Sunday"
 
-#: src/components/day.rs:115 data/de.fin_ger.OvGUCanteen.glade:252
+#: src/components/day.rs:128
 msgid "Today"
 msgstr "Today"
 
-#: src/components/day.rs:118
+#: src/components/day.rs:134
 msgid "Tomorrow"
 msgstr "Tomorrow"
 
-#: src/components/day.rs:144
+#: src/components/day.rs:161
 msgid "not available"
 msgstr "not available"
 
@@ -295,11 +295,11 @@ msgstr "Garlic"
 msgid "Animal Welfare"
 msgstr "Animal Welfare"
 
-#: src/components/preferences.rs:39 data/de.fin_ger.OvGUCanteen.glade:692
+#: src/components/preferences.rs:37 data/de.fin_ger.OvGUCanteen.glade:775
 msgid "Unknown"
 msgstr "Unknown"
 
-#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:982
+#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:1065
 msgid "Oh no! Something went wrong..."
 msgstr "Oh no! Something went wrong..."
 
@@ -307,47 +307,47 @@ msgstr "Oh no! Something went wrong..."
 msgid "No menus were found!"
 msgstr "No menus were found!"
 
-#: data/de.fin_ger.OvGUCanteen.glade:342
+#: data/de.fin_ger.OvGUCanteen.glade:391
 msgid "Side Dishes"
 msgstr "Side Dishes"
 
-#: data/de.fin_ger.OvGUCanteen.glade:544 data/de.fin_ger.OvGUCanteen.glade:785
+#: data/de.fin_ger.OvGUCanteen.glade:627 data/de.fin_ger.OvGUCanteen.glade:868
 msgid "Preferences"
 msgstr "Preferences"
 
-#: data/de.fin_ger.OvGUCanteen.glade:545
+#: data/de.fin_ger.OvGUCanteen.glade:628
 msgid "Customize your OvGU Mensa"
 msgstr "Customize your OvGU Mensa"
 
-#: data/de.fin_ger.OvGUCanteen.glade:565
+#: data/de.fin_ger.OvGUCanteen.glade:648
 msgid "Use dark theme variant"
 msgstr "Use dark theme variant"
 
-#: data/de.fin_ger.OvGUCanteen.glade:616
+#: data/de.fin_ger.OvGUCanteen.glade:699
 msgid "Default canteen"
 msgstr "Default canteen"
 
-#: data/de.fin_ger.OvGUCanteen.glade:629
+#: data/de.fin_ger.OvGUCanteen.glade:712
 msgid "Will be shown on startup"
 msgstr "Will be shown on startup"
 
-#: data/de.fin_ger.OvGUCanteen.glade:657
+#: data/de.fin_ger.OvGUCanteen.glade:740
 msgid "Length for history of old menus in days"
 msgstr "Length for history of old menus in days"
 
-#: data/de.fin_ger.OvGUCanteen.glade:675
+#: data/de.fin_ger.OvGUCanteen.glade:758
 msgid "Current cache size:"
 msgstr "Current cache size:"
 
-#: data/de.fin_ger.OvGUCanteen.glade:729
+#: data/de.fin_ger.OvGUCanteen.glade:812
 msgid "Clear cache"
 msgstr "Clear cache"
 
-#: data/de.fin_ger.OvGUCanteen.glade:798
+#: data/de.fin_ger.OvGUCanteen.glade:881
 msgid "About"
 msgstr "About"
 
-#: data/de.fin_ger.OvGUCanteen.glade:862
+#: data/de.fin_ger.OvGUCanteen.glade:945
 msgid "OvGU Mensa"
 msgstr "OvGU Mensa"
 
