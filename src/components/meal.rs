@@ -10,7 +10,6 @@ use ovgu_canteen::{Meal, Additive, Allergenic, Symbol};
 use crate::components::{get, glib_yield, SymbolComponent, LiteBadgeComponent, GLADE};
 use crate::util::{enclose, AdjustingVec};
 
-#[derive(Debug)]
 pub struct MealComponent {
     name: Label,
     meal: ListBoxRow,

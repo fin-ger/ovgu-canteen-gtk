@@ -7,10 +7,8 @@ use ovgu_canteen::{Canteen, CanteenDescription};
 use crate::components::{get, glib_yield, DayComponent, WindowComponent, GLADE};
 use crate::util::{enclose, AdjustingVec};
 
-#[derive(Debug)]
 pub struct CanteenComponent {
     canteen_stack: Stack,
-    canteen_scrolled_window: ScrolledWindow,
     canteen_error_label: Label,
     canteen_spinner: Spinner,
     days: AdjustingVec<DayComponent, Error>,
@@ -61,7 +59,6 @@ impl CanteenComponent {
 
         Ok(Self {
             canteen_stack,
-            canteen_scrolled_window,
             canteen_error_label,
             canteen_spinner,
             days,
@@ -71,7 +68,6 @@ impl CanteenComponent {
     fn scroll_to(canteen_scrolled_window: &ScrolledWindow, y: i32) {
         if let Some(position) = canteen_scrolled_window.get_vadjustment() {
             position.set_value(y as f64 - 42.0);
-            canteen_scrolled_window.set_vadjustment(Some(&position));
         }
     }
 

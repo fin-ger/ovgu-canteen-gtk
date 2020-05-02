@@ -1,4 +1,4 @@
-use std::sync::atomic::{AtomicI32, AtomicBool, Ordering};
+use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::Arc;
 
 use anyhow::{Error, Result};
@@ -13,7 +13,6 @@ use crate::components::{
 };
 use crate::util::{enclose, AdjustingVec};
 
-#[derive(Debug)]
 pub struct DayComponent {
     frame: Frame,
     label: Label,
@@ -24,7 +23,7 @@ pub struct DayComponent {
     empty_side_dishes_label: Option<LiteBadgeComponent>,
     meals: AdjustingVec<MealComponent, Error>,
     side_dishes: AdjustingVec<BadgeComponent, Error>,
-    is_today: Arc<AtomicBool>,
+    scroll_to: Box<dyn Fn(i32) + 'static>,
 }
 
 impl DayComponent {
@@ -37,14 +36,6 @@ impl DayComponent {
         let error_label: Label = get!(&builder, "day-error-label")?;
         let meals_list_box: ListBox = get!(&builder, "day-meals-list-box")?;
         let side_dish_badges: FlowBox = get!(&builder, "side-dish-badges")?;
-
-        let is_today = Arc::new(AtomicBool::new(false));
-
-        frame.connect_size_allocate(enclose! { (is_today) move |_frame, allocation| {
-            if is_today.load(Ordering::SeqCst) {
-                scroll_to(allocation.y);
-            }
-        }});
 
         let meal_offset = Arc::new(AtomicI32::new(0));
         let side_dish_offset = Arc::new(AtomicI32::new(0));
@@ -104,7 +95,7 @@ impl DayComponent {
             error_label,
             meals,
             side_dishes,
-            is_today,
+            scroll_to: Box::new(scroll_to),
         })
     }
 
@@ -126,9 +117,6 @@ impl DayComponent {
         let date = chrono_tz::Europe::Berlin.ymd(day.date.year(), day.date.month(), day.date.day());
         if date == today {
             day_name = t("Today");
-            self.is_today.store(true, Ordering::SeqCst);
-        } else {
-            self.is_today.store(false, Ordering::SeqCst);
         }
         if date == today.succ() {
             day_name = t("Tomorrow");
@@ -192,6 +180,12 @@ impl DayComponent {
             self.error_label.set_text(&msg);
         } else {
             self.error.hide();
+        }
+
+        glib_yield!();
+
+        if date == today {
+            (self.scroll_to)(self.frame.get_allocation().y);
         }
     }
 }

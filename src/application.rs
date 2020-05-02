@@ -9,9 +9,6 @@ use tokio::runtime::{Builder as RuntimeBuilder, Runtime};
 
 use crate::components::WindowComponent;
 
-// TODO: Create custom flow widget for menu badges
-// ASSIGNEE: ?
-
 // TODO: create flatpak package
 
 // TODO: write readme

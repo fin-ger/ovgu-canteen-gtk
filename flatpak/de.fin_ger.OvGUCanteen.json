@@ -1,7 +1,7 @@
 {
     "app-id": "de.fin_ger.OvGUCanteen",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "3.36",
+    "runtime-version": "3.34",
     "sdk": "org.gnome.Sdk",
     "sdk-extensions" : [
         "org.freedesktop.Sdk.Extension.rust-stable"
@@ -10,12 +10,10 @@
     "desktop-file-name-suffix" : " (Flatpak)",
     "finish-args": [
         "--share=ipc",
-        "--share=network",
-        "--socket=x11",
         "--socket=fallback-x11",
         "--socket=wayland",
-        "--socket=session-bus",
-        "--filesystem=home"
+        "--share=network",
+        "--env=GSETTINGS_BACKEND=keyfile"
     ],
     "build-options": {
         "append-path" : "/usr/lib/sdk/rust-stable/bin",

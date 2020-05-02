@@ -39,7 +39,7 @@ lazy_static! {
     ];
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct WindowComponent {
     window: Window,
     window_stack: Stack,
@@ -336,7 +336,9 @@ impl WindowComponent {
 
             while let Some((canteen_desc, canteen_result)) = rx.recv().await {
                 if let Some(comp) = fetch_canteen_components.borrow_mut().get_mut(&canteen_desc) {
-                    canteen_cache.push(comp.load(canteen_result).await);
+                    if let Some(canteen) = comp.load(canteen_result).await {
+                        canteen_cache.push(canteen);
+                    }
                 } else {
                     window_stack.set_visible_child_name("window-error");
                     window_error_label.set_text(&format!(

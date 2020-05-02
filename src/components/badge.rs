@@ -2,17 +2,14 @@ use anyhow::Result;
 use gtk::prelude::*;
 use gtk::{Label, Image, IconSize};
 
-#[derive(Debug)]
 pub struct BadgeComponent {
     label: Label,
 }
 
-#[derive(Debug)]
 pub struct LiteBadgeComponent {
     label: Label,
 }
 
-#[derive(Debug)]
 pub struct SymbolComponent {
     image: Image,
 }
