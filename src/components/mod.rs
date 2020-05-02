@@ -5,7 +5,7 @@ mod meal;
 mod window;
 pub mod preferences;
 
-pub use badge::{BadgeComponent, LiteBadgeComponent};
+pub use badge::{BadgeComponent, LiteBadgeComponent, SymbolComponent};
 pub use canteen::CanteenComponent;
 pub use day::DayComponent;
 pub use meal::MealComponent;

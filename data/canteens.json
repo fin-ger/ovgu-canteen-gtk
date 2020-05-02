@@ -19,6 +19,8 @@
               "guest": 4.8
             },
             "symbols": [
+                "Vegetarian",
+                "Garlic"
             ],
             "additives": [
               "Sweetener"
@@ -41,7 +43,9 @@
               "guest": 4.8
             },
             "symbols": [
-              "Poultry"
+                "Vegan",
+                "MensaVital",
+                "Organic"
             ],
             "additives": [
               "Sweetener"
@@ -63,13 +67,15 @@
         "date": "2020-04-30",
         "meals": [
           {
-            "name": "Italienischer Nudelsalat",
+            "name": "Putenbruststeak mit Ananas und Käse überbacken",
             "price": {
               "student": 2.8,
               "staff": 4.0,
               "guest": 4.8
             },
             "symbols": [
+              "Poultry",
+              "AnimalWelfare"
             ],
             "additives": [
               "Sweetener"
@@ -85,14 +91,14 @@
             ]
           },
           {
-            "name": "Gefüllte Zucchini",
+            "name": "Tagessuppe",
             "price": {
               "student": 2.8,
               "staff": 4.0,
               "guest": 4.8
             },
             "symbols": [
-              "Poultry"
+              "SoupOfTheDay"
             ],
             "additives": [
               "Sweetener"
@@ -121,7 +127,7 @@
               "guest": 4.8
             },
             "symbols": [
-              "Poultry"
+              "Game"
             ],
             "additives": [
               "Sweetener"
@@ -137,14 +143,14 @@
             ]
           },
           {
-            "name": "Gefüllte Zucchini",
+            "name": "Fisch-Gemüse-Ragout mit Kartoffelbrei",
             "price": {
               "student": 2.8,
               "staff": 4.0,
               "guest": 4.8
             },
             "symbols": [
-              "Poultry"
+              "Fish"
             ],
             "additives": [
               "Sweetener"
@@ -166,14 +172,37 @@
         "date": "2020-05-2",
         "meals": [
           {
-            "name": "Kartoffelgratin",
+            "name": "Sauerbraten",
             "price": {
               "student": 2.8,
               "staff": 4.0,
               "guest": 4.8
             },
             "symbols": [
-              "Poultry"
+              "Cattle"
+            ],
+            "additives": [
+              "Sweetener"
+            ],
+            "allergenics": [
+              "Wheat",
+              "Barley",
+              "Egg",
+              "Soya",
+              "Lactose",
+              "Celery",
+              "Sesame"
+            ]
+          },
+          {
+            "name": "Harzer Teufelswurst mit Kartoffelbrei",
+            "price": {
+              "student": 2.8,
+              "staff": 4.0,
+              "guest": 4.8
+            },
+            "symbols": [
+              "Pig"
             ],
             "additives": [
               "Sweetener"

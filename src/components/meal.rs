@@ -7,7 +7,7 @@ use gtk::{Builder, FlowBox, Label, ListBoxRow};
 use gettextrs::gettext as t;
 use ovgu_canteen::{Meal, Additive, Allergenic, Symbol};
 
-use crate::components::{get, glib_yield, BadgeComponent, LiteBadgeComponent, GLADE};
+use crate::components::{get, glib_yield, SymbolComponent, LiteBadgeComponent, GLADE};
 use crate::util::{enclose, AdjustingVec};
 
 #[derive(Debug)]
@@ -19,7 +19,7 @@ pub struct MealComponent {
     price_guest: Label,
     additives: AdjustingVec<LiteBadgeComponent, Error>,
     allergenics: AdjustingVec<LiteBadgeComponent, Error>,
-    symbols: AdjustingVec<BadgeComponent, Error>,
+    symbols: AdjustingVec<SymbolComponent, Error>,
 }
 
 fn translate_additive(additive: &Additive) -> String {
@@ -88,12 +88,32 @@ fn translate_symbol(symbol: &Symbol) -> String {
     }
 }
 
+fn icon_name_from_symbol(symbol: &Symbol) -> &'static str {
+    match symbol {
+        Symbol::Pig => "de.fin_ger.OvGUCanteen.Pig",
+        Symbol::Cattle => "de.fin_ger.OvGUCanteen.Cattle",
+        Symbol::Poultry => "de.fin_ger.OvGUCanteen.Poultry",
+        Symbol::Fish => "de.fin_ger.OvGUCanteen.Fish",
+        Symbol::Game => "de.fin_ger.OvGUCanteen.Game",
+        Symbol::Lamb => "de.fin_ger.OvGUCanteen.Lamb",
+        Symbol::Vegan => "de.fin_ger.OvGUCanteen.Vegan",
+        Symbol::Organic => "de.fin_ger.OvGUCanteen.Organic",
+        Symbol::Vegetarian => "de.fin_ger.OvGUCanteen.Vegetarian",
+        Symbol::Alcohol => "de.fin_ger.OvGUCanteen.Alcohol",
+        Symbol::SoupOfTheDay => "de.fin_ger.OvGUCanteen.SoupOfTheDay",
+        Symbol::MensaVital => "de.fin_ger.OvGUCanteen.MensaVital",
+        Symbol::Garlic => "de.fin_ger.OvGUCanteen.Garlic",
+        Symbol::AnimalWelfare => "de.fin_ger.OvGUCanteen.AnimalWelfare",
+    }
+}
+
 impl MealComponent {
     pub async fn new() -> Result<Self> {
         let builder = Builder::new_from_string(GLADE);
         let meal_box: ListBoxRow = get!(&builder, "meal")?;
         let name: Label = get!(&builder, "meal-name")?;
         let badges: FlowBox = get!(&builder, "badges")?;
+        let symbols: FlowBox = get!(&builder, "symbols")?;
         let price_student: Label = get!(&builder, "meal-price-student")?;
         let price_staff: Label = get!(&builder, "meal-price-staff")?;
         let price_guest: Label = get!(&builder, "meal-price-guest")?;
@@ -103,25 +123,21 @@ impl MealComponent {
         let additive_offset = Arc::new(AtomicI32::new(0));
 
         let symbols = AdjustingVec::new(
-            enclose! { (badges, symbol_offset, allergenic_offset, additive_offset) move || {
-                enclose! { (badges, symbol_offset, allergenic_offset, additive_offset) async move {
-                    let comp = BadgeComponent::new().await?;
-                    badges.insert(comp.root_widget(), symbol_offset.load(Ordering::SeqCst));
+            enclose! { (symbols, symbol_offset) move || {
+                enclose! { (symbols, symbol_offset) async move {
+                    let comp = SymbolComponent::new().await?;
+                    symbols.insert(comp.root_widget(), symbol_offset.load(Ordering::SeqCst));
                     symbol_offset.fetch_add(1, Ordering::SeqCst);
-                    allergenic_offset.fetch_add(1, Ordering::SeqCst);
-                    additive_offset.fetch_add(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(comp)
                 }}
             }},
-            enclose! { (symbol_offset, allergenic_offset, additive_offset) move |badge| {
-                enclose! { (symbol_offset, allergenic_offset, additive_offset) async move {
+            enclose! { (symbol_offset) move |badge| {
+                enclose! { (symbol_offset) async move {
                     // a flowbox item always has a parent - a FlowBoxChild
                     badge.root_widget().get_parent().unwrap().destroy();
                     symbol_offset.fetch_sub(1, Ordering::SeqCst);
-                    allergenic_offset.fetch_sub(1, Ordering::SeqCst);
-                    additive_offset.fetch_sub(1, Ordering::SeqCst);
 
                     glib_yield!();
                     Ok(())
@@ -220,7 +236,7 @@ impl MealComponent {
 
         self.symbols
             .adjust(&meal.symbols, |badge, symbol| async move {
-                badge.load(&translate_symbol(&symbol)).await;
+                badge.load(icon_name_from_symbol(&symbol), &translate_symbol(&symbol)).await;
                 glib_yield!();
                 Ok(badge)
             })

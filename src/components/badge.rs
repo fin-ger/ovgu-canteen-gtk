@@ -1,20 +1,25 @@
 use anyhow::Result;
 use gtk::prelude::*;
-use gtk::Label;
+use gtk::{Label, Image, IconSize};
 
 #[derive(Debug)]
 pub struct BadgeComponent {
-    pub label: Label,
+    label: Label,
 }
 
 #[derive(Debug)]
 pub struct LiteBadgeComponent {
-    pub label: Label,
+    label: Label,
+}
+
+#[derive(Debug)]
+pub struct SymbolComponent {
+    image: Image,
 }
 
 impl BadgeComponent {
     pub async fn new() -> Result<Self> {
-        let label: Label = Label::new(None);
+        let label = Label::new(None);
         let context = label.get_style_context();
         context.add_class("badge");
         label.set_selectable(true);
@@ -35,7 +40,7 @@ impl BadgeComponent {
 
 impl LiteBadgeComponent {
     pub async fn new() -> Result<Self> {
-        let label: Label = Label::new(None);
+        let label = Label::new(None);
         let context = label.get_style_context();
         context.add_class("badge-lite");
         label.set_selectable(true);
@@ -51,5 +56,24 @@ impl LiteBadgeComponent {
 
     pub async fn load(&self, text: &str) {
         self.label.set_text(text);
+    }
+}
+
+impl SymbolComponent {
+    pub async fn new() -> Result<Self> {
+        let image = Image::new();
+
+        image.set_visible(true);
+
+        Ok(Self { image })
+    }
+
+    pub const fn root_widget(&self) -> &Image {
+        &self.image
+    }
+
+    pub async fn load(&self, name: &str, tooltip: &str) {
+        self.image.set_from_icon_name(Some(name), IconSize::LargeToolbar);
+        self.image.set_tooltip_text(Some(tooltip));
     }
 }
