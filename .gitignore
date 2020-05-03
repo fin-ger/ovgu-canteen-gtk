@@ -1,8 +1,6 @@
 target/
 **/*.rs.bk
 *~
-flatpak/repo
-flatpak/.flatpak-builder
-flatpak/generated-sources.json
+.flatpak-builder
 *.compiled
 *.mo

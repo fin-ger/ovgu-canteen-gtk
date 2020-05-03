@@ -214,5 +214,5 @@ def main():
         json.dump(generated_sources, out, indent=4, sort_keys=False)
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     main()

@@ -1,0 +1,23 @@
+name: master
+
+on:
+  push:
+    branches:
+    - master
+  schedule:
+  - cron: '0 9 1 * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: |
+        make build
+        mv target/release/gnome-ovgu-canteen $GITHUB_WORKSPACE
+    - name: Upload binary
+      uses: actions/upload-artifact@v1
+      with:
+        name: gnome-ovgu-canteen
+        path: gnome-ovgu-canteen

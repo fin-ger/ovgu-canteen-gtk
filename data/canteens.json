@@ -3,65 +3,73 @@
     "description": "UniCampusLowerHall",
     "days": [
       {
-        "date": "2020-04-22",
-        "meals": [
-        ],
-        "side_dishes": ["Kartoffeln", "Reis", "Kartoffelspalten", "Pommes"]
-      },
-      {
-        "date": "2020-04-29",
+        "date": "2014-10-22",
         "meals": [
           {
-            "name": "Italienischer Nudelsalat",
+            "name": "Bulgur-Tomaten-Rucolasalat mit Schweinefleischstreifen",
             "price": {
-              "student": 2.8,
-              "staff": 4.0,
-              "guest": 4.8
+              "student": 2.3,
+              "staff": 3.8,
+              "guest": 4.85
             },
             "symbols": [
-                "Vegetarian",
-                "Garlic"
+              "MensaVital",
+              "Pig"
             ],
             "additives": [
-              "Sweetener"
             ],
             "allergenics": [
-              "Wheat",
-              "Barley",
-              "Egg",
-              "Soya",
-              "Lactose",
-              "Celery",
-              "Sesame"
             ]
           },
           {
-            "name": "Gefüllte Zucchini",
+            "name": "Hausbelegte Pizza vegetarisch belegt",
             "price": {
-              "student": 2.8,
-              "staff": 4.0,
-              "guest": 4.8
+              "student": 2.3,
+              "staff": 3.8,
+              "guest": 4.85
             },
             "symbols": [
-                "Vegan",
-                "MensaVital",
-                "Organic"
+              "Vegetarian"
             ],
             "additives": [
-              "Sweetener"
+              "FoodColoring",
+              "AntiOxidants"
             ],
             "allergenics": [
-              "Wheat",
-              "Barley",
-              "Egg",
-              "Soya",
-              "Lactose",
-              "Celery",
-              "Sesame"
+            ]
+          },
+          {
+            "name": "Putenbruststeak mit Ananas und Käse überbacken",
+            "price": {
+              "student": 1.45,
+              "staff": 2.5,
+              "guest": 3.2
+            },
+            "symbols": [
+              "Poultry"
+            ],
+            "additives": [
+            ],
+            "allergenics": [
+            ]
+          },
+          {
+            "name": "Fisch-Gemüse-Ragout mit Kartoffelbrei",
+            "price": {
+              "student": 1.5,
+              "staff": 3,
+              "guest": 4
+            },
+            "symbols": [
+              "Fish"
+            ],
+            "additives": [
+            ],
+            "allergenics": [
             ]
           }
         ],
-        "side_dishes": ["Kartoffeln", "Reis", "Pommes"]
+          "side_dishes": ["Salzkartoffeln", "Reis", "Kartoffelspalten", "Sommergemüse"]
       },
       {
         "date": "2020-04-30",

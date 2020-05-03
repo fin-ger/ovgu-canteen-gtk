@@ -38,9 +38,9 @@
             "sources": [
                 {
                     "type": "dir",
-                    "path": "../"
+                    "path": "../.."
                 },
-                "generated-sources.json"
+                "../../flatpak.lock"
             ]
         }
     ]

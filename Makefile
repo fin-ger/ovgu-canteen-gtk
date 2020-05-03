@@ -3,9 +3,10 @@ CARGO_BUILD_ARGS ?= --release
 TARGET_DIR ?= release
 
 build:
-	@cargo build $(CARGO_BUILD_ARGS)
 	@glib-compile-schemas ./schemas
 	@./scripts/translations.sh update
+	@cargo build $(CARGO_BUILD_ARGS)
+	@./scripts/flatpak-cargo-generator.py Cargo.lock -o flatpak.lock || true
 
 install: build
 	@mkdir -p "$(PREFIX)/share/icons/hicolor/scalable/apps/"
@@ -68,3 +69,11 @@ uninstall:
 clean:
 	@$(MAKE) -s uninstall PREFIX=$(HOME)/.local
 	@echo "Installation files have been cleaned. To also clean cargo build files run 'cargo clean'"
+
+flatpak:
+	@mkdir -p target/flatpak
+	@flatpak-builder --install target/flatpak --force-clean --user -y dist/flatpak/de.fin_ger.OvGUCanteen.json
+
+flatpak-clean:
+	@rm -r .flatpak-builder
+	@rm -r target/flatpak
