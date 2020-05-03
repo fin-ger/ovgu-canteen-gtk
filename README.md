@@ -2,8 +2,8 @@
 
 <p align="center">
   <img height="300" src="img/screenshot.png"><br>
-  <a href="https://github.com/fin-ger/gnome-ovgu-canteen/actions?query=workflow%3A%22master+build%22">
-    <img src="https://github.com/fin-ger/gnome-ovgu-canteen/workflows/master build/badge.svg" alt="master">
+  <a href="https://github.com/fin-ger/gnome-ovgu-canteen/actions?query=workflow%3A%22master%22">
+    <img src="https://github.com/fin-ger/gnome-ovgu-canteen/workflows/master/badge.svg" alt="master">
   </a>
   <a href="https://github.com/fin-ger/gnome-ovgu-canteen/actions?query=workflow%3A%22latest+release%22">
     <img src="https://github.com/fin-ger/gnome-ovgu-canteen/workflows/latest release/badge.svg" alt="latest release">

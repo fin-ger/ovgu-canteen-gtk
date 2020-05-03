@@ -14,6 +14,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build
       run: |
+        apt-get install gettext -y
         make build
         mv target/release/gnome-ovgu-canteen $GITHUB_WORKSPACE
     - name: Upload binary
