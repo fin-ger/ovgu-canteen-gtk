@@ -39,7 +39,7 @@ jobs:
       run: |
         VERSION="${GITHUB_REF:11}"
         echo "::set-output name=version::$VERSION"
-        tar czvf $GITHUB_WORKSPACE/gnome-ovgu-canteen-$VERSION.tgz .
+        tar -c --exclude-vcs-ignores -zvf $GITHUB_WORKSPACE/gnome-ovgu-canteen-$VERSION.tgz .
     - name: Load Release URL File from release job
       uses: actions/download-artifact@v1
       with:

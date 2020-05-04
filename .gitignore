@@ -1,6 +1,7 @@
-target/
+target
 **/*.rs.bk
 *~
 .flatpak-builder
 *.compiled
 *.mo
+.git
