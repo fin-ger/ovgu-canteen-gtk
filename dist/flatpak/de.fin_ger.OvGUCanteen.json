@@ -3,11 +3,11 @@
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.36",
     "sdk": "org.gnome.Sdk",
-    "sdk-extensions" : [
+    "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.rust-stable"
     ],
     "command": "gnome-ovgu-canteen",
-    "desktop-file-name-suffix" : " (Flatpak)",
+    "desktop-file-name-suffix": " (Flatpak)",
     "finish-args": [
         "--share=ipc",
         "--socket=fallback-x11",
@@ -16,13 +16,9 @@
         "--env=GSETTINGS_BACKEND=keyfile"
     ],
     "build-options": {
-        "append-path" : "/usr/lib/sdk/rust-stable/bin",
-        "build-args" : [
-            "--share=network"
-        ],
-        "env" : {
-            "RUSTFLAGS" : "--remap-path-prefix =../",
-            "CARGO_HOME" : "/run/build/OvGUCanteen/cargo",
+        "append-path": "/usr/lib/sdk/rust-stable/bin",
+        "env": {
+            "CARGO_HOME": "/run/build/OvGUCanteen/cargo",
             "CARGO_BUILD_ARGS": "--offline --release --verbose",
             "PREFIX": "/app"
         }
