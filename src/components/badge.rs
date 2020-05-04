@@ -16,8 +16,11 @@ pub struct SymbolComponent {
 
 impl BadgeComponent {
     pub async fn new() -> Result<Self> {
+        log::debug!("new BadgeComponent created");
+
         let label = Label::new(None);
         let context = label.get_style_context();
+        // css class 'badge' styles this component
         context.add_class("badge");
         label.set_selectable(true);
         label.set_line_wrap(false);
@@ -31,14 +34,19 @@ impl BadgeComponent {
     }
 
     pub async fn load(&self, text: &str) {
+        log::debug!("loading content into BadgeComponent: {}", text);
+
         self.label.set_text(text);
     }
 }
 
 impl LiteBadgeComponent {
     pub async fn new() -> Result<Self> {
+        log::debug!("new LiteBadgeComponent created");
+
         let label = Label::new(None);
         let context = label.get_style_context();
+        // css class 'badge-lite' styles this component
         context.add_class("badge-lite");
         label.set_selectable(true);
         label.set_line_wrap(false);
@@ -52,14 +60,17 @@ impl LiteBadgeComponent {
     }
 
     pub async fn load(&self, text: &str) {
+        log::debug!("loading content into LiteBadgeComponent: {}", text);
+
         self.label.set_text(text);
     }
 }
 
 impl SymbolComponent {
     pub async fn new() -> Result<Self> {
-        let image = Image::new();
+        log::debug!("new SymbolComponent created");
 
+        let image = Image::new();
         image.set_visible(true);
 
         Ok(Self { image })
@@ -70,6 +81,9 @@ impl SymbolComponent {
     }
 
     pub async fn load(&self, name: &str, tooltip: &str) {
+        log::debug!("loading content into SymbolComponent: (icon-name: {}, tooltip: {})", name, tooltip);
+
+        // symbols are installed as system icons (from ./icons), therefore they are available as icon-names
         self.image.set_from_icon_name(Some(name), IconSize::LargeToolbar);
         self.image.set_tooltip_text(Some(tooltip));
     }

@@ -9,14 +9,6 @@ use tokio::runtime::{Builder as RuntimeBuilder, Runtime};
 
 use crate::components::WindowComponent;
 
-// TODO: create flatpak package
-
-// TODO: write readme
-
-// TODO: try porting to windows metro app
-
-// TODO: try porting to macos app
-
 pub struct Application {
     pub g_app: gtk::Application,
     pub runtime: Runtime,
@@ -24,6 +16,7 @@ pub struct Application {
 
 impl Application {
     pub fn new() -> Result<Self> {
+        log::debug!("initializing gnome-ovgu-canteen");
         gtk::init().context("Failed to initialize GTK!")?;
 
         let css_provider = CssProvider::new();
@@ -53,6 +46,7 @@ impl Application {
         g_app.connect_activate(move |app| match WindowComponent::new(&build_rt, app) {
             Ok(()) => {}
             Err(err) => {
+                log::error!("error starting application: {:#}", err);
                 let dialog = MessageDialogBuilder::new()
                     .buttons(ButtonsType::Close)
                     .message_type(MessageType::Error)
@@ -77,14 +71,18 @@ impl Application {
                     }
                 }
                 dialog.run();
+                log::debug!("quitting gnome-ovgu-canteen");
                 app.quit();
             }
         });
+
+        log::debug!("finish initializing gnome-ovgu-canteen");
 
         Ok(Self { g_app, runtime })
     }
 
     pub fn run(self, args: &[String]) -> i32 {
+        log::debug!("running gnome-ovgu-canteen");
         self.g_app.run(args)
     }
 }

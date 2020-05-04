@@ -430,6 +430,19 @@
     },
     {
         "type": "file",
+        "url": "https://static.crates.io/crates/flexi_logger/flexi_logger-0.15.2.crate",
+        "sha256": "fdd4de217664c0ebd05d54e722f42c190fdf31c8965a77fcfac9253ff61a0369",
+        "dest": "cargo/vendor",
+        "dest-filename": "flexi_logger-0.15.2.crate"
+    },
+    {
+        "type": "file",
+        "url": "data:%7B%22package%22%3A%20%22fdd4de217664c0ebd05d54e722f42c190fdf31c8965a77fcfac9253ff61a0369%22%2C%20%22files%22%3A%20%7B%7D%7D",
+        "dest": "cargo/vendor/flexi_logger-0.15.2",
+        "dest-filename": ".cargo-checksum.json"
+    },
+    {
+        "type": "file",
         "url": "https://static.crates.io/crates/fnv/fnv-1.0.6.crate",
         "sha256": "2fad85553e09a6f881f739c29f0b00b0f01357c743266d478b68951ce23285f3",
         "dest": "cargo/vendor",
@@ -829,6 +842,19 @@
         "type": "file",
         "url": "data:%7B%22package%22%3A%20%2295856f3802f446c05feffa5e24859fe6a183a7cb849c8449afc35c86b1e316e2%22%2C%20%22files%22%3A%20%7B%7D%7D",
         "dest": "cargo/vendor/glib-sys-0.9.1",
+        "dest-filename": ".cargo-checksum.json"
+    },
+    {
+        "type": "file",
+        "url": "https://static.crates.io/crates/glob/glob-0.3.0.crate",
+        "sha256": "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574",
+        "dest": "cargo/vendor",
+        "dest-filename": "glob-0.3.0.crate"
+    },
+    {
+        "type": "file",
+        "url": "data:%7B%22package%22%3A%20%229b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574%22%2C%20%22files%22%3A%20%7B%7D%7D",
+        "dest": "cargo/vendor/glob-0.3.0",
         "dest-filename": ".cargo-checksum.json"
     },
     {
@@ -2315,6 +2341,32 @@
     },
     {
         "type": "file",
+        "url": "https://static.crates.io/crates/thiserror/thiserror-1.0.16.crate",
+        "sha256": "d12a1dae4add0f0d568eebc7bf142f145ba1aa2544cafb195c76f0f409091b60",
+        "dest": "cargo/vendor",
+        "dest-filename": "thiserror-1.0.16.crate"
+    },
+    {
+        "type": "file",
+        "url": "data:%7B%22package%22%3A%20%22d12a1dae4add0f0d568eebc7bf142f145ba1aa2544cafb195c76f0f409091b60%22%2C%20%22files%22%3A%20%7B%7D%7D",
+        "dest": "cargo/vendor/thiserror-1.0.16",
+        "dest-filename": ".cargo-checksum.json"
+    },
+    {
+        "type": "file",
+        "url": "https://static.crates.io/crates/thiserror-impl/thiserror-impl-1.0.16.crate",
+        "sha256": "3f34e0c1caaa462fd840ec6b768946ea1e7842620d94fe29d5b847138f521269",
+        "dest": "cargo/vendor",
+        "dest-filename": "thiserror-impl-1.0.16.crate"
+    },
+    {
+        "type": "file",
+        "url": "data:%7B%22package%22%3A%20%223f34e0c1caaa462fd840ec6b768946ea1e7842620d94fe29d5b847138f521269%22%2C%20%22files%22%3A%20%7B%7D%7D",
+        "dest": "cargo/vendor/thiserror-impl-1.0.16",
+        "dest-filename": ".cargo-checksum.json"
+    },
+    {
+        "type": "file",
         "url": "https://static.crates.io/crates/thread_local/thread_local-1.0.1.crate",
         "sha256": "d40c6d1b69745a6ec6fb1ca717914848da4b44ae29d9b3080cbee91d72a69b14",
         "dest": "cargo/vendor",
@@ -2623,6 +2675,19 @@
         "type": "file",
         "url": "data:%7B%22package%22%3A%20%22d089681aa106a86fade1b0128fb5daf07d5867a509ab036d99988dec80429a57%22%2C%20%22files%22%3A%20%7B%7D%7D",
         "dest": "cargo/vendor/xdg-2.2.0",
+        "dest-filename": ".cargo-checksum.json"
+    },
+    {
+        "type": "file",
+        "url": "https://static.crates.io/crates/yansi/yansi-0.5.0.crate",
+        "sha256": "9fc79f4a1e39857fc00c3f662cbf2651c771f00e9c15fe2abc341806bd46bd71",
+        "dest": "cargo/vendor",
+        "dest-filename": "yansi-0.5.0.crate"
+    },
+    {
+        "type": "file",
+        "url": "data:%7B%22package%22%3A%20%229fc79f4a1e39857fc00c3f662cbf2651c771f00e9c15fe2abc341806bd46bd71%22%2C%20%22files%22%3A%20%7B%7D%7D",
+        "dest": "cargo/vendor/yansi-0.5.0",
         "dest-filename": ".cargo-checksum.json"
     },
     {

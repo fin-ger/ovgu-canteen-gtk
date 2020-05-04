@@ -28,6 +28,8 @@ pub struct DayComponent {
 
 impl DayComponent {
     pub async fn new<F: Fn(i32) + 'static>(scroll_to: F) -> Result<Self> {
+        log::debug!("creating new DayComponent");
+
         let builder = Builder::new_from_string(GLADE);
         let frame: Frame = get!(&builder, "day-frame")?;
         let label: Label = get!(&builder, "day-label")?;
@@ -37,10 +39,15 @@ impl DayComponent {
         let meals_list_box: ListBox = get!(&builder, "day-meals-list-box")?;
         let side_dish_badges: FlowBox = get!(&builder, "side-dish-badges")?;
 
+        log::debug!("setting up AdjustingVec in DayComponent");
+
+        // these counters track the current insertion index in meals_list and side_dish_badges
         let meal_offset = Arc::new(AtomicI32::new(0));
         let side_dish_offset = Arc::new(AtomicI32::new(0));
 
+        // create a new adjusting vector which adjusts its size according to an input iterator
         let meals = AdjustingVec::new(
+            // define how to create a new MealComponent
             enclose! { (meals_list_box, meal_offset) move || {
                 enclose! { (meals_list_box, meal_offset) async move {
                     let comp = MealComponent::new().await?;
@@ -51,6 +58,7 @@ impl DayComponent {
                     Ok(comp)
                 }}
             }},
+            // define how to delete a MealComponent
             enclose! { (meal_offset) move |meal| {
                 enclose! { (meal_offset) async move {
                     meal.root_widget().destroy();
@@ -62,7 +70,9 @@ impl DayComponent {
             }},
         );
 
+        // create a new adjusting vector which adjusts its size according to an input iterator
         let side_dishes = AdjustingVec::new(
+            // define how to create a new BadgeComponent for side-dish display
             enclose! { (side_dish_badges, side_dish_offset) move || {
                 enclose! { (side_dish_badges, side_dish_offset) async move {
                     let comp = BadgeComponent::new().await?;
@@ -73,6 +83,7 @@ impl DayComponent {
                     Ok(comp)
                 }}
             }},
+            // define how to delete a BadgeComponent
             enclose! { (side_dish_offset) move |badge| {
                 enclose! { (side_dish_offset) async move {
                     // a flowbox item always has a parent - a FlowBoxChild
@@ -84,6 +95,8 @@ impl DayComponent {
                 }}
             }},
         );
+
+        log::debug!("finish creating DayComponent");
 
         Ok(Self {
             empty_side_dishes_label: None,
@@ -104,6 +117,8 @@ impl DayComponent {
     }
 
     pub async fn load(&mut self, day: &Day) {
+        log::debug!("loading content into DayComponent {}", day.date);
+
         let mut day_name = match day.date.weekday() {
             Weekday::Mon => t("Monday"),
             Weekday::Tue => t("Tuesday"),
@@ -115,6 +130,7 @@ impl DayComponent {
         };
         let today = Utc::today();
         let date = chrono_tz::Europe::Berlin.ymd(day.date.year(), day.date.month(), day.date.day());
+        // add special display for today and tomorrow
         if date == today {
             day_name = t("Today");
         }
@@ -125,33 +141,46 @@ impl DayComponent {
         self.label.set_text(&day_name);
         self.date_label.set_text(&format!("{}", day.date.format("%d.%m.%Y")));
 
+        log::debug!("loading meals into DayComponent {}", day.date);
+
+        // adjust MealComponents to match day.meals
         let meal_result = self
             .meals
             .adjust(&day.meals, |mut comp, meal| async move {
+                // define how to update a MealComponent
                 comp.load(meal).await?;
-                glib_yield!();
+                glib_yield!(); // give gtk a chance to update the UI
                 Ok(comp)
             })
             .await;
 
+        log::debug!("loading side dishes into DayComponent {}", day.date);
+
+        // adjust BadgeComponents for side dishes to match day.side_dishes
         let side_dish_result = self
             .side_dishes
             .adjust(&day.side_dishes, |badge, side_dish| async move {
+                // define how to update a BadgeComponent
                 badge.load(side_dish).await;
-                glib_yield!();
+                glib_yield!(); // give gtk a chance to update the UI
                 Ok(badge)
             })
             .await;
 
+        // create a 'not-available' side-dish badge if side_dishes are empty
+        // and no such badge exists yet
         if day.side_dishes.is_empty() && self.empty_side_dishes_label.is_none() {
+            log::debug!("no side-dishes available, adding not-available badge to DayComponent {}", day.date);
+
             // this cannot fail as the badge component always returns Ok
             let badge = LiteBadgeComponent::new().await.unwrap();
             badge.load(&t("not available")).await;
             self.side_dish_badges.insert(badge.root_widget(), 0);
             self.empty_side_dishes_label = Some(badge);
-
-            glib_yield!();
         } else if !day.side_dishes.is_empty() && self.empty_side_dishes_label.is_some() {
+            log::debug!("removing not-available badge from DayComponent {}", day.date);
+
+            // if side dishes are not empty but a 'not-available' badge exists, delete it
             self.empty_side_dishes_label
                 .take()
                 .unwrap() // checked above
@@ -160,13 +189,16 @@ impl DayComponent {
                 .unwrap() // a flowbox item always has a parent - a FlowBoxChild
                 .destroy();
         }
+        glib_yield!(); // give gtk a chance to update the UI
 
         let mut error_msg = None;
         if let Err(e) = meal_result {
+            log::error!("error loading meals into DayComponent {}: {:#}", day.date, e);
             error_msg = Some(format!("{}: {:#}", t("error"), e));
         }
 
         if let Err(e) = side_dish_result {
+            log::error!("error loading side dishes into DayComponent {}: {:#}", day.date, e);
             let msg = format!("{}: {:#}", t("error"), e);
             error_msg = if let Some(prev_msg) = error_msg {
                 Some(format!("{}\n{}", prev_msg, msg))
@@ -185,7 +217,10 @@ impl DayComponent {
         glib_yield!();
 
         if date == today {
+            log::debug!("scrolling to current day in DayComponent {}", day.date);
             (self.scroll_to)(self.frame.get_allocation().y);
         }
+
+        log::debug!("finish loading DayComponent {}", day.date);
     }
 }

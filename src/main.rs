@@ -21,8 +21,14 @@ mod util;
 pub use components::canteen;
 
 use gettextrs::TextDomain;
+use flexi_logger::{colored_with_thread, Logger};
 
 fn main() {
+    Logger::with_env_or_str("warn, gnome_ovgu_canteen=info")
+        .format(colored_with_thread)
+        .start()
+        .expect("logger initialization failed");
+
     let mut domain = TextDomain::new("gnome-ovgu-canteen").codeset("UTF-8");
     if let Ok(xdg) = xdg::BaseDirectories::new() {
         domain = domain.prepend(xdg.get_data_home());
@@ -35,7 +41,7 @@ fn main() {
             std::process::exit(app.run(&std::env::args().collect::<Vec<_>>()));
         }
         Err(msg) => {
-            eprintln!("error: {}", msg);
+            log::error!("error: {}", msg);
             std::process::exit(1337);
         }
     };

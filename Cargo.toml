@@ -33,6 +33,8 @@ gettext-rs = "0.4.4"
 lazy_static = "1.4.0"
 humansize = "1.1.0"
 notify = "4.0.15"
+log = "0.4.8"
+flexi_logger = { version = "0.15.2", features = ["colors"] }
 
 [features]
 default = [] # ["test-with-local-files"]

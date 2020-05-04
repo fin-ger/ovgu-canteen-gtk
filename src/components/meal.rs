@@ -22,6 +22,8 @@ pub struct MealComponent {
 }
 
 fn translate_additive(additive: &Additive) -> String {
+    log::debug!("translating additive {:?}", additive);
+
     match additive {
         Additive::FoodColoring => t("Food Coloring"),
         Additive::FoodPreservatives => t("Food Preservatives"),
@@ -37,6 +39,8 @@ fn translate_additive(additive: &Additive) -> String {
 }
 
 fn translate_allergenic(allergenic: &Allergenic) -> String {
+    log::debug!("translating allergenic {:?}", allergenic);
+
     match allergenic {
         Allergenic::Wheat => t("Wheat"),
         Allergenic::Rye => t("Rye"),
@@ -69,6 +73,8 @@ fn translate_allergenic(allergenic: &Allergenic) -> String {
 }
 
 fn translate_symbol(symbol: &Symbol) -> String {
+    log::debug!("translating symbol {:?}", symbol);
+
     match symbol {
         Symbol::Pig => t("Pig"),
         Symbol::Cattle => t("Cattle"),
@@ -88,6 +94,8 @@ fn translate_symbol(symbol: &Symbol) -> String {
 }
 
 fn icon_name_from_symbol(symbol: &Symbol) -> &'static str {
+    log::debug!("getting icon-name for symbol {:?}", symbol);
+
     match symbol {
         Symbol::Pig => "de.fin_ger.OvGUCanteen.Pig",
         Symbol::Cattle => "de.fin_ger.OvGUCanteen.Cattle",
@@ -108,6 +116,8 @@ fn icon_name_from_symbol(symbol: &Symbol) -> &'static str {
 
 impl MealComponent {
     pub async fn new() -> Result<Self> {
+        log::debug!("creating new MealComponent");
+
         let builder = Builder::new_from_string(GLADE);
         let meal_box: ListBoxRow = get!(&builder, "meal")?;
         let name: Label = get!(&builder, "meal-name")?;
@@ -117,11 +127,16 @@ impl MealComponent {
         let price_staff: Label = get!(&builder, "meal-price-staff")?;
         let price_guest: Label = get!(&builder, "meal-price-guest")?;
 
+        log::debug!("setting up AdjustingVec's in MealComponent");
+
+        // these counters track the current insertion index in symbols and badges
         let symbol_offset = Arc::new(AtomicI32::new(0));
         let allergenic_offset = Arc::new(AtomicI32::new(0));
         let additive_offset = Arc::new(AtomicI32::new(0));
 
+        // create a new adjusting vector which adjusts its size according to an input iterator
         let symbols = AdjustingVec::new(
+            // define how to create a new SymbolComponent
             enclose! { (symbols, symbol_offset) move || {
                 enclose! { (symbols, symbol_offset) async move {
                     let comp = SymbolComponent::new().await?;
@@ -132,6 +147,7 @@ impl MealComponent {
                     Ok(comp)
                 }}
             }},
+            // define how to delete a SymbolComponent
             enclose! { (symbol_offset) move |badge| {
                 enclose! { (symbol_offset) async move {
                     // a flowbox item always has a parent - a FlowBoxChild
@@ -144,7 +160,9 @@ impl MealComponent {
             }},
         );
 
+        // create a new adjusting vector which adjusts its size according to an input iterator
         let allergenics = AdjustingVec::new(
+            // define how to create a new LiteBadgeComponent
             enclose! { (badges, allergenic_offset, additive_offset) move || {
                 enclose! { (badges, allergenic_offset, additive_offset) async move {
                     let comp = LiteBadgeComponent::new().await?;
@@ -156,6 +174,7 @@ impl MealComponent {
                     Ok(comp)
                 }}
             }},
+            // define how to delete a LiteBadgeComponent
             enclose! { (allergenic_offset, additive_offset) move |badge| {
                 enclose! { (allergenic_offset, additive_offset) async move {
                     // a flowbox item always has a parent - a FlowBoxChild
@@ -169,7 +188,9 @@ impl MealComponent {
             }},
         );
 
+        // create a new adjusting vector which adjusts its size according to an input iterator
         let additives = AdjustingVec::new(
+            // define how to create a new LiteBadgeComponent
             enclose! { (badges, additive_offset) move || {
                 enclose! { (badges, additive_offset) async move {
                     let comp = LiteBadgeComponent::new().await?;
@@ -180,6 +201,7 @@ impl MealComponent {
                     Ok(comp)
                 }}
             }},
+            // define how to delete a LiteBadgeComponent
             enclose! { (additive_offset) move |badge| {
                 enclose! { (additive_offset) async move {
                     // a flowbox item always has a parent - a FlowBoxChild
@@ -191,6 +213,8 @@ impl MealComponent {
                 }}
             }},
         );
+
+        log::debug!("finish creating MealComponent");
 
         Ok(Self {
             meal: meal_box,
@@ -209,6 +233,8 @@ impl MealComponent {
     }
 
     pub async fn load(&mut self, meal: &Meal) -> Result<()> {
+        log::debug!("loading content into MealComponent {}", meal.name);
+
         self.name.set_text(&meal.name);
         self.price_student
             .set_text(format!("{:.2} €", meal.price.student).as_str());
@@ -217,29 +243,37 @@ impl MealComponent {
         self.price_guest
             .set_text(format!("{:.2} €", meal.price.guest).as_str());
 
+        log::debug!("loading additives into MealComponent {}", meal.name);
         self.additives
             .adjust(&meal.additives, |badge, additive| async move {
+                // define how to update an additive
                 badge.load(&translate_additive(&additive)).await;
-                glib_yield!();
+                glib_yield!(); // give gtk a chance to update the UI
                 Ok(badge)
             })
             .await?;
 
+        log::debug!("loading allergenics into MealComponent {}", meal.name);
         self.allergenics
             .adjust(&meal.allergenics, |badge, allergenic| async move {
+                // define how to update an allergenic
                 badge.load(&translate_allergenic(&allergenic)).await;
-                glib_yield!();
+                glib_yield!(); // give gtk a chance to update the UI
                 Ok(badge)
             })
             .await?;
 
+        log::debug!("loading symbols into MealComponent {}", meal.name);
         self.symbols
             .adjust(&meal.symbols, |badge, symbol| async move {
+                // define how to update a symbol
                 badge.load(icon_name_from_symbol(&symbol), &translate_symbol(&symbol)).await;
-                glib_yield!();
+                glib_yield!(); // give gtk a chance to update the UI
                 Ok(badge)
             })
             .await?;
+
+        log::debug!("finish loading MealComponent {}", meal.name);
 
         Ok(())
     }

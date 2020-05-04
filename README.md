@@ -78,19 +78,13 @@ Instead of installing via an app store, you can build the project yourself from 
 ### Ubuntu and Debian
 
 ```
-$ sudo apt-get install build-essential gnome-devel
+$ sudo apt-get install build-essential libgtk-3-dev
 ```
 
 ### Fedora
 
 ```
-$ sudo dnf groupinstall development-libs development-tools gnome-software-development
-```
-
-### OpenSuSE
-
-```
-$ sudo zypper in -t pattern devel_basis devel_gnome 
+$ sudo dnf install @development-tools gettext-devel openssl-devel gtk3-devel
 ```
 
 ### Arch

@@ -5,6 +5,8 @@ use async_trait::async_trait;
 use futures::stream::{self, TryStreamExt};
 use itertools::{EitherOrBoth, Itertools};
 
+// this macro is used to easily clone objects for use in a closure
+// supports mutable variable bindings
 macro_rules! enclose {
     ( __priv (mut $x:ident) ) => {
         let mut $x = $x.clone();
@@ -21,6 +23,16 @@ macro_rules! enclose {
 }
 pub(crate) use enclose;
 
+// in case you were wondering why this app takes to long to compile...
+// this is the reason!
+//
+// I am lazy and don't want to get bothered by generic closure type parameters throughout my code,
+// so I hack them away by moving the function definition into an async trait. The concrete
+// implementation of the AdjustingVecHandlers still includes the closure types. Inside the AdjustingVec
+// I am only using the trait, where the closure types get lost. Therefore I don't need the closure
+// types when creating a AdjustingVec. The compilation takes so long because the compiler is optimizing
+// the dyn AdjustingVecHandlers in the AdjustingVec into their concrete types, leaving one type
+// for each instance of the AdjustingVec... So, basically the compiler is taking care of my laziness.
 #[async_trait(?Send)]
 trait AdjustingVecHandlers<T, E> {
     async fn create(&self) -> Result<T, E>
@@ -84,6 +96,7 @@ impl<T, E> AdjustingVec<T, E> {
         Self {
             data: Vec::new(),
             handlers: Box::new(AdjustingVecHandlersImpl {
+                // create pinned boxes for the futures returned by creator and destroyer
                 creator: move || Box::pin(creator()) as Pin<Box<dyn Future<Output = Result<T, E>>>>,
                 destroyer: move |item| {
                     Box::pin(destroyer(item)) as Pin<Box<dyn Future<Output = Result<(), E>>>>
