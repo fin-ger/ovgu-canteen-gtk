@@ -9,6 +9,7 @@ readme = "README.md"
 keywords = ["mensa", "canteen", "ovgu"]
 categories = ["gui"]
 edition = "2018"
+publish = false
 
 [dependencies]
 gtk = { version = "0.8.1", features = ["v3_22"] }
