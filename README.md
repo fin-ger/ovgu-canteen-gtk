@@ -51,7 +51,7 @@ This app displays the canteens of the Studentenwerk Magdeburg, including UniCamp
 
 <p align="center">
   The easiest way to install is by installing this App via one of the above App Stores.
-<p>
+</p>
 
 ## Translating
 
