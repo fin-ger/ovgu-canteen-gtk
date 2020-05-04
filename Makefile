@@ -77,3 +77,6 @@ flatpak:
 flatpak-clean:
 	@rm -r .flatpak-builder
 	@rm -r target/flatpak
+
+release:
+	@cargo release

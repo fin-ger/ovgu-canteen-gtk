@@ -5,8 +5,8 @@
   <a href="https://github.com/fin-ger/gnome-ovgu-canteen/actions?query=workflow%3A%22master%22">
     <img src="https://github.com/fin-ger/gnome-ovgu-canteen/workflows/master/badge.svg" alt="master">
   </a>
-  <a href="https://github.com/fin-ger/gnome-ovgu-canteen/actions?query=workflow%3A%22latest+release%22">
-    <img src="https://github.com/fin-ger/gnome-ovgu-canteen/workflows/latest release/badge.svg" alt="latest release">
+  <a href="https://github.com/fin-ger/gnome-ovgu-canteen/actions?query=workflow%3A%22release%22">
+    <img src="https://github.com/fin-ger/gnome-ovgu-canteen/workflows/release/badge.svg" alt="release">
   </a>
   <a href="https://github.com/fin-ger/gnome-ovgu-canteen/releases">
     <img alt="Lastest release" src="https://img.shields.io/github/v/release/fin-ger/gnome-ovgu-canteen?label=latest%20release&sort=semver">
