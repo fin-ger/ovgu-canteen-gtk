@@ -39,7 +39,7 @@ jobs:
       run: |
         VERSION="${GITHUB_REF:11}"
         echo "::set-output name=version::$VERSION"
-        tar -c --exclude-vcs-ignores -zvf $GITHUB_WORKSPACE/gnome-ovgu-canteen-$VERSION.tgz .
+        tar -c --exclude-vcs-ignores -zvf $GITHUB_WORKSPACE/target/gnome-ovgu-canteen-$VERSION.tgz .
     - name: Load Release URL File from release job
       uses: actions/download-artifact@v1
       with:
@@ -56,6 +56,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: gnome-ovgu-canteen-${{ steps.tar.outputs.version }}.tgz
+        asset_path: target/gnome-ovgu-canteen-${{ steps.tar.outputs.version }}.tgz
         asset_name: gnome-ovgu-canteen-${{ steps.tar.outputs.version }}.tgz
         asset_content_type: application/gzip
