@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <schemalist>
-  <schema path="/de/fin_ger/OvGUCanteen/"
-          id="de.fin_ger.OvGUCanteen"
+  <schema path="/io/github/fin_ger/OvGUCanteen/"
+          id="io.github.fin_ger.OvGUCanteen"
           gettext-domain="ovgu-canteen-gtk">
     <key name="dark-theme-variant" type="b">
       <default>false</default>

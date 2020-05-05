@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2020 Fin Christensen -->
 <component type="desktop-application">
-  <id>de.fin_ger.OvGUCanteen</id>
+  <id>io.github.fin_ger.OvGUCanteen</id>
   <metadata_license>CC0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>OvGU Canteen</name>
@@ -21,6 +21,7 @@
     <content_attribute id="money-advertising">intense</content_attribute>
   </content_rating>
   <releases>
+    <release version="0.2.0" date="2020-05-05" />
     <release version="0.1.1" date="2020-05-05" />
     <release version="0.1.0" date="2020-05-04" />
   </releases>
@@ -31,5 +32,5 @@
   <developer_name>Fin Christensen</developer_name>
   <update_contact>christensen.fin@gmail.com</update_contact>
 
-  <launchable type="desktop-id">de.fin_ger.OvGUCanteen.desktop</launchable>
+  <launchable type="desktop-id">io.github.fin_ger.OvGUCanteen.desktop</launchable>
 </component>

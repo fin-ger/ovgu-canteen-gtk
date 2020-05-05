@@ -97,20 +97,20 @@ fn icon_name_from_symbol(symbol: &Symbol) -> &'static str {
     log::debug!("getting icon-name for symbol {:?}", symbol);
 
     match symbol {
-        Symbol::Pig => "de.fin_ger.OvGUCanteen.Pig",
-        Symbol::Cattle => "de.fin_ger.OvGUCanteen.Cattle",
-        Symbol::Poultry => "de.fin_ger.OvGUCanteen.Poultry",
-        Symbol::Fish => "de.fin_ger.OvGUCanteen.Fish",
-        Symbol::Game => "de.fin_ger.OvGUCanteen.Game",
-        Symbol::Lamb => "de.fin_ger.OvGUCanteen.Lamb",
-        Symbol::Vegan => "de.fin_ger.OvGUCanteen.Vegan",
-        Symbol::Organic => "de.fin_ger.OvGUCanteen.Organic",
-        Symbol::Vegetarian => "de.fin_ger.OvGUCanteen.Vegetarian",
-        Symbol::Alcohol => "de.fin_ger.OvGUCanteen.Alcohol",
-        Symbol::SoupOfTheDay => "de.fin_ger.OvGUCanteen.SoupOfTheDay",
-        Symbol::MensaVital => "de.fin_ger.OvGUCanteen.MensaVital",
-        Symbol::Garlic => "de.fin_ger.OvGUCanteen.Garlic",
-        Symbol::AnimalWelfare => "de.fin_ger.OvGUCanteen.AnimalWelfare",
+        Symbol::Pig => "io.github.fin_ger.OvGUCanteen.Pig",
+        Symbol::Cattle => "io.github.fin_ger.OvGUCanteen.Cattle",
+        Symbol::Poultry => "io.github.fin_ger.OvGUCanteen.Poultry",
+        Symbol::Fish => "io.github.fin_ger.OvGUCanteen.Fish",
+        Symbol::Game => "io.github.fin_ger.OvGUCanteen.Game",
+        Symbol::Lamb => "io.github.fin_ger.OvGUCanteen.Lamb",
+        Symbol::Vegan => "io.github.fin_ger.OvGUCanteen.Vegan",
+        Symbol::Organic => "io.github.fin_ger.OvGUCanteen.Organic",
+        Symbol::Vegetarian => "io.github.fin_ger.OvGUCanteen.Vegetarian",
+        Symbol::Alcohol => "io.github.fin_ger.OvGUCanteen.Alcohol",
+        Symbol::SoupOfTheDay => "io.github.fin_ger.OvGUCanteen.SoupOfTheDay",
+        Symbol::MensaVital => "io.github.fin_ger.OvGUCanteen.MensaVital",
+        Symbol::Garlic => "io.github.fin_ger.OvGUCanteen.Garlic",
+        Symbol::AnimalWelfare => "io.github.fin_ger.OvGUCanteen.AnimalWelfare",
     }
 }
 

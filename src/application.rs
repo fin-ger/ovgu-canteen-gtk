@@ -21,7 +21,7 @@ impl Application {
 
         let css_provider = CssProvider::new();
         css_provider
-            .load_from_data(std::include_str!("../data/de.fin_ger.OvGUCanteen.css").as_bytes())
+            .load_from_data(std::include_str!("../data/io.github.fin_ger.OvGUCanteen.css").as_bytes())
             .context("Failed to load stylesheets")?;
 
         let screen = Screen::get_default().context("Cannot find default screen!")?;
@@ -39,7 +39,7 @@ impl Application {
             .context("Cannot create tokio runtime")?;
 
         let g_app = ApplicationBuilder::new()
-            .application_id("de.fin_ger.OvGUCanteen")
+            .application_id("io.github.fin_ger.OvGUCanteen")
             .build();
 
         let build_rt = runtime.handle().clone();

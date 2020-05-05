@@ -59,7 +59,7 @@ impl WindowComponent {
         log::debug!("creating new WindowComponent");
 
         log::debug!("fetching settings for application");
-        let settings = Settings::new("de.fin_ger.OvGUCanteen");
+        let settings = Settings::new("io.github.fin_ger.OvGUCanteen");
         settings.connect_changed(|settings, key| {
             match key {
                 "dark-theme-variant" => {
@@ -100,8 +100,8 @@ impl WindowComponent {
         let reload_button: Button = get!(&builder, "reload-button")?;
 
         window.set_application(Some(app));
-        window.set_icon_name(Some("de.fin_ger.OvGUCanteen"));
-        about_dialog.set_logo_icon_name(Some("de.fin_ger.OvGUCanteen.About"));
+        window.set_icon_name(Some("io.github.fin_ger.OvGUCanteen"));
+        about_dialog.set_logo_icon_name(Some("io.github.fin_ger.OvGUCanteen.About"));
 
         let authors = env!("CARGO_PKG_AUTHORS")
             .split(':')

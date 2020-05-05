@@ -23,7 +23,7 @@ Author: Fin Christensen
 -->
 <interface>
   <requires lib="gtk+" version="3.16"/>
-  <!-- interface-css-provider-path de.fin_ger.OvGUCanteen.css -->
+  <!-- interface-css-provider-path io.github.fin_ger.OvGUCanteen.css -->
   <!-- interface-license-type gplv3 -->
   <!-- interface-name OvGU Canteen -->
   <!-- interface-description Menu information for the OvGU canteen. -->
@@ -168,7 +168,7 @@ Author: Fin Christensen
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="pixel_size">256</property>
-            <property name="icon_name">de.fin_ger.OvGUCanteen.Closed</property>
+            <property name="icon_name">io.github.fin_ger.OvGUCanteen.Closed</property>
             <property name="icon_size">6</property>
           </object>
           <packing>

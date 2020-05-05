@@ -12,7 +12,7 @@ pub use meal::MealComponent;
 pub use window::WindowComponent;
 
 // the content of the glade file
-pub const GLADE: &str = std::include_str!("../../data/de.fin_ger.OvGUCanteen.glade");
+pub const GLADE: &str = std::include_str!("../../data/io.github.fin_ger.OvGUCanteen.glade");
 
 // enables us to yield execution when running in the UI thread to GTK for UI updating
 // this makes the application more responsive on slow PCs

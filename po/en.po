@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-05-05 10:53+0200\n"
-"PO-Revision-Date: 2020-05-05 10:53+0200\n"
+"POT-Creation-Date: 2020-05-05 13:07+0200\n"
+"PO-Revision-Date: 2020-05-05 13:07+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-1: .git\n"
 "X-Poedit-SearchPathExcluded-2: flatpak/repo\n"
 "X-Poedit-SearchPathExcluded-3: flatpak/.flatpak-builder\n"
-"X-Poedit-SearchPathExcluded-4: data/de.fin_ger.OvGUCanteen.desktop\n"
+"X-Poedit-SearchPathExcluded-4: data/io.github.fin_ger.OvGUCanteen.desktop\n"
 
 #: src/components/canteen.rs:22
 msgid "UniCampus Magdeburg Lower Hall"
@@ -295,67 +295,70 @@ msgstr "Garlic"
 msgid "Animal Welfare"
 msgstr "Animal Welfare"
 
-#: src/components/preferences.rs:39 data/de.fin_ger.OvGUCanteen.glade:775
+#: src/components/preferences.rs:39
+#: data/io.github.fin_ger.OvGUCanteen.glade:775
 msgid "Unknown"
 msgstr "Unknown"
 
-#: data/de.fin_ger.OvGUCanteen.glade:117 data/de.fin_ger.OvGUCanteen.glade:1065
+#: data/io.github.fin_ger.OvGUCanteen.glade:117
+#: data/io.github.fin_ger.OvGUCanteen.glade:1065
 msgid "Oh no! Something went wrong..."
 msgstr "Oh no! Something went wrong..."
 
-#: data/de.fin_ger.OvGUCanteen.glade:184
+#: data/io.github.fin_ger.OvGUCanteen.glade:184
 msgid "No menus were found!"
 msgstr "No menus were found!"
 
-#: data/de.fin_ger.OvGUCanteen.glade:391
+#: data/io.github.fin_ger.OvGUCanteen.glade:391
 msgid "Side Dishes"
 msgstr "Side Dishes"
 
-#: data/de.fin_ger.OvGUCanteen.glade:627 data/de.fin_ger.OvGUCanteen.glade:868
+#: data/io.github.fin_ger.OvGUCanteen.glade:627
+#: data/io.github.fin_ger.OvGUCanteen.glade:868
 msgid "Preferences"
 msgstr "Preferences"
 
-#: data/de.fin_ger.OvGUCanteen.glade:628
+#: data/io.github.fin_ger.OvGUCanteen.glade:628
 msgid "Customize your OvGU Mensa"
 msgstr "Customize your OvGU Mensa"
 
-#: data/de.fin_ger.OvGUCanteen.glade:648
+#: data/io.github.fin_ger.OvGUCanteen.glade:648
 msgid "Use dark theme variant"
 msgstr "Use dark theme variant"
 
-#: data/de.fin_ger.OvGUCanteen.glade:699
+#: data/io.github.fin_ger.OvGUCanteen.glade:699
 msgid "Default canteen"
 msgstr "Default canteen"
 
-#: data/de.fin_ger.OvGUCanteen.glade:712
+#: data/io.github.fin_ger.OvGUCanteen.glade:712
 msgid "Will be shown on startup"
 msgstr "Will be shown on startup"
 
-#: data/de.fin_ger.OvGUCanteen.glade:740
+#: data/io.github.fin_ger.OvGUCanteen.glade:740
 msgid "Length for history of old menus in days"
 msgstr "Length for history of old menus in days"
 
-#: data/de.fin_ger.OvGUCanteen.glade:758
+#: data/io.github.fin_ger.OvGUCanteen.glade:758
 msgid "Current cache size:"
 msgstr "Current cache size:"
 
-#: data/de.fin_ger.OvGUCanteen.glade:812
+#: data/io.github.fin_ger.OvGUCanteen.glade:812
 msgid "Clear cache"
 msgstr "Clear cache"
 
-#: data/de.fin_ger.OvGUCanteen.glade:881
+#: data/io.github.fin_ger.OvGUCanteen.glade:881
 msgid "About"
 msgstr "About"
 
-#: data/de.fin_ger.OvGUCanteen.glade:945
+#: data/io.github.fin_ger.OvGUCanteen.glade:945
 msgid "OvGU Mensa"
 msgstr "OvGU Mensa"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:9
+#: schemas/io.github.fin_ger.OvGUCanteen.gschema.xml:9
 msgid "Use the dark theme variant for OvGU Mensa"
 msgstr "Use the dark theme variant for OvGU Mensa"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:10
+#: schemas/io.github.fin_ger.OvGUCanteen.gschema.xml:10
 msgid ""
 "This key determines whether the dark theme variant of your GTK theme is used "
 "for OvGU Mensa or not."
@@ -363,11 +366,11 @@ msgstr ""
 "This key determines whether the dark theme variant of your GTK theme is used "
 "for OvGU Mensa or not."
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:27
+#: schemas/io.github.fin_ger.OvGUCanteen.gschema.xml:27
 msgid "Select the canteen which should be displayed on startup"
 msgstr "Select the canteen which should be displayed on startup"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:28
+#: schemas/io.github.fin_ger.OvGUCanteen.gschema.xml:28
 msgid ""
 "This key determines which canteen should be selected by default upon startup "
 "of OvGU Mensa."
@@ -375,11 +378,11 @@ msgstr ""
 "This key determines which canteen should be selected by default upon startup "
 "of OvGU Mensa."
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:36
+#: schemas/io.github.fin_ger.OvGUCanteen.gschema.xml:36
 msgid "Set the duration in days for how long old menus should be kept"
 msgstr "Set the duration in days for how long old menus should be kept"
 
-#: schemas/de.fin_ger.OvGUCanteen.gschema.xml:37
+#: schemas/io.github.fin_ger.OvGUCanteen.gschema.xml:37
 msgid ""
 "This key determines for how long old canteen menus should be kept in a local "
 "cache. The duration is given in days. It does not change how many upcoming "

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=OvGU Mensa
 Exec=ovgu-canteen-gtk
-Icon=de.fin_ger.OvGUCanteen
+Icon=io.github.fin_ger.OvGUCanteen
 Type=Application
 Terminal=false
 Comment=View the OvGU Mensa Menu in a Gnome App

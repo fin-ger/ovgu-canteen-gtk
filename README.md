@@ -43,7 +43,7 @@ This app displays the canteens of the Studentenwerk Magdeburg, including UniCamp
 
 <!--
 <p align="center">
-  <a href="https://flathub.org/apps/details/de.fin_ger.OvGUCanteen"><img height="80" alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png"/></a>
+  <a href="https://flathub.org/apps/details/io.github.fin_ger.OvGUCanteen"><img height="80" alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png"/></a>
   &emsp;
   <a href="https://snapcraft.io/ovgu-canteen-gtk"><img height="74" alt="Get it from the Snap Store" src="https://raw.githubusercontent.com/snapcore/snap-store-badges/master/EN/%5BEN%5D-snap-store-black-uneditable.svg"/></a>
 </p>
