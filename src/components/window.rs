@@ -306,7 +306,7 @@ impl WindowComponent {
             let mut canteen_cache = HashMap::new();
 
             // loop will only run once, used to abort early with break as ? is not available in scopes
-            for xdg in xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen") {
+            for xdg in xdg::BaseDirectories::with_prefix("ovgu-canteen-gtk") {
                 log::debug!("found cache directory for application");
                 let history_path = match xdg.find_cache_file("history.json") {
                     Some(path) => path,
@@ -397,7 +397,7 @@ impl WindowComponent {
             rt.spawn(async move {
                 log::debug!("write loaded canteens into history cache");
                 // loop will only run once, used to abort early with break as ? is not available in scopes
-                for xdg in xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen") {
+                for xdg in xdg::BaseDirectories::with_prefix("ovgu-canteen-gtk") {
                     log::debug!("found cache directory for application");
                     let history_path = match xdg.place_cache_file("history.json") {
                         Ok(path) => path,

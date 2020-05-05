@@ -2,19 +2,19 @@
 
 <p align="center">
   <img height="300" src="img/screenshot.png"><br>
-  <a href="https://github.com/fin-ger/gnome-ovgu-canteen/actions?query=workflow%3A%22master%22">
-    <img src="https://github.com/fin-ger/gnome-ovgu-canteen/workflows/master/badge.svg" alt="master">
+  <a href="https://github.com/fin-ger/ovgu-canteen-gtk/actions?query=workflow%3A%22master%22">
+    <img src="https://github.com/fin-ger/ovgu-canteen-gtk/workflows/master/badge.svg" alt="master">
   </a>
-  <a href="https://github.com/fin-ger/gnome-ovgu-canteen/actions?query=workflow%3A%22release%22">
-    <img src="https://github.com/fin-ger/gnome-ovgu-canteen/workflows/release/badge.svg" alt="release">
+  <a href="https://github.com/fin-ger/ovgu-canteen-gtk/actions?query=workflow%3A%22release%22">
+    <img src="https://github.com/fin-ger/ovgu-canteen-gtk/workflows/release/badge.svg" alt="release">
   </a>
-  <a href="https://github.com/fin-ger/gnome-ovgu-canteen/releases">
-    <img alt="Lastest release" src="https://img.shields.io/github/v/release/fin-ger/gnome-ovgu-canteen?label=latest%20release&sort=semver">
+  <a href="https://github.com/fin-ger/ovgu-canteen-gtk/releases">
+    <img alt="Lastest release" src="https://img.shields.io/github/v/release/fin-ger/ovgu-canteen-gtk?label=latest%20release&sort=semver">
   </a>
-  <a href="https://github.com/fin-ger/gnome-ovgu-canteen/blob/master/LICENSE">
-    <img alt="License" src="https://img.shields.io/github/license/fin-ger/gnome-ovgu-canteen">
+  <a href="https://github.com/fin-ger/ovgu-canteen-gtk/blob/master/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/fin-ger/ovgu-canteen-gtk">
   </a>
-  <a href="https://github.com/fin-ger/gnome-ovgu-canteen">
+  <a href="https://github.com/fin-ger/ovgu-canteen-gtk">
     <img alt="Sponsor" src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=red">
   </a>
   <a href="http://spacemacs.org">
@@ -45,7 +45,7 @@ This app displays the canteens of the Studentenwerk Magdeburg, including UniCamp
 <p align="center">
   <a href="https://flathub.org/apps/details/de.fin_ger.OvGUCanteen"><img height="80" alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png"/></a>
   &emsp;
-  <a href="https://snapcraft.io/gnome-ovgu-canteen"><img height="74" alt="Get it from the Snap Store" src="https://raw.githubusercontent.com/snapcore/snap-store-badges/master/EN/%5BEN%5D-snap-store-black-uneditable.svg"/></a>
+  <a href="https://snapcraft.io/ovgu-canteen-gtk"><img height="74" alt="Get it from the Snap Store" src="https://raw.githubusercontent.com/snapcore/snap-store-badges/master/EN/%5BEN%5D-snap-store-black-uneditable.svg"/></a>
 </p>
 -->
 
@@ -61,11 +61,11 @@ When finished, [fork](https://help.github.com/en/github/getting-started-with-git
 
 ### Creating a new translation
 
-Open Poedit and select `File` / `New From POT/PO File...` and select `gnome-ovgu-canteen/po/template.pot`. Select the language you want to translate to. Now start translating.
+Open Poedit and select `File` / `New From POT/PO File...` and select `ovgu-canteen-gtk/po/template.pot`. Select the language you want to translate to. Now start translating.
 
 ### Edit or update an existing translation
 
-Open Poedit and select `Open`. Navigate to the `gnome-ovgu-canteen/po` folder and select the language file (`.po`) you want to edit/update. Now select `Catalog` / `Update from POT File...` and select `gnome-ovgu-canteen/po/template.pot`. Now, you can start updating the translation.
+Open Poedit and select `Open`. Navigate to the `ovgu-canteen-gtk/po` folder and select the language file (`.po`) you want to edit/update. Now select `Catalog` / `Update from POT File...` and select `ovgu-canteen-gtk/po/template.pot`. Now, you can start updating the translation.
 
 ### Saving your work
 
@@ -108,8 +108,8 @@ View your current profile with:
 Next, you need to setup a Rust toolchain. I recommend using [`rustup`](https://rustup.rs/). When the latest Rust stable toolchain is successfully installed, you can clone the project:
 
 ```
-$ git clone https://github.com/fin-ger/gnome-ovgu-canteen.git
-$ cd gnome-ovgu-canteen
+$ git clone https://github.com/fin-ger/ovgu-canteen-gtk.git
+$ cd ovgu-canteen-gtk
 ```
 
 ### Build the project
@@ -124,7 +124,7 @@ $ make build
 $ make install PREFIX=/usr/local
 ```
 
-The program will be installed to `/usr/local/bin/gnome-ovgu-canteen` as well as icons, desktop files, gsettings schemas, and localization files.
+The program will be installed to `/usr/local/bin/ovgu-canteen-gtk` as well as icons, desktop files, gsettings schemas, and localization files.
 
 ### Running the application for development
 

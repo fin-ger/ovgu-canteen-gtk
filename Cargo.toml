@@ -1,10 +1,10 @@
 [package]
-name = "gnome-ovgu-canteen"
+name = "ovgu-canteen-gtk"
 version = "0.1.1-alpha.0"
-description = "View the OvGU Mensa Menu in a Gnome App"
+description = "View the OvGU Mensa Menu in a small GTK App"
 authors = ["Fin Christensen <christensen.fin@gmail.com>", "Johannes Wünsche <johannes@spacesnek.rocks>"]
 license = "GPL-3.0-or-later"
-repository = "https://github.com/fin-ger/gnome-ovgu-canteen"
+repository = "https://github.com/fin-ger/ovgu-canteen-gtk"
 readme = "README.md"
 keywords = ["mensa", "canteen", "ovgu"]
 categories = ["gui"]

@@ -16,7 +16,7 @@ case $1 in
             do
                 lang="${po%.po}"
                 mkdir -p "${lang}/LC_MESSAGES"
-                "${MSGFMT}" --output "${lang}/LC_MESSAGES/gnome-ovgu-canteen.mo" "$po"
+                "${MSGFMT}" --output "${lang}/LC_MESSAGES/ovgu-canteen-gtk.mo" "$po"
             done
         )
         ;;
@@ -30,7 +30,7 @@ case $1 in
             do
                 lang="${po%.po}"
                 mkdir -p "${PREFIX}/share/locale/${lang}/LC_MESSAGES"
-                install -m 0644 "${lang}/LC_MESSAGES/gnome-ovgu-canteen.mo" "${PREFIX}/share/locale/${lang}/LC_MESSAGES"
+                install -m 0644 "${lang}/LC_MESSAGES/ovgu-canteen-gtk.mo" "${PREFIX}/share/locale/${lang}/LC_MESSAGES"
             done
         )
         ;;
@@ -43,7 +43,7 @@ case $1 in
             for po in ./*.po
             do
                 lang="${po%.po}"
-                rm "${PREFIX}/share/locale/${lang}/LC_MESSAGES/gnome-ovgu-canteen.mo"
+                rm "${PREFIX}/share/locale/${lang}/LC_MESSAGES/ovgu-canteen-gtk.mo"
             done
         )
         ;;

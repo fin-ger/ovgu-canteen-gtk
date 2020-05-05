@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-ovgu-canteen\n"
-"POT-Creation-Date: 2020-05-02 16:02+0200\n"
-"PO-Revision-Date: 2020-05-02 16:02+0200\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2020-05-05 10:53+0200\n"
+"PO-Revision-Date: 2020-05-05 10:54+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -21,281 +21,281 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-3: flatpak/.flatpak-builder\n"
 "X-Poedit-SearchPathExcluded-4: data/de.fin_ger.OvGUCanteen.desktop\n"
 
-#: src/components/canteen.rs:21
+#: src/components/canteen.rs:22
 msgid "UniCampus Magdeburg Lower Hall"
 msgstr "UniCampus Magdeburg Unterer Saal"
 
-#: src/components/canteen.rs:22
+#: src/components/canteen.rs:23
 msgid "UniCampus Magdeburg Upper Hall"
 msgstr "UniCampus Magdeburg Oberer Saal"
 
-#: src/components/canteen.rs:23
+#: src/components/canteen.rs:24
 msgid "Kellercafé Magdeburg"
 msgstr "Kellercafé Magdeburg"
 
-#: src/components/canteen.rs:24
+#: src/components/canteen.rs:25
 msgid "Herrenkrug Magdeburg"
 msgstr "Herrenkrug Magdeburg"
 
-#: src/components/canteen.rs:25
+#: src/components/canteen.rs:26
 msgid "Stendal"
 msgstr "Stendal"
 
-#: src/components/canteen.rs:26
+#: src/components/canteen.rs:27
 msgid "Wernigerode"
 msgstr "Wernigerode"
 
-#: src/components/canteen.rs:27
+#: src/components/canteen.rs:28
 msgid "DomCafete Halberstadt"
 msgstr "DomCafete Halberstadt"
 
-#: src/components/canteen.rs:91 src/components/canteen.rs:108
-#: src/components/day.rs:178 src/components/day.rs:182
-#: src/components/window.rs:344
+#: src/components/canteen.rs:109 src/components/canteen.rs:133
+#: src/components/day.rs:197 src/components/day.rs:202
+#: src/components/window.rs:382
 msgid "error"
 msgstr "Fehler"
 
-#: src/components/day.rs:117
+#: src/components/day.rs:123
 msgid "Monday"
 msgstr "Montag"
 
-#: src/components/day.rs:118
+#: src/components/day.rs:124
 msgid "Tuesday"
 msgstr "Dienstag"
 
-#: src/components/day.rs:119
+#: src/components/day.rs:125
 msgid "Wednesday"
 msgstr "Mittwoch"
 
-#: src/components/day.rs:120
+#: src/components/day.rs:126
 msgid "Thursday"
 msgstr "Donnerstag"
 
-#: src/components/day.rs:121
+#: src/components/day.rs:127
 msgid "Friday"
 msgstr "Freitag"
 
-#: src/components/day.rs:122
+#: src/components/day.rs:128
 msgid "Saturday"
 msgstr "Samstag"
 
-#: src/components/day.rs:123
+#: src/components/day.rs:129
 msgid "Sunday"
 msgstr "Sonntag"
 
-#: src/components/day.rs:128
+#: src/components/day.rs:135
 msgid "Today"
 msgstr "Heute"
 
-#: src/components/day.rs:134
+#: src/components/day.rs:138
 msgid "Tomorrow"
 msgstr "Morgen"
 
-#: src/components/day.rs:161
+#: src/components/day.rs:177
 msgid "not available"
 msgstr "nicht verfügbar"
 
-#: src/components/meal.rs:27
+#: src/components/meal.rs:28
 msgid "Food Coloring"
 msgstr "Lebensmittelfarbe"
 
-#: src/components/meal.rs:28
+#: src/components/meal.rs:29
 msgid "Food Preservatives"
 msgstr "Konservierungsstoffe"
 
-#: src/components/meal.rs:29
+#: src/components/meal.rs:30
 msgid "Anti Oxidants"
 msgstr "Antioxidationsmittel"
 
-#: src/components/meal.rs:30
+#: src/components/meal.rs:31
 msgid "Flavor Enhancer"
 msgstr "Geschmacksverstärker"
 
-#: src/components/meal.rs:31
+#: src/components/meal.rs:32
 msgid "Sulfurized"
 msgstr "Geschwefelt"
 
-#: src/components/meal.rs:32
+#: src/components/meal.rs:33
 msgid "Waxed"
 msgstr "Gewachst"
 
-#: src/components/meal.rs:33
+#: src/components/meal.rs:34
 msgid "Blackend"
 msgstr "Geschwärzt"
 
-#: src/components/meal.rs:34
+#: src/components/meal.rs:35
 msgid "Phosphates"
 msgstr "Phosphate"
 
-#: src/components/meal.rs:35
+#: src/components/meal.rs:36
 msgid "Sweetener"
 msgstr "Süßungsmittel"
 
-#: src/components/meal.rs:36
+#: src/components/meal.rs:37
 msgid "Phenylalanine"
 msgstr "Phenylalanin"
 
-#: src/components/meal.rs:42
+#: src/components/meal.rs:45
 msgid "Wheat"
 msgstr "Weizen"
 
-#: src/components/meal.rs:43
+#: src/components/meal.rs:46
 msgid "Rye"
 msgstr "Roggen"
 
-#: src/components/meal.rs:44
+#: src/components/meal.rs:47
 msgid "Barley"
 msgstr "Gerste"
 
-#: src/components/meal.rs:45
+#: src/components/meal.rs:48
 msgid "Oat"
 msgstr "Hafer"
 
-#: src/components/meal.rs:46
+#: src/components/meal.rs:49
 msgid "Spelt"
 msgstr "Dinkel"
 
-#: src/components/meal.rs:47
+#: src/components/meal.rs:50
 msgid "Kamut"
 msgstr "Kamut"
 
-#: src/components/meal.rs:48
+#: src/components/meal.rs:51
 msgid "Crustacean"
 msgstr "Krustentiere"
 
-#: src/components/meal.rs:49
+#: src/components/meal.rs:52
 msgid "Egg"
 msgstr "Ei"
 
-#: src/components/meal.rs:50 src/components/meal.rs:77
+#: src/components/meal.rs:53 src/components/meal.rs:82
 msgid "Fish"
 msgstr "Fisch"
 
-#: src/components/meal.rs:51
+#: src/components/meal.rs:54
 msgid "Peanut"
 msgstr "Erdnüsse"
 
-#: src/components/meal.rs:52
+#: src/components/meal.rs:55
 msgid "Soya"
 msgstr "Soja"
 
-#: src/components/meal.rs:53
+#: src/components/meal.rs:56
 msgid "Lactose"
 msgstr "Laktose"
 
-#: src/components/meal.rs:54
+#: src/components/meal.rs:57
 msgid "Almond"
 msgstr "Mandel"
 
-#: src/components/meal.rs:55
+#: src/components/meal.rs:58
 msgid "Hazelnut"
 msgstr "Haselnüsse"
 
-#: src/components/meal.rs:56
+#: src/components/meal.rs:59
 msgid "Walnut"
 msgstr "Walnüsse"
 
-#: src/components/meal.rs:57
+#: src/components/meal.rs:60
 msgid "Cashew"
 msgstr "Cashewnüsse"
 
-#: src/components/meal.rs:58
+#: src/components/meal.rs:61
 msgid "Pecan Nut"
 msgstr "Pekannüsse"
 
-#: src/components/meal.rs:59
+#: src/components/meal.rs:62
 msgid "Brazil Nut"
 msgstr "Paranüsse"
 
-#: src/components/meal.rs:60
+#: src/components/meal.rs:63
 msgid "Pistachio"
 msgstr "Pistazien"
 
-#: src/components/meal.rs:61
+#: src/components/meal.rs:64
 msgid "Macadamia Nut"
 msgstr "Macadamianüsse"
 
-#: src/components/meal.rs:62
+#: src/components/meal.rs:65
 msgid "Queensland Nut"
 msgstr "Macadamianüsse"
 
-#: src/components/meal.rs:63
+#: src/components/meal.rs:66
 msgid "Celery"
 msgstr "Sellerie"
 
-#: src/components/meal.rs:64
+#: src/components/meal.rs:67
 msgid "Mustard"
 msgstr "Senf"
 
-#: src/components/meal.rs:65
+#: src/components/meal.rs:68
 msgid "Sesame"
 msgstr "Sesam"
 
-#: src/components/meal.rs:66
+#: src/components/meal.rs:69
 msgid "Sulphite"
 msgstr "Sulfit/Schwefeldioxid"
 
-#: src/components/meal.rs:67
+#: src/components/meal.rs:70
 msgid "Lupin"
 msgstr "Lupine"
 
-#: src/components/meal.rs:68
+#: src/components/meal.rs:71
 msgid "Mollusc"
 msgstr "Weichtiere"
 
-#: src/components/meal.rs:74
+#: src/components/meal.rs:79
 msgid "Pig"
 msgstr "Schwein"
 
-#: src/components/meal.rs:75
+#: src/components/meal.rs:80
 msgid "Cattle"
 msgstr "Rind"
 
-#: src/components/meal.rs:76
+#: src/components/meal.rs:81
 msgid "Poultry"
 msgstr "Geflügel"
 
-#: src/components/meal.rs:78
+#: src/components/meal.rs:83
 msgid "Game"
 msgstr "Wild"
 
-#: src/components/meal.rs:79
+#: src/components/meal.rs:84
 msgid "Lamb"
 msgstr "Lamm"
 
-#: src/components/meal.rs:80
+#: src/components/meal.rs:85
 msgid "Vegan"
 msgstr "Vegan"
 
-#: src/components/meal.rs:81
+#: src/components/meal.rs:86
 msgid "Organic"
 msgstr "Bio"
 
-#: src/components/meal.rs:82
+#: src/components/meal.rs:87
 msgid "Vegetarian"
 msgstr "Vegetarisch"
 
-#: src/components/meal.rs:83
+#: src/components/meal.rs:88
 msgid "Alcohol"
 msgstr "Alkohol"
 
-#: src/components/meal.rs:84
+#: src/components/meal.rs:89
 msgid "Soup of the Day"
 msgstr "Tagessuppe"
 
-#: src/components/meal.rs:85
+#: src/components/meal.rs:90
 msgid "MensaVital"
 msgstr "MensaVital"
 
-#: src/components/meal.rs:86
+#: src/components/meal.rs:91
 msgid "Garlic"
 msgstr "Knoblauch"
 
-#: src/components/meal.rs:87
+#: src/components/meal.rs:92
 msgid "Animal Welfare"
 msgstr "Artgerechte Tierhaltung"
 
-#: src/components/preferences.rs:37 data/de.fin_ger.OvGUCanteen.glade:775
+#: src/components/preferences.rs:39 data/de.fin_ger.OvGUCanteen.glade:775
 msgid "Unknown"
 msgstr "Unbekannt"
 

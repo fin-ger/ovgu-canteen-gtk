@@ -22,7 +22,7 @@ use crate::canteen;
 fn update_cache_size_label(cache_size_label: &Label) {
     log::debug!("updating cache-size label in preferences");
 
-    let file = xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen").ok()
+    let file = xdg::BaseDirectories::with_prefix("ovgu-canteen-gtk").ok()
         .and_then(|xdg| xdg.find_cache_file("history.json"))
         .map(|path| {
             // this cannot fail, as xdg.find_cache_file makes sure the file exists
@@ -72,7 +72,7 @@ pub fn open<'a, I: IntoIterator<Item = &'a CanteenDescription>>(rt: &Handle, win
         let (std_tx, std_rx) = std::sync::mpsc::channel();
         // install filesystem watcher
         let mut watcher = watcher(std_tx, std::time::Duration::from_millis(100)).unwrap();
-        for xdg in xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen") {
+        for xdg in xdg::BaseDirectories::with_prefix("ovgu-canteen-gtk") {
             watcher.watch(xdg.get_cache_home(), RecursiveMode::NonRecursive).ok();
 
             loop {
@@ -202,7 +202,7 @@ pub fn open<'a, I: IntoIterator<Item = &'a CanteenDescription>>(rt: &Handle, win
         rt.spawn(enclose! { (removed) async move {
             log::debug!("try removing cache");
             // loop will only run once, used to abort early with break as ? is not available in scopes
-            for xdg in xdg::BaseDirectories::with_prefix("gnome-ovgu-canteen") {
+            for xdg in xdg::BaseDirectories::with_prefix("ovgu-canteen-gtk") {
                 log::debug!("found cache directory");
                 let history_path = match xdg.find_cache_file("history.json") {
                     Some(path) => path,

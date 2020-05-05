@@ -16,7 +16,7 @@ pub struct Application {
 
 impl Application {
     pub fn new() -> Result<Self> {
-        log::debug!("initializing gnome-ovgu-canteen");
+        log::debug!("initializing ovgu-canteen-gtk");
         gtk::init().context("Failed to initialize GTK!")?;
 
         let css_provider = CssProvider::new();
@@ -34,7 +34,7 @@ impl Application {
         let runtime = RuntimeBuilder::new()
             .enable_all()
             .threaded_scheduler()
-            .thread_name("gnome-ovgu-canteen-tokio")
+            .thread_name("ovgu-canteen-gtk-tokio")
             .build()
             .context("Cannot create tokio runtime")?;
 
@@ -71,18 +71,18 @@ impl Application {
                     }
                 }
                 dialog.run();
-                log::debug!("quitting gnome-ovgu-canteen");
+                log::debug!("quitting ovgu-canteen-gtk");
                 app.quit();
             }
         });
 
-        log::debug!("finish initializing gnome-ovgu-canteen");
+        log::debug!("finish initializing ovgu-canteen-gtk");
 
         Ok(Self { g_app, runtime })
     }
 
     pub fn run(self, args: &[String]) -> i32 {
-        log::debug!("running gnome-ovgu-canteen");
+        log::debug!("running ovgu-canteen-gtk");
         self.g_app.run(args)
     }
 }

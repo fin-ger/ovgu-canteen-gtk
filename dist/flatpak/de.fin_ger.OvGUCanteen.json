@@ -6,7 +6,7 @@
     "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.rust-stable"
     ],
-    "command": "gnome-ovgu-canteen",
+    "command": "ovgu-canteen-gtk",
     "desktop-file-name-suffix": " (Flatpak)",
     "finish-args": [
         "--share=ipc",

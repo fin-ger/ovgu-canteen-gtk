@@ -16,9 +16,9 @@ jobs:
       run: |
         sudo apt-get install libgtk-3-dev -y
         make build
-        mv target/release/gnome-ovgu-canteen $GITHUB_WORKSPACE
+        mv target/release/ovgu-canteen-gtk $GITHUB_WORKSPACE
     - name: Upload binary
       uses: actions/upload-artifact@v1
       with:
-        name: gnome-ovgu-canteen
-        path: gnome-ovgu-canteen
+        name: ovgu-canteen-gtk
+        path: ovgu-canteen-gtk

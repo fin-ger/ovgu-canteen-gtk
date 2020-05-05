@@ -24,12 +24,12 @@ use gettextrs::TextDomain;
 use flexi_logger::{colored_with_thread, Logger};
 
 fn main() {
-    Logger::with_env_or_str("warn, gnome_ovgu_canteen=info")
+    Logger::with_env_or_str("warn, ovgu_canteen_gtk=info")
         .format(colored_with_thread)
         .start()
         .expect("logger initialization failed");
 
-    let mut domain = TextDomain::new("gnome-ovgu-canteen").codeset("UTF-8");
+    let mut domain = TextDomain::new("ovgu-canteen-gtk").codeset("UTF-8");
     if let Ok(xdg) = xdg::BaseDirectories::new() {
         domain = domain.prepend(xdg.get_data_home());
     }

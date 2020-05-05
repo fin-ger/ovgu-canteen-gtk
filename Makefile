@@ -12,6 +12,7 @@ install: build
 	@mkdir -p "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@mkdir -p "$(PREFIX)/share/applications/"
 	@mkdir -p "$(PREFIX)/share/glib-2.0/schemas/"
+	@mkdir -p "$(PREFIX)/share/metainfo/"
 	@mkdir -p "$(PREFIX)/bin"
 	@install -m 0644 icons/de.fin_ger.OvGUCanteen.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@install -m 0644 icons/de.fin_ger.OvGUCanteen.About.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
@@ -31,16 +32,17 @@ install: build
 	@install -m 0644 icons/de.fin_ger.OvGUCanteen.Vegan.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@install -m 0644 icons/de.fin_ger.OvGUCanteen.Vegetarian.svg "$(PREFIX)/share/icons/hicolor/scalable/apps/"
 	@install -m 0644 schemas/de.fin_ger.OvGUCanteen.gschema.xml "$(PREFIX)/share/glib-2.0/schemas/"
+	@install -m 0644 data/de.fin_ger.OvGUCanteen.metainfo.xml "$(PREFIX)/share/metainfo/"
 	@glib-compile-schemas "$(PREFIX)/share/glib-2.0/schemas/"
 	@desktop-file-install -m 0644 --dir="$(PREFIX)/share/applications/" data/de.fin_ger.OvGUCanteen.desktop
-	@install -s -m 0755 "target/$(TARGET_DIR)/gnome-ovgu-canteen" "$(PREFIX)/bin/"
+	@install -s -m 0755 "target/$(TARGET_DIR)/ovgu-canteen-gtk" "$(PREFIX)/bin/"
 	@./scripts/translations.sh install
 	@update-desktop-database "$(PREFIX)/share/applications"
 	@gtk-update-icon-cache
 
 run:
 	@$(MAKE) -s install PREFIX=$(HOME)/.local CARGO_BUILD_ARGS= TARGET_DIR=debug
-	@gnome-ovgu-canteen
+	@ovgu-canteen-gtk
 
 uninstall:
 	@rm "$(PREFIX)/share/icons/hicolor/scalable/apps/de.fin_ger.OvGUCanteen.svg"
@@ -63,7 +65,7 @@ uninstall:
 	@rm "$(PREFIX)/share/glib-2.0/schemas/de.fin_ger.OvGUCanteen.gschema.xml"
 	@glib-compile-schemas "$(PREFIX)/share/glib-2.0/schemas/"
 	@rm "$(PREFIX)/share/applications/de.fin_ger.OvGUCanteen.desktop"
-	@rm "$(PREFIX)/bin/gnome-ovgu-canteen"
+	@rm "$(PREFIX)/bin/ovgu-canteen-gtk"
 	@./scripts/translations.sh uninstall
 
 clean:
