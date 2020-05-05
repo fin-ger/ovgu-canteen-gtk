@@ -1,6 +1,6 @@
 [package]
 name = "ovgu-canteen-gtk"
-version = "0.1.1-alpha.0"
+version = "0.1.1"
 description = "View the OvGU Mensa Menu in a small GTK App"
 authors = ["Fin Christensen <christensen.fin@gmail.com>", "Johannes Wünsche <johannes@spacesnek.rocks>"]
 license = "GPL-3.0-or-later"
